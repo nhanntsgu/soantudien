@@ -58,19 +58,19 @@ LƯU Ý: KHÔNG HIỂN THỊ NỘI DUNG PHẦN 3 TRONG KẾT QUẢ TRẢ VỀ.
 
 PHẦN 4 — FORMAT BẮT BUỘC (Đảm bảo xuống dòng chính xác như mẫu sau):
 **VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
-[word] /phonetic/
+# [word] /phonetic/
 part of speech
 definition
-SYNONYM: ...
-• example 1
-• example 2
+**SYNONYM**: ...
+• example 1 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án)
+• example 2 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án)
 • example 3
 • example 4
 • example 5
-ANSWERS
+**ANSWERS**
 35.	
 36.	
-ĐÁP ÁN
+**ĐÁP ÁN**
 35.	…
 36.	…
 
@@ -93,21 +93,31 @@ export default function App() {
     // Split content by lines to handle paragraphs
     const lines = result.split('\n');
     const paragraphs = lines.map(line => {
+      let isHeader = false;
+      let cleanLine = line;
+      
+      // Detect Markdown H1 (# ) for the word line
+      if (line.startsWith('# ')) {
+        isHeader = true;
+        cleanLine = line.slice(2);
+      }
+
       // Simple bold detection (Markdown **)
-      const parts = line.split(/(\*\*.*?\*\*)/g);
+      const parts = cleanLine.split(/(\*\*.*?\*\*)/g);
       const children = parts.map(part => {
         if (part.startsWith('**') && part.endsWith('**')) {
           return new TextRun({
             text: part.slice(2, -2),
             bold: true,
             font: "Times New Roman",
-            size: 24, // 12pt = 24 half-points
+            size: isHeader ? 36 : 24, // 18pt = 36 half-points, 12pt = 24 half-points
           });
         }
         return new TextRun({
           text: part,
+          bold: isHeader, // Word line is always bold
           font: "Times New Roman",
-          size: 24,
+          size: isHeader ? 36 : 24,
         });
       });
 
