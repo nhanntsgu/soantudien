@@ -299,23 +299,28 @@ export default function App() {
       {/* Header */}
       <header className="bg-white border-b border-black/5 py-6 px-4 sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-white p-1 rounded-xl shadow-sm border border-black/5 overflow-hidden w-10 h-10 flex items-center justify-center">
-              <img 
-                src="https://thcstungthienvuong.hcm.edu.vn/UploadImages/thcstungthienvuong/2017_1/logo_211201710.png" 
-                alt="Logo" 
-                className="w-full h-full object-contain"
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  // Fallback to book icon if logo fails to load
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              className="h-12 w-auto object-contain"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                // Fallback to school website logo if local logo.png is missing
+                e.currentTarget.src = "https://thcstungthienvuong.hcm.edu.vn/UploadImages/thcstungthienvuong/2017_1/logo_211201710.png";
+                e.currentTarget.onerror = () => {
+                  // Final fallback to book icon
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;
                   if (parent) {
-                    parent.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-6 h-6 text-emerald-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+                    const icon = document.createElement('div');
+                    icon.className = "bg-emerald-500 p-2 rounded-xl";
+                    icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-6 h-6 text-white"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+                    parent.insertBefore(icon, parent.firstChild);
                   }
-                }}
-              />
-            </div>
+                };
+              }}
+            />
             <div className="flex flex-col">
               <h1 className="text-xl font-bold tracking-tight">{t.title}</h1>
               <p className="text-[10px] text-slate-400 font-medium -mt-1">
@@ -566,12 +571,15 @@ export default function App() {
         {!result && !isLoading && (
           <div className="text-center py-20 opacity-20 select-none flex flex-col items-center">
             <img 
-              src="https://thcstungthienvuong.hcm.edu.vn/UploadImages/thcstungthienvuong/2017_1/logo_211201710.png" 
+              src="/logo.png" 
               alt="School Logo" 
               className="w-32 h-32 mb-4 grayscale object-contain"
               referrerPolicy="no-referrer"
               onError={(e) => {
-                e.currentTarget.style.display = 'none';
+                e.currentTarget.src = "https://thcstungthienvuong.hcm.edu.vn/UploadImages/thcstungthienvuong/2017_1/logo_211201710.png";
+                e.currentTarget.onerror = () => {
+                  e.currentTarget.style.display = 'none';
+                };
               }}
             />
             <p className="text-xl font-medium">{t.emptyState}</p>
