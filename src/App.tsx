@@ -130,7 +130,7 @@ definition
 35.	…
 36.	…
 
-LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải tách biệt rõ ràng.
+LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải viết liên tục, không dùng dòng trống dư thừa giữa các phần.
 Từ khóa: `;
 
 export default function App() {
@@ -149,8 +149,8 @@ export default function App() {
   const exportToWord = async () => {
     if (!result) return;
 
-    // Split content by lines to handle paragraphs
-    const lines = result.split('\n');
+    // Split content by lines to handle paragraphs and filter empty lines
+    const lines = result.split('\n').filter(line => line.trim() !== '');
     const paragraphs = lines.map(line => {
       // Detect Markdown H1 (# ) for the word line
       if (line.startsWith('# ')) {
@@ -282,7 +282,9 @@ export default function App() {
       const text = response.text;
       
       if (text) {
-        setResult(text);
+        // Remove multiple consecutive newlines and trim
+        const cleanedText = text.replace(/\n\s*\n/g, '\n').trim();
+        setResult(cleanedText);
       } else {
         setError(t.errorFailed);
       }
