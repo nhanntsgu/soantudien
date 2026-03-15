@@ -5,11 +5,67 @@
 
 import React, { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
-import { Document, Packer, Paragraph, TextRun, AlignmentType } from 'docx';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
+
+// Translations
+const translations = {
+  vi: {
+    title: "Dictionary Entry Generator v1.0",
+    author: "by Nhân Nhân - Tung Thien Vuong Secondary School",
+    poweredBy: "Powered by Gemini",
+    apiSettings: "Cấu hình API Gemini",
+    apiDefault: "API Mặc định",
+    apiCustom: "API Riêng",
+    apiPlaceholder: "Nhập Gemini API Key của bạn...",
+    apiNote: "* API Key của bạn chỉ được lưu trong phiên làm việc này và không được gửi đi đâu khác ngoài Google Gemini.",
+    apiDefaultNote: "Đang sử dụng API hệ thống do nhà phát triển cung cấp. Khóa API này được ẩn an toàn và không hiển thị với người dùng.",
+    keywordLabel: "Từ khóa",
+    keywordPlaceholder: "Ví dụ: benefit, information, aware...",
+    generateBtn: "Tạo",
+    generatingBtn: "Đang tạo...",
+    errorEmpty: "Vui lòng nhập từ khóa!",
+    errorNoDefaultApi: "API mặc định chưa được cấu hình.",
+    errorNoCustomApi: "Vui lòng nhập API Key của bạn!",
+    errorFailed: "Không thể tạo nội dung. Vui lòng thử lại.",
+    errorConnect: "Đã xảy ra lỗi khi kết nối với AI. Vui lòng kiểm tra lại.",
+    resultTitle: "Đã tạo xong!",
+    copyBtn: "Copy toàn bộ",
+    copiedBtn: "Đã copy",
+    exportBtn: "Tải file Word",
+    emptyState: "Nhập từ khóa để bắt đầu",
+    settingsTitle: "Cấu hình",
+  },
+  en: {
+    title: "Dictionary Entry Generator v1.0",
+    author: "by Nhan Nhan - Tung Thien Vuong Secondary School",
+    poweredBy: "Powered by Gemini",
+    apiSettings: "Gemini API Configuration",
+    apiDefault: "Default API",
+    apiCustom: "Custom API",
+    apiPlaceholder: "Enter your Gemini API Key...",
+    apiNote: "* Your API Key is only saved for this session and is not sent anywhere else except Google Gemini.",
+    apiDefaultNote: "Using the system API provided by the developer. This API key is securely hidden and not visible to users.",
+    keywordLabel: "Keyword",
+    keywordPlaceholder: "Example: benefit, information, aware...",
+    generateBtn: "Generate",
+    generatingBtn: "Generating...",
+    errorEmpty: "Please enter a keyword!",
+    errorNoDefaultApi: "Default API is not configured.",
+    errorNoCustomApi: "Please enter your API Key!",
+    errorFailed: "Could not generate content. Please try again.",
+    errorConnect: "An error occurred while connecting to AI. Please check again.",
+    resultTitle: "Generation Complete!",
+    copyBtn: "Copy All",
+    copiedBtn: "Copied",
+    exportBtn: "Download Word",
+    emptyState: "Enter a keyword to start",
+    settingsTitle: "Settings",
+  }
+};
 
 // Khởi tạo Gemini AI
 const DEFAULT_API_KEY = process.env.GEMINI_API_KEY || '';
@@ -86,6 +142,9 @@ export default function App() {
   const [customApiKey, setCustomApiKey] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [lang, setLang] = useState<'vi' | 'en'>('vi');
+
+  const t = translations[lang];
 
   const exportToWord = async () => {
     if (!result) return;
@@ -199,14 +258,14 @@ export default function App() {
 
   const generateExercise = async () => {
     if (!keyword.trim()) {
-      setError('Vui lòng nhập từ khóa!');
+      setError(t.errorEmpty);
       return;
     }
 
     const apiKeyToUse = apiMode === 'default' ? DEFAULT_API_KEY : customApiKey;
     
     if (!apiKeyToUse) {
-      setError(apiMode === 'default' ? 'API mặc định chưa được cấu hình.' : 'Vui lòng nhập API Key của bạn!');
+      setError(apiMode === 'default' ? t.errorNoDefaultApi : t.errorNoCustomApi);
       return;
     }
 
@@ -225,11 +284,11 @@ export default function App() {
       if (text) {
         setResult(text);
       } else {
-        setError('Không thể tạo nội dung. Vui lòng thử lại.');
+        setError(t.errorFailed);
       }
     } catch (err) {
       console.error(err);
-      setError('Đã xảy ra lỗi khi kết nối với AI. Vui lòng kiểm tra lại.');
+      setError(t.errorConnect);
     } finally {
       setIsLoading(false);
     }
@@ -241,24 +300,51 @@ export default function App() {
       <header className="bg-white border-b border-black/5 py-6 px-4 sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-emerald-500 p-2 rounded-xl">
-              <BookOpen className="w-6 h-6 text-white" />
+            <div className="bg-white p-1 rounded-xl shadow-sm border border-black/5 overflow-hidden w-10 h-10 flex items-center justify-center">
+              <img 
+                src="https://thcstungthienvuong.hcm.edu.vn/UploadImages/thcstungthienvuong/2017_1/logo_211201710.png" 
+                alt="Logo" 
+                className="w-full h-full object-contain"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  // Fallback to book icon if logo fails to load
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-6 h-6 text-emerald-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+                  }
+                }}
+              />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold tracking-tight">Dictionary Entry Generator v1.0</h1>
+              <h1 className="text-xl font-bold tracking-tight">{t.title}</h1>
               <p className="text-[10px] text-slate-400 font-medium -mt-1">
-                by Nhân Nhân - Tung Thien Vuong Secondary School
+                {t.author}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden md:block text-xs font-mono text-slate-400 uppercase tracking-widest">
-              Powered by Gemini
+              {t.poweredBy}
+            </div>
+            <div className="flex items-center bg-slate-100 rounded-full p-1">
+              <button
+                onClick={() => setLang('vi')}
+                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${lang === 'vi' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                VI
+              </button>
+              <button
+                onClick={() => setLang('en')}
+                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${lang === 'en' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                EN
+              </button>
             </div>
             <button
               onClick={() => setShowSettings(!showSettings)}
               className={`p-2 hover:bg-slate-100 rounded-full transition-colors ${showSettings ? 'text-emerald-500 bg-emerald-50' : 'text-slate-500'}`}
-              title="Cấu hình API"
+              title={t.settingsTitle}
             >
               <Settings className={`w-5 h-5 ${showSettings ? 'rotate-90' : ''} transition-transform duration-300`} />
             </button>
@@ -280,7 +366,7 @@ export default function App() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                     <Key className="w-4 h-4 text-emerald-500" />
-                    Cấu hình API Gemini
+                    {t.apiSettings}
                   </h3>
                   <button 
                     onClick={() => setShowSettings(false)}
@@ -301,7 +387,7 @@ export default function App() {
                       }`}
                     >
                       <ShieldCheck className="w-4 h-4" />
-                      API Mặc định
+                      {t.apiDefault}
                     </button>
                     <button
                       onClick={() => setApiMode('custom')}
@@ -312,7 +398,7 @@ export default function App() {
                       }`}
                     >
                       <Key className="w-4 h-4" />
-                      API Riêng
+                      {t.apiCustom}
                     </button>
                   </div>
 
@@ -325,11 +411,11 @@ export default function App() {
                         type="password"
                         value={customApiKey}
                         onChange={(e) => setCustomApiKey(e.target.value)}
-                        placeholder="Nhập Gemini API Key của bạn..."
+                        placeholder={t.apiPlaceholder}
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-sm"
                       />
                       <p className="mt-2 text-[11px] text-slate-400">
-                        * API Key của bạn chỉ được lưu trong phiên làm việc này và không được gửi đi đâu khác ngoài Google Gemini.
+                        {t.apiNote}
                       </p>
                     </motion.div>
                   )}
@@ -338,7 +424,7 @@ export default function App() {
                     <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex items-start gap-3">
                       <ShieldCheck className="w-4 h-4 text-emerald-500 mt-0.5" />
                       <p className="text-xs text-emerald-700 leading-relaxed">
-                        Đang sử dụng API hệ thống do nhà phát triển cung cấp. Khóa API này được ẩn an toàn và không hiển thị với người dùng.
+                        {t.apiDefaultNote}
                       </p>
                     </div>
                   )}
@@ -357,7 +443,7 @@ export default function App() {
           <div className="flex flex-col gap-6">
             <div>
               <label htmlFor="keyword" className="block text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">
-                Từ khóa
+                {t.keywordLabel}
               </label>
               <div className="relative">
                 <input
@@ -366,7 +452,7 @@ export default function App() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
-                  placeholder="Ví dụ: benefit, information, aware..."
+                  placeholder={t.keywordPlaceholder}
                   className="w-full pl-4 pr-20 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-lg"
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -397,12 +483,12 @@ export default function App() {
               {isLoading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Đang tạo...
+                  {t.generatingBtn}
                 </>
               ) : (
                 <>
                   <Send className="w-5 h-5" />
-                  Tạo
+                  {t.generateBtn}
                 </>
               )}
             </button>
@@ -431,7 +517,7 @@ export default function App() {
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-8 bg-emerald-500 rounded-full"></div>
-                  <h2 className="text-2xl font-bold tracking-tight">Đã tạo xong!</h2>
+                  <h2 className="text-2xl font-bold tracking-tight">{t.resultTitle}</h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -439,14 +525,14 @@ export default function App() {
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all"
                   >
                     {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                    {copySuccess ? 'Đã copy' : 'Copy toàn bộ'}
+                    {copySuccess ? t.copiedBtn : t.copyBtn}
                   </button>
                   <button
                     onClick={exportToWord}
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-all shadow-sm"
                   >
                     <FileDown className="w-3.5 h-3.5" />
-                    Tải file Word
+                    {t.exportBtn}
                   </button>
                 </div>
               </div>
@@ -478,9 +564,17 @@ export default function App() {
         </AnimatePresence>
 
         {!result && !isLoading && (
-          <div className="text-center py-20 opacity-20 select-none">
-            <BookOpen className="w-24 h-24 mx-auto mb-4" />
-            <p className="text-xl font-medium">Nhập từ khóa để bắt đầu</p>
+          <div className="text-center py-20 opacity-20 select-none flex flex-col items-center">
+            <img 
+              src="https://thcstungthienvuong.hcm.edu.vn/UploadImages/thcstungthienvuong/2017_1/logo_211201710.png" 
+              alt="School Logo" 
+              className="w-32 h-32 mb-4 grayscale object-contain"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <p className="text-xl font-medium">{t.emptyState}</p>
           </div>
         )}
       </main>
