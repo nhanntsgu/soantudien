@@ -11,8 +11,8 @@ import ReactMarkdown from 'react-markdown';
 import { Document, Packer, Paragraph, TextRun, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 
-// Khởi tạo Gemini AI (Sẽ được khởi tạo lại trong hàm nếu dùng API riêng)
-const DEFAULT_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBbGoRRextkXttWJNKxj9DwYa1QgyaDpp8';
+// Khởi tạo Gemini AI
+const DEFAULT_API_KEY = process.env.GEMINI_API_KEY || '';
 
 // Prompt cơ sở - Người dùng có thể tùy chỉnh ở đây
 const BASE_PROMPT = `Soạn bài tập dạng Dictionary giống đề tuyển sinh lớp 10 TP.HCM (câu 35–36).
@@ -245,7 +245,7 @@ export default function App() {
               <BookOpen className="w-6 h-6 text-white" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold tracking-tight">Dictionary Entry Generator</h1>
+              <h1 className="text-xl font-bold tracking-tight">Dictionary Entry Generator v1.0</h1>
               <p className="text-[10px] text-slate-400 font-medium -mt-1">
                 by Nhân Nhân - Tung Thien Vuong Secondary School
               </p>
