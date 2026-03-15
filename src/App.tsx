@@ -5,9 +5,11 @@
 
 import React, { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
+import { Document, Packer, Paragraph, TextRun, AlignmentType } from 'docx';
+import { saveAs } from 'file-saver';
 
 // Khởi tạo Gemini AI (Sẽ được khởi tạo lại trong hàm nếu dùng API riêng)
 const DEFAULT_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBbGoRRextkXttWJNKxj9DwYa1QgyaDpp8';
@@ -83,6 +85,78 @@ export default function App() {
   const [apiMode, setApiMode] = useState<'default' | 'custom'>('default');
   const [customApiKey, setCustomApiKey] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const exportToWord = async () => {
+    if (!result) return;
+
+    // Split content by lines to handle paragraphs
+    const lines = result.split('\n');
+    const paragraphs = lines.map(line => {
+      // Simple bold detection (Markdown **)
+      const parts = line.split(/(\*\*.*?\*\*)/g);
+      const children = parts.map(part => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return new TextRun({
+            text: part.slice(2, -2),
+            bold: true,
+            font: "Times New Roman",
+            size: 24, // 12pt = 24 half-points
+          });
+        }
+        return new TextRun({
+          text: part,
+          font: "Times New Roman",
+          size: 24,
+        });
+      });
+
+      return new Paragraph({
+        children,
+        spacing: {
+          line: 276, // 1.15 * 240 (standard line height) = 276
+        },
+      });
+    });
+
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: paragraphs,
+      }],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `Dictionary_Exercise_${keyword || 'Result'}.docx`);
+  };
+
+  const copyToClipboard = async () => {
+    if (!result) return;
+
+    try {
+      // Convert Markdown bold to HTML bold for rich text clipboard
+      const htmlContent = result
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\n/g, '<br>');
+      
+      const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+      const blobText = new Blob([result.replace(/\*\*/g, '')], { type: 'text/plain' });
+      
+      const data = [new ClipboardItem({
+        'text/html': blobHtml,
+        'text/plain': blobText,
+      })];
+
+      await navigator.clipboard.write(data);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      // Fallback to plain text if rich text fails
+      await navigator.clipboard.writeText(result.replace(/\*\*/g, ''));
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    }
+  };
 
   const generateExercise = async () => {
     if (!keyword.trim()) {
@@ -315,23 +389,33 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="bg-white rounded-2xl p-8 shadow-md border border-black/5"
             >
-              <div className="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100">
-                <div className="w-2 h-8 bg-emerald-500 rounded-full"></div>
-                <h2 className="text-2xl font-bold tracking-tight">Kết quả bài tập</h2>
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-8 bg-emerald-500 rounded-full"></div>
+                  <h2 className="text-2xl font-bold tracking-tight">Đã tạo xong!</h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={copyToClipboard}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-medium transition-all"
+                  >
+                    {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copySuccess ? 'Đã copy' : 'Copy toàn bộ'}
+                  </button>
+                  <button
+                    onClick={exportToWord}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-all shadow-sm"
+                  >
+                    <FileDown className="w-3.5 h-3.5" />
+                    Tải file Word
+                  </button>
+                </div>
               </div>
               
               <div className="prose prose-slate max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-slate-600 prose-li:text-slate-600 whitespace-pre-wrap">
                 <ReactMarkdown>{result}</ReactMarkdown>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
-                <button 
-                  onClick={() => window.print()}
-                  className="text-sm font-medium text-slate-400 hover:text-emerald-600 transition-colors flex items-center gap-1"
-                >
-                  In bài tập này
-                </button>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
