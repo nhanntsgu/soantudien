@@ -14,8 +14,8 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "Dictionary Entry Generator v1.0",
-    author: "by Nhân Nhân - Tung Thien Vuong Secondary School",
+    title: "SOẠN TỪ ĐIỂN v1.0",
+    author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
     apiDefault: "API Mặc định",
@@ -40,7 +40,7 @@ const translations = {
     settingsTitle: "Cấu hình",
   },
   en: {
-    title: "Dictionary Entry Generator v1.0",
+    title: "DICTIONARY ENTRY GENERATOR v1.0",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
