@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v1.4",
+    title: "SOẠN TỪ ĐIỂN v1.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
