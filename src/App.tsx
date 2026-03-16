@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v1.2",
+    title: "SOẠN TỪ ĐIỂN v1.4",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -72,11 +72,8 @@ const translations = {
 };
 
 // Khởi tạo Gemini AI
-// Thử lấy từ nhiều nguồn khác nhau để đảm bảo tính tương thích
-const DEFAULT_API_KEY = 
-  import.meta.env.VITE_GEMINI_API_KEY || 
-  (window as any).process?.env?.GEMINI_API_KEY || 
-  '';
+// Vite sẽ thay thế process.env.GEMINI_API_KEY bằng giá trị thực tế khi build
+const DEFAULT_API_KEY = process.env.GEMINI_API_KEY || '';
 
 // Prompt cơ sở - Người dùng có thể tùy chỉnh ở đây
 const BASE_PROMPT = `Soạn bài tập dạng Dictionary giống đề tuyển sinh lớp 10 TP.HCM (câu 35–36).
@@ -467,7 +464,7 @@ export default function App() {
                       }`}>
                         {DEFAULT_API_KEY 
                           ? t.apiDefaultNote 
-                          : "⚠️ Chưa tìm thấy biến môi trường VITE_GEMINI_API_KEY. Vui lòng cấu hình trong Settings hoặc sử dụng API Riêng."}
+                          : "⚠️ Hệ thống chưa nhận được API Key. Thầy cô vui lòng: 1. Kiểm tra biến VITE_GEMINI_API_KEY trong Settings. 2. Bấm Save. 3. Đợi 10 giây rồi tải lại trang (F5)."}
                       </p>
                     </div>
                   )}
