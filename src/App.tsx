@@ -357,14 +357,13 @@ export default function App() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-10 bg-blue-50/50 border border-blue-100/50 rounded-3xl p-6 md:p-8 text-center relative overflow-hidden group"
+          className="mb-10 bg-slate-50/80 border border-slate-200 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden group"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-800/20 to-transparent"></div>
-          <div className="relative z-10">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform duration-500">
-              <Sparkles className="w-6 h-6 text-blue-800" />
-            </div>
-            <p className="text-slate-600 leading-relaxed text-[10px] max-w-2xl mx-auto">
+          <div className="flex-shrink-0 w-14 h-14 bg-blue-800 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20 group-hover:scale-105 transition-transform duration-500">
+            <BookOpen className="w-7 h-7 text-white" />
+          </div>
+          <div className="flex-1">
+            <p className="text-slate-700 leading-relaxed text-sm text-center md:text-left">
               {t.appDescription.split('nhanntsgu@gmail.com').map((part, i, arr) => (
                 <React.Fragment key={i}>
                   {part}
