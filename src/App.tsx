@@ -38,6 +38,7 @@ const translations = {
     exportBtn: "Tải file Word",
     emptyState: "Nhập từ khóa để bắt đầu",
     settingsTitle: "Cấu hình",
+    appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
     title: "DICTIONARY ENTRY GENERATOR v1.0",
@@ -64,6 +65,7 @@ const translations = {
     exportBtn: "Download Word",
     emptyState: "Enter a keyword to start",
     settingsTitle: "Settings",
+    appDescription: "Supports creating Dictionary Entry exercises standard for the Grade 10 Entrance Exam in Ho Chi Minh City (Questions 35, 36). Teachers just need to type keywords (separated by commas), click Generate to receive a complete lesson, which can be copied directly or exported to a Word file for use. Thank you for using the app! Please send any feedback to email nhanntsgu@gmail.com.",
   }
 };
 
@@ -325,6 +327,32 @@ export default function App() {
       </header>
 
       <main className="max-w-4xl mx-auto p-6 md:p-12">
+        {/* App Description */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-10 bg-blue-50/50 border border-blue-100/50 rounded-3xl p-6 md:p-8 text-center relative overflow-hidden group"
+        >
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-800/20 to-transparent"></div>
+          <div className="relative z-10">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform duration-500">
+              <Sparkles className="w-6 h-6 text-blue-800" />
+            </div>
+            <p className="text-slate-600 leading-relaxed text-[10px] max-w-2xl mx-auto">
+              {t.appDescription.split('nhanntsgu@gmail.com').map((part, i, arr) => (
+                <React.Fragment key={i}>
+                  {part}
+                  {i < arr.length - 1 && (
+                    <a href="mailto:nhanntsgu@gmail.com" className="text-blue-800 font-semibold hover:underline decoration-2 underline-offset-4">
+                      nhanntsgu@gmail.com
+                    </a>
+                  )}
+                </React.Fragment>
+              ))}
+            </p>
+          </div>
+        </motion.div>
+
         {/* API Settings Panel */}
         <AnimatePresence>
           {showSettings && (
