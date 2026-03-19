@@ -15,7 +15,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v3.6",
+    title: "SOẠN TỪ ĐIỂN v3.7",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -50,7 +50,7 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v3.6",
+    title: "DICTIONARY ENTRY GENERATOR v3.7",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
@@ -98,9 +98,9 @@ YÊU CẦU VỀ NỘI DUNG:
 YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD KHÔNG LỖI):
 - KHÔNG sử dụng dấu # hay ## cho tiêu đề.
 - Sử dụng **[Tiêu đề]** in hoa cho các phần: ANSWERS, ĐÁP ÁN, CÂU DỰ PHÒNG, ĐÁP ÁN CÂU DỰ PHÒNG.
-- Giữa các phần (ví dụ giữa Examples và ANSWERS) PHẢI có đúng 1 dòng trống (nhấn Enter 2 lần).
+- Giữa các phần lớn (ví dụ giữa Examples và ANSWERS) PHẢI có đúng 1 dòng trống (nhấn Enter 2 lần). KHÔNG ĐƯỢC có 2 dòng trống liên tiếp.
+- Giữa tiêu đề (ví dụ **ANSWERS**) và nội dung ngay bên dưới (câu 35) KHÔNG ĐƯỢC có dòng trống, chỉ xuống dòng 1 lần (nhấn Enter 1 lần).
 - Giữa các câu hỏi (35, 36 hoặc 1, 2) KHÔNG ĐƯỢC có dòng trống, chỉ cần xuống dòng bình thường (nhấn Enter 1 lần).
-- Sau các tiêu đề như **ANSWERS** hoặc **ĐÁP ÁN** phải xuống dòng ngay lập tức để viết nội dung.
 - Đảm bảo mỗi dòng văn bản kết thúc bằng một dấu xuống dòng đơn giản (Paragraph Mark).
 
 CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
@@ -132,7 +132,7 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 1. [đáp án của câu dự phòng 1]
 2. [đáp án của câu dự phòng 2]
 
-LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau ANSWERS và ĐÁP ÁN phải xuống dòng ngay.
+LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau các tiêu đề **ANSWERS**, **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.
 Từ khóa: `;
 
 export default function App() {
@@ -683,14 +683,14 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="prose prose-slate max-w-none prose-headings:m-0 prose-p:m-0 prose-li:m-0">
+              <div className="prose prose-slate max-w-none prose-headings:m-0 prose-p:m-0 prose-li:m-0 prose-ul:m-0 prose-ol:m-0">
                 <ReactMarkdown
                   remarkPlugins={[remarkBreaks]}
                   components={{
-                    p: ({ children }) => <p className="text-slate-900 leading-snug m-0 text-base">{children}</p>,
-                    ul: ({ children }) => <ul className="list-disc pl-5 m-0 text-slate-900">{children}</ul>,
-                    ol: ({ children }) => <ol className="list-decimal pl-5 m-0 text-slate-900">{children}</ol>,
-                    li: ({ children }) => <li className="text-slate-900 leading-snug m-0">
+                    p: ({ children }) => <p className="text-slate-900 leading-snug !m-0 text-base">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc pl-5 !m-0 text-slate-900">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal pl-5 !m-0 text-slate-900">{children}</ol>,
+                    li: ({ children }) => <li className="text-slate-900 leading-snug !m-0">
                       {children}
                     </li>,
                     strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>,
