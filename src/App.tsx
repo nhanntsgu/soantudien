@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v2.0",
+    title: "SOẠN TỪ ĐIỂN v2.1",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -42,7 +42,7 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v2.0",
+    title: "DICTIONARY ENTRY GENERATOR v2.1",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
@@ -117,7 +117,7 @@ Trước khi xuất kết quả, kiểm tra:
 Nếu phát hiện lỗi → sửa lại trước khi xuất kết quả.
 LƯU Ý: KHÔNG HIỂN THỊ NỘI DUNG PHẦN 3 TRONG KẾT QUẢ TRẢ VỀ.
 
-PHẦN 4 — FORMAT BẮT BUỘC (Đảm bảo xuống dòng chính xác như mẫu sau):
+PHẦN 4 — FORMAT BẮT BUỘC (TUYỆT ĐỐI KHÔNG ĐỂ DÒNG TRỐNG GIỮA CÁC CÂU HỎI VÀ ĐÁP ÁN):
 **VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
 **[word]** /phonetic/
 part of speech
@@ -141,7 +141,7 @@ part of speech
 1. [đáp án]
 2. [đáp án]
 
-LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải tách biệt rõ ràng.
+LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải tách biệt rõ ràng nhưng KHÔNG ĐƯỢC có dòng trống (double newline) giữa các câu hỏi 35, 36 và các câu dự phòng.
 Từ khóa: `;
 
 export default function App() {
