@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v2.4",
+    title: "SOẠN TỪ ĐIỂN v2.5",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -49,7 +49,7 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v2.4",
+    title: "DICTIONARY ENTRY GENERATOR v2.5",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
@@ -86,84 +86,53 @@ const translations = {
 };
 
 // Prompt cơ sở - Người dùng có thể tùy chỉnh ở đây
-const BASE_PROMPT = `Soạn bài tập dạng Dictionary giống đề tuyển sinh lớp 10 TP.HCM (câu 35–36).
-Tôi sẽ cung cấp các từ khóa tiếng Anh.
-Nhiệm vụ:
-Với mỗi từ khóa, tạo:
-• 1 dictionary entry
-• 2 câu hỏi điền khuyết chính (câu 35 và 36)
-• 2 câu hỏi dự phòng (Câu dự phòng 1 và 2)
-PHẦN 1 — DICTIONARY ENTRY
-Dictionary entry phải gồm:
-word
-phonetic transcription
-part of speech
-definition (ngắn gọn, dễ hiểu cho học sinh lớp 9)
-SYNONYM (nếu có)
-Sau đó viết 5 example sentences.
-Yêu cầu example:
-• câu đơn giản, tự nhiên
-• trình độ lớp 9
-• mỗi câu nên chứa 1 cụm từ có thể dùng làm đáp án
-• cụm đó dài 2–3 từ
-PHẦN 2 — TẠO CÂU HỎI
-Tạo 2 câu hỏi điền khuyết chính và 2 câu dự phòng:
-ANSWERS
-35. [câu hỏi]
-36. [câu hỏi]
-Câu dự phòng
-1. [câu hỏi]
-2. [câu hỏi]
-Quy tắc bắt buộc:
-1.	Mỗi câu (kể cả dự phòng) phải lấy chính xác một cụm 2–3 từ từ example sentences.
-2.	Không được thay đổi dạng từ.
-3.	Đáp án phải xuất hiện nguyên văn trong example. Đáp án phải có chứa từ khóa.
-4.	Câu hỏi phải viết ngữ cảnh khác example để học sinh suy luận.
-5.	Không được sao chép nguyên câu example.
-6.	Mỗi câu chỉ có 1 đáp án đúng.
-7.	Trình độ phù hợp học sinh lớp 9.
-PHẦN 3 — KIỂM TRA LẠI (SELF-CHECK)
-Trước khi xuất kết quả, kiểm tra:
-✓ đáp án có xuất hiện nguyên văn trong example
-✓ đáp án dài đúng 2–3 từ
-✓ không có câu nào có 2 đáp án hợp lý
-✓ câu hỏi không trùng với example
-Nếu phát hiện lỗi → sửa lại trước khi xuất kết quả.
-LƯU Ý: KHÔNG HIỂN THỊ NỘI DUNG PHẦN 3 TRONG KẾT QUẢ TRẢ VỀ.
+const BASE_PROMPT = `Bạn là một chuyên gia soạn đề thi tiếng Anh lớp 10 tại TP.HCM.
+Nhiệm vụ: Soạn bài tập dạng Dictionary Entry (câu 35–36) dựa trên từ khóa được cung cấp.
 
-PHẦN 4 — FORMAT BẮT BUỘC (SỬ DỤNG DÒNG TRỐNG GIỮA CÁC PHẦN ĐỂ ĐẢM BẢO HIỂN THỊ RÕ RÀNG):
+YÊU CẦU VỀ NỘI DUNG:
+1. Dictionary Entry: Word, Phonetic, Part of speech, Definition (ngắn gọn), Synonym (nếu có).
+2. Examples: 5 câu ví dụ đơn giản, tự nhiên. Trong đó 4 câu đầu phải chứa cụm từ (2-3 từ) làm đáp án cho 4 câu hỏi bên dưới. In đậm cụm từ đó.
+3. Questions: 2 câu chính (35, 36) và 2 câu dự phòng (1, 2). Câu hỏi phải có ngữ cảnh khác ví dụ nhưng đáp án phải giữ nguyên văn từ ví dụ.
+
+YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG):
+- Sử dụng Markdown chuẩn.
+- KHÔNG được để các dòng dính sát nhau mà không có xuống dòng nếu chúng là các mục khác nhau.
+- Giữa các câu hỏi (35, 36, 1, 2) PHẢI có đúng 1 dòng trống để tránh lỗi dính chữ (hiển thị trên cùng một hàng).
+- Tuyệt đối không để số thứ tự nằm riêng một dòng.
+
+CẤU TRÚC MẪU BẮT BUỘC:
 **VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
 
 # [word] /[phonetic]/
 *part of speech*
-
 *definition*
-
 **SYNONYM**: ...
 
-• example 1 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án)
-• example 2 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án)
-• example 3 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án dự phòng)
-• example 4 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án dự phòng)
+• example 1 (có **cụm đáp án**)
+• example 2 (có **cụm đáp án**)
+• example 3 (có **cụm đáp án dự phòng**)
+• example 4 (có **cụm đáp án dự phòng**)
 • example 5
 
-**ANSWERS**
-35. [câu hỏi]
-36. [câu hỏi]
+## ANSWERS
+35. [câu hỏi 35]
 
-**Câu dự phòng**
-1. [câu hỏi]
-2. [câu hỏi]
+36. [câu hỏi 36]
 
-**ĐÁP ÁN**
+## Câu dự phòng
+1. [câu hỏi dự phòng 1]
+
+2. [câu hỏi dự phòng 2]
+
+## ĐÁP ÁN
 35. [đáp án]
 36. [đáp án]
 
-**Câu dự phòng**
+## Câu dự phòng
 1. [đáp án]
 2. [đáp án]
 
-LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải tách biệt rõ ràng. Sử dụng dòng trống (double newline) giữa các phần lớn để tránh bị dính chữ.
+LƯU Ý: Thay _____ bằng từ khóa. Giữa các câu hỏi 35, 36 và 1, 2 phải có dòng trống.
 Từ khóa: `;
 
 export default function App() {
@@ -695,24 +664,33 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="prose prose-slate max-w-none prose-p:leading-relaxed prose-li:leading-relaxed whitespace-pre-line">
+              <div className="prose prose-slate max-w-none prose-headings:m-0 prose-p:m-0 prose-li:m-0">
                 <ReactMarkdown
                   components={{
                     h1: ({ children }) => {
                       const text = String(children);
-                      const phoneticMatch = text.match(/^(.*?)\s(\/.*\/)$/);
+                      const phoneticMatch = text.match(/^(.*?)\s*(\/.*\/)$/);
                       if (phoneticMatch) {
                         return (
-                          <h1 className="mb-4 flex items-baseline gap-2 border-b pb-2">
-                            <span className="text-3xl font-bold text-slate-900">{phoneticMatch[1]}</span>
-                            <span className="text-lg font-normal text-slate-500">{phoneticMatch[2]}</span>
+                          <h1 className="mb-2 flex items-baseline gap-2 border-b-2 border-slate-200 pb-1 mt-0">
+                            <span className="text-2xl font-extrabold text-slate-900 tracking-tight">{phoneticMatch[1].trim()}</span>
+                            <span className="text-base font-medium text-slate-400 italic">{phoneticMatch[2]}</span>
                           </h1>
                         );
                       }
-                      return <h1 className="text-3xl font-bold mb-4 border-b pb-2 text-slate-900">{children}</h1>;
+                      return <h1 className="text-2xl font-extrabold mb-2 border-b-2 border-slate-200 pb-1 mt-0 text-slate-900 tracking-tight">{children}</h1>;
                     },
-                    p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
-                    li: ({ children }) => <li className="mb-2 last:mb-0">{children}</li>,
+                    h2: ({ children }) => (
+                      <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-2 mt-6 flex items-center gap-2 before:content-[''] before:w-1 before:h-3 before:bg-blue-600 before:rounded-full">
+                        {children}
+                      </h2>
+                    ),
+                    p: ({ children }) => <p className="text-slate-700 leading-snug mb-0.5 last:mb-0">{children}</p>,
+                    ul: ({ children }) => <ul className="list-none pl-0 mb-2 space-y-0.5">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-none pl-0 mb-2 space-y-0.5">{children}</ol>,
+                    li: ({ children }) => <li className="text-slate-700 leading-snug mb-0.5 flex items-start gap-2">
+                      <div className="flex-1">{children}</div>
+                    </li>,
                     strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>
                   }}
                 >
