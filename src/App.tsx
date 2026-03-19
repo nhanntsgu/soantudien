@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v2.2",
+    title: "SOẠN TỪ ĐIỂN v2.3",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -49,7 +49,7 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v2.2",
+    title: "DICTIONARY ENTRY GENERATOR v2.3",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
@@ -131,10 +131,10 @@ Trước khi xuất kết quả, kiểm tra:
 Nếu phát hiện lỗi → sửa lại trước khi xuất kết quả.
 LƯU Ý: KHÔNG HIỂN THỊ NỘI DUNG PHẦN 3 TRONG KẾT QUẢ TRẢ VỀ.
 
-PHẦN 4 — FORMAT BẮT BUỘC (TUYỆT ĐỐI KHÔNG ĐỂ DÒNG TRỐNG GIỮA CÁC CÂU HỎI VÀ ĐÁP ÁN):
+PHẦN 4 — FORMAT BẮT BUỘC (SỬ DỤNG XUỐNG DÒNG ĐƠN, TUYỆT ĐỐI KHÔNG ĐỂ DÒNG TRỐNG GIỮA CÁC DÒNG):
 **VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
-**[word]** /phonetic/
-part of speech
+# [word] /[phonetic]/
+*part of speech*
 *definition*
 **SYNONYM**: ...
 • example 1 (Lưu ý: In đậm cụm từ chứa từ khóa mà bạn dùng làm đáp án)
@@ -155,7 +155,7 @@ part of speech
 1. [đáp án]
 2. [đáp án]
 
-LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải tách biệt rõ ràng nhưng KHÔNG ĐƯỢC có dòng trống (double newline) giữa các câu hỏi 35, 36 và các câu dự phòng.
+LƯU Ý: Thay _____ bằng từ khóa. Các dòng thông tin phải tách biệt rõ ràng nhưng TUYỆT ĐỐI KHÔNG ĐƯỢC có dòng trống (double newline) ở bất kỳ đâu trong kết quả.
 Từ khóa: `;
 
 export default function App() {
@@ -687,7 +687,7 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="prose prose-slate max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-p:text-slate-600 prose-li:text-slate-600 whitespace-pre-wrap">
+              <div className="prose prose-slate max-w-none prose-p:my-0 prose-li:my-0 prose-headings:mb-2 prose-headings:mt-4 prose-ul:my-0 prose-ol:my-0">
                 <ReactMarkdown
                   components={{
                     h1: ({ children }) => {
@@ -695,14 +695,16 @@ export default function App() {
                       const phoneticMatch = text.match(/^(.*?)\s(\/.*\/)$/);
                       if (phoneticMatch) {
                         return (
-                          <h1 className="mb-2 flex items-baseline gap-2">
+                          <h1 className="mb-1 flex items-baseline gap-2">
                             <span className="text-2xl font-bold">{phoneticMatch[1]}</span>
                             <span className="text-base font-normal text-slate-500">{phoneticMatch[2]}</span>
                           </h1>
                         );
                       }
-                      return <h1 className="text-2xl font-bold mb-2">{children}</h1>;
-                    }
+                      return <h1 className="text-2xl font-bold mb-1">{children}</h1>;
+                    },
+                    p: ({ children }) => <p className="mb-0.5 last:mb-0">{children}</p>,
+                    li: ({ children }) => <li className="mb-0.5 last:mb-0">{children}</li>
                   }}
                 >
                   {result}
