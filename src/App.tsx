@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v3.0",
+    title: "SOẠN TỪ ĐIỂN v3.1",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -49,7 +49,7 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v3.0",
+    title: "DICTIONARY ENTRY GENERATOR v3.1",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
@@ -96,16 +96,15 @@ YÊU CẦU VỀ NỘI DUNG:
 
 YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD KHÔNG LỖI):
 - KHÔNG sử dụng dấu # hay ## cho tiêu đề.
-- Sử dụng **[Tiêu đề]** cho các phần như ANSWERS, ĐÁP ÁN, Câu dự phòng.
-- Giữa các phần (ví dụ giữa Examples và ANSWERS) PHẢI có đúng 1 dòng trống.
-- Giữa các câu hỏi (35, 36, 1, 2) KHÔNG ĐƯỢC có dòng trống dư thừa.
-- Các câu hỏi 35, 36 và 1, 2 phải được viết rõ ràng với số thứ tự ở đầu dòng.
+- Sử dụng **[Tiêu đề]** in hoa cho các phần: ANSWERS, ĐÁP ÁN, CÂU DỰ PHÒNG, ĐÁP ÁN CÂU DỰ PHÒNG.
+- Giữa các phần PHẢI có đúng 1 dòng trống.
+- Giữa các câu hỏi (35, 36 hoặc 1, 2) KHÔNG ĐƯỢC có dòng trống.
+- Đảm bảo mỗi dòng văn bản kết thúc bằng một dấu xuống dòng đơn giản (Paragraph Mark).
 
-CẤU TRÚC MẪU BẮT BUỘC (KHÔNG ĐƯỢC DƯ THỪA DÒNG TRỐNG):
+CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC):
 **VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
 
-[word] /[phonetic]/
-*part of speech*
+**[word]** /[phonetic]/ *([part of speech])*
 *definition*
 **SYNONYM**: ...
 
@@ -116,22 +115,22 @@ CẤU TRÚC MẪU BẮT BUỘC (KHÔNG ĐƯỢC DƯ THỪA DÒNG TRỐNG):
 • example 5
 
 **ANSWERS**
-35. [câu hỏi 35]
-36. [câu hỏi 36]
+35. [câu hỏi 35 có chỗ trống _______ để điền từ]
+36. [câu hỏi 36 có chỗ trống _______ để điền từ]
 
-**Câu dự phòng**
-1. [câu hỏi dự phòng 1]
-2. [câu hỏi dự phòng 2]
+**CÂU DỰ PHÒNG**
+1. [câu hỏi dự phòng 1 có chỗ trống _______]
+2. [câu hỏi dự phòng 2 có chỗ trống _______]
 
 **ĐÁP ÁN**
-35. [đáp án]
-36. [đáp án]
+35. [đáp án của câu 35]
+36. [đáp án của câu 36]
 
-**Câu dự phòng**
-1. [đáp án]
-2. [đáp án]
+**ĐÁP ÁN CÂU DỰ PHÒNG**
+1. [đáp án của câu dự phòng 1]
+2. [đáp án của câu dự phòng 2]
 
-LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các số thứ tự 35, 36, 1, 2 luôn xuất hiện đầy đủ.
+LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo cấu trúc in đậm/nghiêng và xuống dòng y hệt mẫu.
 Từ khóa: `;
 
 export default function App() {
