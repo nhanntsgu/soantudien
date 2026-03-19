@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v2.9",
+    title: "SOẠN TỪ ĐIỂN v3.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
@@ -49,7 +49,7 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v2.9",
+    title: "DICTIONARY ENTRY GENERATOR v3.0",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
@@ -98,9 +98,8 @@ YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD K
 - KHÔNG sử dụng dấu # hay ## cho tiêu đề.
 - Sử dụng **[Tiêu đề]** cho các phần như ANSWERS, ĐÁP ÁN, Câu dự phòng.
 - Giữa các phần (ví dụ giữa Examples và ANSWERS) PHẢI có đúng 1 dòng trống.
-- Giữa các câu hỏi (35, 36, 1, 2) KHÔNG ĐƯỢC có dòng trống dư thừa, chỉ cần xuống dòng bình thường.
-- Tuyệt đối không để số thứ tự nằm riêng một dòng.
-- Đảm bảo mỗi dòng văn bản kết thúc bằng một dấu xuống dòng đơn giản.
+- Giữa các câu hỏi (35, 36, 1, 2) KHÔNG ĐƯỢC có dòng trống dư thừa.
+- Các câu hỏi 35, 36 và 1, 2 phải được viết rõ ràng với số thứ tự ở đầu dòng.
 
 CẤU TRÚC MẪU BẮT BUỘC (KHÔNG ĐƯỢC DƯ THỪA DÒNG TRỐNG):
 **VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
@@ -132,7 +131,7 @@ CẤU TRÚC MẪU BẮT BUỘC (KHÔNG ĐƯỢC DƯ THỪA DÒNG TRỐNG):
 1. [đáp án]
 2. [đáp án]
 
-LƯU Ý: Thay _____ bằng từ khóa. KHÔNG ĐƯỢC tạo quá nhiều dòng trống giữa các câu hỏi.
+LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các số thứ tự 35, 36, 1, 2 luôn xuất hiện đầy đủ.
 Từ khóa: `;
 
 export default function App() {
@@ -683,14 +682,14 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="prose prose-slate max-w-none prose-headings:m-0 prose-p:m-0 prose-li:m-0 font-serif">
+              <div className="prose prose-slate max-w-none prose-headings:m-0 prose-p:m-0 prose-li:m-0">
                 <ReactMarkdown
                   components={{
                     p: ({ children }) => <p className="text-slate-900 leading-snug mb-0.5 last:mb-0 text-base">{children}</p>,
-                    ul: ({ children }) => <ul className="list-none pl-0 mb-2 space-y-0.5">{children}</ul>,
-                    ol: ({ children }) => <ol className="list-none pl-0 mb-2 space-y-0.5">{children}</ol>,
-                    li: ({ children }) => <li className="text-slate-900 leading-snug mb-0.5 flex items-start gap-2">
-                      <div className="flex-1">{children}</div>
+                    ul: ({ children }) => <ul className="list-disc pl-5 mb-2 space-y-0.5 text-slate-900">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal pl-5 mb-2 space-y-0.5 text-slate-900">{children}</ol>,
+                    li: ({ children }) => <li className="text-slate-900 leading-snug mb-0.5">
+                      {children}
                     </li>,
                     strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>,
                     em: ({ children }) => <em className="italic text-slate-700">{children}</em>
