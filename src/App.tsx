@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
@@ -15,8 +15,11 @@ import { saveAs } from 'file-saver';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v3.7",
+    title: "SOẠN TỪ ĐIỂN v3.8",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
+    homeBtn: "Về trang chủ NHÂN NHÂN APP",
+    historyTitle: "Lịch sử gần đây",
+    clearHistory: "Xóa tất cả",
     poweredBy: "Powered by Gemini",
     apiSettings: "Cấu hình API Gemini",
     apiGuide: "Hướng dẫn lấy API key miễn phí",
@@ -50,8 +53,11 @@ const translations = {
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v3.7",
+    title: "DICTIONARY ENTRY GENERATOR v3.8",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
+    homeBtn: "Back to NHAN NHAN APP Home",
+    historyTitle: "Recent History",
+    clearHistory: "Clear All",
     poweredBy: "Powered by Gemini",
     apiSettings: "Gemini API Configuration",
     apiGuide: "How to get a free API key",
@@ -151,8 +157,17 @@ export default function App() {
   const [copySuccess, setCopySuccess] = useState(false);
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [selectedModel, setSelectedModel] = useState<'gemini-3-flash-preview' | 'gemini-3.1-flash-lite-preview'>('gemini-3-flash-preview');
+  const [history, setHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('dictionary_history');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const t = translations[lang];
+
+  // Save history to localStorage
+  useEffect(() => {
+    localStorage.setItem('dictionary_history', JSON.stringify(history));
+  }, [history]);
 
   // Loading messages rotation
   useEffect(() => {
@@ -301,6 +316,11 @@ export default function App() {
       
       if (text) {
         setResult(text);
+        // Update history
+        setHistory(prev => {
+          const newHistory = [keyword, ...prev.filter(item => item !== keyword)].slice(0, 10);
+          return newHistory;
+        });
       } else {
         setError(t.errorFailed);
       }
@@ -331,6 +351,17 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const clearHistory = () => {
+    if (window.confirm(lang === 'vi' ? 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử?' : 'Are you sure you want to clear all history?')) {
+      setHistory([]);
+    }
+  };
+
+  const deleteHistoryItem = (e: React.MouseEvent, itemToDelete: string) => {
+    e.stopPropagation();
+    setHistory(prev => prev.filter(item => item !== itemToDelete));
   };
 
   return (
@@ -364,6 +395,16 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <a 
+              href="https://nhannhan.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-800 rounded-xl text-xs font-bold hover:bg-blue-100 transition-all border border-blue-100"
+            >
+              <Home className="w-4 h-4" />
+              {t.homeBtn}
+              <ExternalLink className="w-3 h-3 opacity-50" />
+            </a>
             <div className="hidden md:block text-xs font-mono text-slate-400 uppercase tracking-widest">
               {t.poweredBy}
             </div>
@@ -417,6 +458,48 @@ export default function App() {
             </p>
           </div>
         </motion.div>
+
+        {/* History Section */}
+        {history.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <div className="flex items-center justify-between mb-3 px-2">
+              <div className="flex items-center gap-2 text-slate-500">
+                <History className="w-4 h-4" />
+                <span className="text-xs font-bold uppercase tracking-wider">{t.historyTitle}</span>
+              </div>
+              <button 
+                onClick={clearHistory}
+                className="text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-wider"
+              >
+                {t.clearHistory}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {history.map((item, index) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => setKeyword(item)}
+                  className="group flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-all shadow-sm"
+                >
+                  <span className="text-sm text-slate-600 group-hover:text-blue-800">{item}</span>
+                  <button
+                    onClick={(e) => deleteHistoryItem(e, item)}
+                    className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* API Settings Modal */}
         <AnimatePresence>
