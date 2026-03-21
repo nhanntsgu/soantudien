@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
@@ -50,7 +50,7 @@ const translations = {
     modelLabel: "Lựa chọn Model",
     modelFlash: "Gemini 3 Flash (Nhanh)",
     modelLite: "Gemini 2.5 Flash Lite (Tiết kiệm)",
-    appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 1, 2). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
+    appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
   },
   en: {
     title: "DICTIONARY ENTRY GENERATOR v4.0",
@@ -291,6 +291,18 @@ export default function App() {
     const saved = localStorage.getItem('dictionary_history_v2');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const sampleKeywords = [
+    'benefit', 'information', 'aware', 'environment', 'technology', 
+    'education', 'community', 'opportunity', 'challenge', 'success',
+    'experience', 'knowledge', 'resource', 'solution', 'impact',
+    'development', 'innovation', 'creativity', 'communication', 'leadership'
+  ];
+
+  const generateRandomKeyword = () => {
+    const randomIndex = Math.floor(Math.random() * sampleKeywords.length);
+    setKeyword(sampleKeywords[randomIndex]);
+  };
 
   const t = translations[lang];
 
@@ -603,9 +615,9 @@ export default function App() {
                       onChange={(e) => setKeyword(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
                       placeholder={t.keywordPlaceholder}
-                      className="w-full pl-4 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm"
+                      className="w-full pl-4 pr-20 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm"
                     />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
                       <AnimatePresence>
                         {keyword && (
                           <motion.button
@@ -619,6 +631,13 @@ export default function App() {
                           </motion.button>
                         )}
                       </AnimatePresence>
+                      <button
+                        onClick={generateRandomKeyword}
+                        className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-full transition-all active:rotate-180 duration-500"
+                        title="Tạo ngẫu nhiên"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
