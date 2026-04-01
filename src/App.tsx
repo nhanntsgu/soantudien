@@ -5,18 +5,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
 import { changelog } from './changelog';
+import { Header } from './components/Header';
 
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.1.0",
+    title: "SOẠN TỪ ĐIỂN v4.1.6",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -57,7 +58,7 @@ const translations = {
     dateLabel: "Ngày cập nhật",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.1.0",
+    title: "DICTIONARY ENTRY GENERATOR v4.1.6",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     homeBtn: "Back to NHAN NHAN APP Home",
     historyTitle: "Recent History",
@@ -615,52 +616,26 @@ export default function App() {
   return (
     <div className="min-h-screen lg:h-screen flex flex-col bg-[#f5f5f5] text-slate-900 font-sans selection:bg-blue-100 lg:overflow-hidden">
       {/* Header */}
-      <header className="bg-white border-b border-black/5 py-3 px-4 flex-shrink-0 shadow-sm z-30">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img 
-              src="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg" 
-              alt="Logo" 
-              className="h-10 w-auto object-contain rounded-lg shadow-sm"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-            <div className="flex flex-col">
-              <h1 className="text-lg font-bold tracking-tight text-slate-900">{t.title}</h1>
-              <p className="text-[10px] text-slate-400 font-medium -mt-1">
-                {t.author}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <a 
-              href="https://nhannhan.vercel.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-bold hover:bg-slate-100 transition-all border border-slate-200"
-            >
-              <Home className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t.homeBtn}</span>
-            </a>
-            <button
-              onClick={() => setShowChangelog(true)}
-              className="p-2 hover:bg-slate-100 rounded-xl transition-all text-slate-500"
-              title={t.changelogTitle}
-            >
-              <Info className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setShowSettings(!showSettings)}
-              className={`p-2 hover:bg-slate-100 rounded-xl transition-all ${showSettings ? 'text-blue-800 bg-blue-50' : 'text-slate-500'}`}
-              title={t.settingsTitle}
-            >
-              <Settings className={`w-5 h-5 ${showSettings ? 'rotate-90' : ''} transition-transform duration-300`} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header 
+        title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
+        version="v4.1.6"
+        subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
+        logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
+        showBack={!!result}
+        onBack={() => setResult('')}
+        onHistory={() => {
+          // Scroll to history or open a history modal if needed
+          // For now, we can just ensure the left column is visible
+          if (window.innerWidth < 1024) {
+            document.getElementById('history-section')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}
+        onInfo={() => setShowChangelog(true)}
+        onSettings={() => setShowSettings(!showSettings)}
+        showSettings={!result}
+        hasHistoryData={history.length > 0}
+        isSettingsActive={showSettings}
+      />
 
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 lg:overflow-hidden">
         <div className="flex flex-col lg:flex-row gap-4 lg:h-full">
@@ -795,6 +770,7 @@ export default function App() {
             {/* History Section */}
             {history.length > 0 && (
               <motion.div
+                id="history-section"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex-1 min-h-0 flex flex-col"

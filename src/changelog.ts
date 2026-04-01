@@ -9,6 +9,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.1.6",
+    date: "2026-03-31",
+    changes: {
+      vi: [
+        "Tích hợp Header component mới chuyên nghiệp hơn.",
+        "Cập nhật Logo và hiệu ứng Sparkles.",
+        "Tối ưu hóa giao diện cho thiết bị di động.",
+        "Thêm nút quay lại và ẩn hiện cài đặt thông minh."
+      ],
+      en: [
+        "Integrated a more professional new Header component.",
+        "Updated Logo and Sparkles effect.",
+        "Optimized mobile UI.",
+        "Added back button and smart settings visibility."
+      ]
+    }
+  },
+  {
     version: "4.1.0",
     date: "2026-03-25",
     changes: {
