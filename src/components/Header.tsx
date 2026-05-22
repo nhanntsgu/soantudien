@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Sparkles, History, Info, Settings } from 'lucide-react';
+import { ArrowLeft, Sparkles, History, Info, Key, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface HeaderProps {
@@ -14,7 +14,7 @@ interface HeaderProps {
   showBack?: boolean;
   showSettings?: boolean;
   hasHistoryData?: boolean;
-  isSettingsActive?: boolean;
+  apiKeyStatus: 'valid' | 'invalid' | 'checking' | 'empty';
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -29,10 +29,10 @@ export const Header: React.FC<HeaderProps> = ({
   showBack = false,
   showSettings = true,
   hasHistoryData = false,
-  isSettingsActive = false,
+  apiKeyStatus = 'empty',
 }) => {
   return (
-    <header className="sticky top-0 z-[100] h-16 w-full bg-violet-800/95 backdrop-blur-md text-white shadow-lg transition-all">
+    <header className="sticky top-0 z-[100] h-16 w-full bg-blue-800 text-white shadow-lg transition-all">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
         {/* Left Section: Branding */}
         <div className="flex items-center gap-3 overflow-hidden">
@@ -62,16 +62,16 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-white shadow-sm">
-              <Sparkles className="h-2.5 w-2.5 text-violet-800" />
+              <Sparkles className="h-2.5 w-2.5 text-blue-800" />
             </div>
           </div>
 
           <div className="flex flex-col overflow-hidden">
             <div className="flex items-center gap-2">
-              <h1 className="truncate text-xl font-black uppercase tracking-tight leading-none">
+              <h1 className="truncate text-xl font-black uppercase tracking-tight leading-none pt-2 pb-0">
                 {title}
               </h1>
-              <span className="flex-shrink-0 rounded-md bg-white/20 px-1.5 py-0.5 text-[8px] font-bold text-white backdrop-blur-sm">
+              <span className="flex-shrink-0 rounded-md bg-white/20 px-1.5 py-0.5 pb-[3px] text-[8px] font-bold text-white backdrop-blur-sm">
                 {version}
               </span>
             </div>
@@ -112,15 +112,34 @@ export const Header: React.FC<HeaderProps> = ({
 
           {showSettings && (
             <motion.button
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onSettings}
-              className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all ${
-                isSettingsActive ? 'bg-white text-violet-800 shadow-md' : 'bg-white/10 hover:bg-white/20 text-white'
+              className={`flex h-10 items-center justify-center gap-2 rounded-xl px-3 transition-all ${
+                apiKeyStatus === 'valid'
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-md'
+                  : apiKeyStatus === 'checking'
+                  ? 'bg-amber-500 hover:bg-amber-400 text-white font-bold shadow-md'
+                  : 'bg-red-600 hover:bg-red-500 text-white font-bold shadow-md'
               }`}
-              aria-label="Settings"
+              aria-label="Config API Key"
             >
-              <Settings className={`h-5 w-5 ${isSettingsActive ? 'rotate-90' : ''} transition-transform duration-500`} />
+              <Key className="h-4.5 w-4.5 flex-shrink-0" />
+              <span className="text-xs font-bold hidden md:inline">
+                {apiKeyStatus === 'valid' && 'API Key: Đang hoạt động'}
+                {apiKeyStatus === 'checking' && 'API Key: Đang kiểm tra...'}
+                {apiKeyStatus === 'invalid' && 'API Key: Lỗi kết nối'}
+                {apiKeyStatus === 'empty' && 'API Key: Chưa nhập key'}
+              </span>
+              <span className="text-xs font-bold md:hidden">
+                {apiKeyStatus === 'valid' && 'API: OK'}
+                {apiKeyStatus === 'checking' && 'API: ...'}
+                {apiKeyStatus === 'invalid' && 'API: Lỗi'}
+                {apiKeyStatus === 'empty' && 'API: Trống'}
+              </span>
+              {apiKeyStatus === 'valid' && <CheckCircle2 className="h-3.5 w-3.5" />}
+              {(apiKeyStatus === 'invalid' || apiKeyStatus === 'empty') && <AlertCircle className="h-3.5 w-3.5" />}
+              {apiKeyStatus === 'checking' && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             </motion.button>
           )}
         </div>

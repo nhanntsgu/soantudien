@@ -17,7 +17,7 @@ import { Header } from './components/Header';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.1.6",
+    title: "SOẠN TỪ ĐIỂN v4.2.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -28,14 +28,25 @@ const translations = {
     apiCustomLabel: "Nhập Gemini API Key",
     apiPlaceholder: "Dán API Key của bạn vào đây...",
     apiNote: "* API Key được lưu an toàn trong trình duyệt của bạn để sử dụng cho lần sau.",
+    apiModeLabel: "Chế độ API Key",
+    apiModeDefault: "Sử dụng API mặc định",
+    apiModeCustom: "Tự nhập API Key",
+    apiDefaultDesc: "Hệ thống sẽ tự động dùng API Key cấu hình từ biến môi trường của dự án.",
+    apiDefaultEnvText: "Tên biến môi trường cần cấu hình:",
+    apiDefaultFound: "Đã thiết lập biến môi trường VITE_GEMINI_API_KEY thành công!",
+    apiDefaultNotFound: "Chưa cấu hình biến môi trường VITE_GEMINI_API_KEY. Vui lòng thêm biến này hoặc chọn 'Tự nhập API Key'.",
+    apiDefaultStatus: "Trạng thái:",
+    apiConnected: "Đã kết nối",
+    apiConnectError: "Lỗi kết nối",
+    apiChecking: "Đang kiểm tra...",
     keywordLabel: "Từ khóa",
     keywordPlaceholder: "Ví dụ: benefit, information, aware...",
     generateBtn: "Tạo",
     generatingBtn: "Đang xử lý...",
     errorEmpty: "Vui lòng nhập từ khóa!",
-    errorNoCustomApi: "Vui lòng nhập API Key của bạn!",
+    errorNoCustomApi: "Vui lòng cấu hình API Key hoạt động của bạn!",
     errorFailed: "Không thể tạo nội dung. Vui lòng thử lại.",
-    errorConnect: "Đã xảy ra lỗi khi kết nối với AI. Vui lòng kiểm tra lại.",
+    errorConnect: "Đã xảy ra lỗi khi kết nối với AI. Vui lòng kiểm tra lại cấu hình key.",
     resultTitle: "Đã tạo xong!",
     copyBtn: "Copy toàn bộ",
     copiedBtn: "Đã copy",
@@ -50,15 +61,15 @@ const translations = {
     ],
     settingsTitle: "Cấu hình",
     modelLabel: "Lựa chọn Model",
-    modelFlash: "Gemini 3 Flash (Nhanh)",
-    modelLite: "Gemini 2.5 Flash Lite (Tiết kiệm)",
+    modelFlash: "Gemini 3.5 Flash (Mới nhất)",
+    modelLite: "Gemini 3.1 Flash Lite (Tiết kiệm)",
     appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
     changelogTitle: "Nhật ký thay đổi",
     versionLabel: "Phiên bản",
     dateLabel: "Ngày cập nhật",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.1.6",
+    title: "DICTIONARY ENTRY GENERATOR v4.2.0",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     homeBtn: "Back to NHAN NHAN APP Home",
     historyTitle: "Recent History",
@@ -69,14 +80,25 @@ const translations = {
     apiCustomLabel: "Enter Gemini API Key",
     apiPlaceholder: "Paste your API Key here...",
     apiNote: "* Your API Key is saved securely in your browser for future use.",
+    apiModeLabel: "API Key Mode",
+    apiModeDefault: "Use Default API",
+    apiModeCustom: "Enter Custom API Key",
+    apiDefaultDesc: "The system will automatically use the API Key configured via the environment variables.",
+    apiDefaultEnvText: "Required environment variable name:",
+    apiDefaultFound: "Environment variable VITE_GEMINI_API_KEY is configured successfully!",
+    apiDefaultNotFound: "VITE_GEMINI_API_KEY not found. Please add this variable to your environment or choose 'Enter Custom API Key'.",
+    apiDefaultStatus: "Status:",
+    apiConnected: "Connected",
+    apiConnectError: "Connection Error",
+    apiChecking: "Checking...",
     keywordLabel: "Keyword",
     keywordPlaceholder: "Example: benefit, information, aware...",
     generateBtn: "Generate",
     generatingBtn: "Processing...",
     errorEmpty: "Please enter a keyword!",
-    errorNoCustomApi: "Please enter your API Key!",
+    errorNoCustomApi: "Please configure an active API Key!",
     errorFailed: "Could not generate content. Please try again.",
-    errorConnect: "An error occurred while connecting to AI. Please check again.",
+    errorConnect: "An error occurred while connecting to AI. Please verify your key.",
     resultTitle: "Generation Complete!",
     copyBtn: "Copy All",
     copiedBtn: "Copied",
@@ -91,9 +113,9 @@ const translations = {
     ],
     settingsTitle: "Settings",
     modelLabel: "Model Selection",
-    modelFlash: "Gemini 3 Flash (Fast)",
-    modelLite: "Gemini 2.5 Flash Lite (Lite)",
-    appDescription: "Supports creating Dictionary Entry exercises standard for the Grade 10 Entrance Exam in Ho Chi Minh City (Questions 1, 2). Teachers just need to type keywords (separated by commas), click Generate to receive a complete lesson, which can be copied directly or exported to a Word file for use. Thank you for using the app! Please send any feedback to email nhanntsgu@gmail.com.",
+    modelFlash: "Gemini 3.5 Flash (Latest)",
+    modelLite: "Gemini 3.1 Flash Lite (Lite)",
+    appDescription: "Supports creating Dictionary Entry exercises standard for the Grade 10 Entrance Exam in Ho Chi Minh City (Questions 35, 36). Teachers just need to type keywords (separated by commas), click Generate to receive a complete lesson, which can be copied directly or exported to a Word file for use. Thank you for using the app! Please send any feedback to email nhanntsgu@gmail.com.",
     changelogTitle: "Changelog",
     versionLabel: "Version",
     dateLabel: "Update Date",
@@ -160,7 +182,11 @@ function SettingsModal({
   apiKey, 
   onApiKeyChange, 
   selectedModel, 
-  onModelChange 
+  onModelChange,
+  apiMode,
+  onApiModeChange,
+  defaultKeyExists,
+  apiKeyStatus
 }: { 
   show: boolean; 
   onClose: () => void; 
@@ -169,6 +195,10 @@ function SettingsModal({
   onApiKeyChange: (val: string) => void;
   selectedModel: string;
   onModelChange: (val: any) => void;
+  apiMode: 'default' | 'custom';
+  onApiModeChange: (val: 'default' | 'custom') => void;
+  defaultKeyExists: boolean;
+  apiKeyStatus: 'valid' | 'invalid' | 'checking' | 'empty';
 }) {
   return (
     <AnimatePresence>
@@ -203,70 +233,123 @@ function SettingsModal({
                 </button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
+                {/* Model Selection */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2.5">
                     {t.modelLabel}
                   </label>
                   <div className="grid grid-cols-1 gap-2">
                     <button
-                      onClick={() => onModelChange('gemini-3-flash-preview')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3-flash-preview' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
+                      onClick={() => onModelChange('gemini-3.5-flash')}
+                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.5-flash' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
                     >
                       <div className="flex flex-col items-start">
-                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3-flash-preview' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelFlash}</span>
-                        <span className="text-[10px] text-slate-400">Nhanh & Thông minh</span>
+                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.5-flash' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelFlash}</span>
+                        <span className="text-[10px] text-slate-400">Nhanh & Thông minh (Mới nhất)</span>
                       </div>
-                      {selectedModel === 'gemini-3-flash-preview' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
+                      {selectedModel === 'gemini-3.5-flash' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
                     </button>
                     <button
-                      onClick={() => onModelChange('gemini-3.1-flash-lite-preview')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.1-flash-lite-preview' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
+                      onClick={() => onModelChange('gemini-3.1-flash-lite')}
+                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.1-flash-lite' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
                     >
                       <div className="flex flex-col items-start">
-                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.1-flash-lite-preview' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelLite}</span>
-                        <span className="text-[10px] text-slate-400">Tiết kiệm & Ổn định</span>
+                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.1-flash-lite' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelLite}</span>
+                        <span className="text-[10px] text-slate-400 font-medium">Tiết kiệm & Ổn định</span>
                       </div>
-                      {selectedModel === 'gemini-3.1-flash-lite-preview' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
+                      {selectedModel === 'gemini-3.1-flash-lite' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
                     </button>
                   </div>
                 </div>
 
+                <hr className="border-slate-100" />
+
+                {/* API Key Connection Mode */}
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-                      {t.apiCustomLabel}
-                    </label>
-                    <a 
-                      href="https://aistudio.google.com/app/apikey" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-[10px] font-bold text-blue-800 hover:underline flex items-center gap-1"
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+                    {t.apiModeLabel}
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    <button
+                      onClick={() => onApiModeChange('default')}
+                      className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 text-center transition-all ${apiMode === 'default' ? 'border-blue-800 bg-blue-50/50 text-blue-800 font-bold' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
                     >
-                      {t.apiGuide}
-                      <ExternalLink className="w-2.5 h-2.5" />
-                    </a>
+                      <Settings className="w-5 h-5 mb-1" />
+                      <span className="text-xs">{t.apiModeDefault}</span>
+                    </button>
+                    <button
+                      onClick={() => onApiModeChange('custom')}
+                      className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 text-center transition-all ${apiMode === 'custom' ? 'border-blue-800 bg-blue-50/50 text-blue-800 font-bold' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
+                    >
+                      <Key className="w-5 h-5 mb-1" />
+                      <span className="text-xs">{t.apiModeCustom}</span>
+                    </button>
                   </div>
-                  <div className="relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                      <Key className="w-4 h-4" />
+
+                  {apiMode === 'default' ? (
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {t.apiDefaultDesc}
+                      </p>
+                      <div className="flex items-center gap-2 pt-1 text-xs font-semibold">
+                        <span className="text-slate-500">{t.apiDefaultStatus}</span>
+                        {apiKeyStatus === 'valid' ? (
+                          <span className="text-emerald-600 flex items-center gap-1.5 font-bold">
+                            <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                            {t.apiConnected}
+                          </span>
+                        ) : apiKeyStatus === 'checking' ? (
+                          <span className="text-amber-500 flex items-center gap-1.5 font-bold">
+                            <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                            {t.apiChecking}
+                          </span>
+                        ) : (
+                          <span className="text-red-500 flex items-center gap-1.5 font-bold">
+                            <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]"></span>
+                            {t.apiConnectError}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <input
-                      type="password"
-                      value={apiKey}
-                      onChange={(e) => onApiKeyChange(e.target.value)}
-                      placeholder={t.apiPlaceholder}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm font-mono"
-                    />
-                  </div>
-                  <p className="mt-3 text-[10px] text-slate-400 italic">
-                    {t.apiNote}
-                  </p>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+                          {t.apiCustomLabel}
+                        </label>
+                        <a 
+                          href="https://aistudio.google.com/app/apikey" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[10px] font-bold text-blue-800 hover:underline flex items-center gap-1"
+                        >
+                          {t.apiGuide}
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                          <Key className="w-4 h-4" />
+                        </div>
+                        <input
+                          type="password"
+                          value={apiKey}
+                          onChange={(e) => onApiKeyChange(e.target.value)}
+                          placeholder={t.apiPlaceholder}
+                          className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm font-mono"
+                        />
+                      </div>
+                      <p className="text-[10px] text-slate-400 italic">
+                        {t.apiNote}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <button
                   onClick={onClose}
-                  className="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] text-sm"
+                  className="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] text-sm mt-2"
                 >
                   Xong
                 </button>
@@ -370,13 +453,24 @@ export default function App() {
   const [customApiKey, setCustomApiKey] = useState(() => {
     return localStorage.getItem('gemini_api_key') || '';
   });
+  const [apiMode, setApiMode] = useState<'default' | 'custom'>(() => {
+    const savedMode = localStorage.getItem('gemini_api_mode');
+    if (savedMode === 'default' || savedMode === 'custom') return savedMode;
+    return localStorage.getItem('gemini_api_key') ? 'custom' : 'default';
+  });
+  const [apiKeyStatus, setApiKeyStatus] = useState<'valid' | 'invalid' | 'checking' | 'empty'>('checking');
+
   const [showSettings, setShowSettings] = useState(() => {
-    return !localStorage.getItem('gemini_api_key');
+    const mode = localStorage.getItem('gemini_api_mode') || 'default';
+    const hasKey = mode === 'default' 
+      ? !!import.meta.env.VITE_GEMINI_API_KEY 
+      : !!localStorage.getItem('gemini_api_key');
+    return !hasKey;
   });
   const [showChangelog, setShowChangelog] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
-  const [selectedModel, setSelectedModel] = useState<'gemini-3-flash-preview' | 'gemini-3.1-flash-lite-preview'>('gemini-3-flash-preview');
+  const [selectedModel, setSelectedModel] = useState<'gemini-3.5-flash' | 'gemini-3.1-flash-lite'>('gemini-3.1-flash-lite');
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('dictionary_history_v2');
     return saved ? JSON.parse(saved) : [];
@@ -422,9 +516,46 @@ export default function App() {
     return () => clearInterval(interval);
   }, [isLoading, t.loadingMessages.length]);
 
+  // key checking effect
+  useEffect(() => {
+    const key = apiMode === 'default' 
+      ? import.meta.env.VITE_GEMINI_API_KEY 
+      : customApiKey;
+
+    if (!key) {
+      setApiKeyStatus('empty');
+      return;
+    }
+
+    setApiKeyStatus('checking');
+
+    const delay = apiMode === 'custom' ? 800 : 0;
+    const timer = setTimeout(async () => {
+      try {
+        const ai = new GoogleGenAI({ apiKey: key });
+        await ai.models.generateContent({
+          model: 'gemini-3.1-flash-lite',
+          contents: 'Ping',
+          config: { maxOutputTokens: 1 },
+        });
+        setApiKeyStatus('valid');
+      } catch (err) {
+        console.error("API Connection checking failed:", err);
+        setApiKeyStatus('invalid');
+      }
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [apiMode, customApiKey]);
+
   const handleApiKeyChange = (value: string) => {
     setCustomApiKey(value);
     localStorage.setItem('gemini_api_key', value);
+  };
+
+  const handleApiModeChange = (mode: 'default' | 'custom') => {
+    setApiMode(mode);
+    localStorage.setItem('gemini_api_mode', mode);
   };
 
   const exportToWord = async () => {
@@ -528,14 +659,14 @@ export default function App() {
   };
 
   const generateExercise = async () => {
-    if (!keyword.trim()) {
-      setError(t.errorEmpty);
+    if (apiKeyStatus !== 'valid') {
+      setError(lang === 'vi' ? 'Vui lòng cấu hình API Key hợp lệ và hoạt động để sử dụng!' : 'Please configure a valid active API Key to use!');
+      setShowSettings(true);
       return;
     }
 
-    if (!customApiKey) {
-      setError(t.errorNoCustomApi);
-      setShowSettings(true);
+    if (!keyword.trim()) {
+      setError(t.errorEmpty);
       return;
     }
 
@@ -544,7 +675,15 @@ export default function App() {
     setResult('');
 
     const tryGenerate = async (modelName: string) => {
-      const ai = new GoogleGenAI({ apiKey: customApiKey });
+      const activeKey = apiMode === 'default' 
+        ? import.meta.env.VITE_GEMINI_API_KEY 
+        : customApiKey;
+
+      if (!activeKey) {
+        throw new Error("No API key configured");
+      }
+
+      const ai = new GoogleGenAI({ apiKey: activeKey });
       const response = await ai.models.generateContent({
         model: modelName,
         contents: `${BASE_PROMPT} ${keyword}`,
@@ -572,11 +711,11 @@ export default function App() {
       console.error(err);
       const isQuotaError = err?.message?.includes('429') || err?.message?.toLowerCase().includes('quota');
       
-      if (isQuotaError && selectedModel === 'gemini-3-flash-preview') {
+      if (isQuotaError && selectedModel === 'gemini-3.5-flash') {
         // Fallback to Lite model if Flash fails due to quota
         try {
           console.log("Flash quota exceeded, falling back to Lite...");
-          let text = await tryGenerate('gemini-3.1-flash-lite-preview');
+          let text = await tryGenerate('gemini-3.1-flash-lite');
           if (text) {
             setResult(text);
             return;
@@ -587,7 +726,7 @@ export default function App() {
       }
 
       if (isQuotaError) {
-        setError("Hạn mức API đã hết (Rate Limit). Vui lòng nhập API Key khác.");
+        setError(lang === 'vi' ? "Hạn mức API đã hết (Rate Limit). Vui lòng nhập API Key khác." : "API Rate Limit exceeded. Please enter a different API Key.");
         setShowSettings(true);
       } else {
         setError(t.errorConnect);
@@ -618,7 +757,7 @@ export default function App() {
       {/* Header */}
       <Header 
         title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.1.6"
+        version="v4.2.0"
         subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         showBack={!!result}
@@ -632,9 +771,9 @@ export default function App() {
         }}
         onInfo={() => setShowChangelog(true)}
         onSettings={() => setShowSettings(!showSettings)}
-        showSettings={!result}
+        showSettings={true}
         hasHistoryData={history.length > 0}
-        isSettingsActive={showSettings}
+        apiKeyStatus={apiKeyStatus}
       />
 
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 lg:overflow-hidden">
@@ -651,9 +790,9 @@ export default function App() {
                 <div className="w-10 h-10 bg-blue-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/20">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Thông tin ứng dụng</h3>
+                <h3 className="font-sans text-[15px] font-bold text-slate-800 uppercase tracking-wider">Thông tin ứng dụng</h3>
               </div>
-              <p className="text-slate-600 leading-relaxed text-[11px]">
+              <p className="text-slate-600 leading-relaxed text-[12px] font-bold italic">
                 {t.appDescription.split('nhanntsgu@gmail.com').map((part, i, arr) => (
                   <React.Fragment key={i}>
                     {part}
@@ -904,6 +1043,10 @@ export default function App() {
         onApiKeyChange={handleApiKeyChange}
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        apiMode={apiMode}
+        onApiModeChange={handleApiModeChange}
+        defaultKeyExists={!!import.meta.env.VITE_GEMINI_API_KEY}
+        apiKeyStatus={apiKeyStatus}
       />
 
       {/* Changelog Modal */}

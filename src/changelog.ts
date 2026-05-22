@@ -9,6 +9,26 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.2.0",
+    date: "2026-05-22",
+    changes: {
+      vi: [
+        "Nâng cấp model Gemini 3.5 Flash (mới nhất) và Gemini 3.1 Flash Lite.",
+        "Thiết kế lại và chuyển đổi nút Cài đặt răng cưa thành nút Trạng thái API trực quan (Xanh lá khi hoạt động, Đỏ khi lỗi/trống).",
+        "Thêm 2 chế độ cấu hình API: Sử dụng mặc định (qua biến môi trường VITE_GEMINI_API_KEY) và Tự nhập API Key.",
+        "Xác thực tự động kết nối API Key và khóa các thao tác soạn câu hỏi nếu Key không hoạt động hoặc chưa nhập.",
+        "Cập nhật thanh Header sang màu xanh dương đồng bộ với nút Tạo chính."
+      ],
+      en: [
+        "Upgraded models to Gemini 3.5 Flash (latest) and Gemini 3.1 Flash Lite.",
+        "Redesigned Settings button into an intuitive live API Status button (Green when active, Red when error/missing).",
+        "Added 2 API configuration modes: Use Default API (via VITE_GEMINI_API_KEY) and Enter Custom API Key.",
+        "Automatic validation of API Key connectivity, locking content generation when Key is inactive or missing.",
+        "Updated Header background color to blue, matching the main Generate button."
+      ]
+    }
+  },
+  {
     version: "4.1.6",
     date: "2026-03-31",
     changes: {
