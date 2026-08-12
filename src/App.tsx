@@ -241,24 +241,24 @@ function SettingsModal({
                   </label>
                   <div className="grid grid-cols-1 gap-2">
                     <button
-                      onClick={() => onModelChange('gemini-3.5-flash')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.5-flash' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
+                      onClick={() => onModelChange('gemini-3.6-flash')}
+                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.6-flash' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
                     >
                       <div className="flex flex-col items-start">
-                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.5-flash' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelFlash}</span>
-                        <span className="text-[10px] text-slate-400">Nhanh & Thông minh (Mới nhất)</span>
+                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.6-flash' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelFlash}</span>
+                        <span className="text-[10px] text-slate-400">Gemini 3.6 Flash (Nhanh & Thông minh nhất)</span>
                       </div>
-                      {selectedModel === 'gemini-3.5-flash' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
+                      {selectedModel === 'gemini-3.6-flash' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
                     </button>
                     <button
-                      onClick={() => onModelChange('gemini-3.1-flash-lite')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.1-flash-lite' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
+                      onClick={() => onModelChange('gemini-3.5-flash-lite')}
+                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.5-flash-lite' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
                     >
                       <div className="flex flex-col items-start">
-                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.1-flash-lite' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelLite}</span>
-                        <span className="text-[10px] text-slate-400 font-medium">Tiết kiệm & Ổn định</span>
+                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.5-flash-lite' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelLite}</span>
+                        <span className="text-[10px] text-slate-400 font-medium">Gemini 3.5 Flash Lite (Tiết kiệm & Mặc định)</span>
                       </div>
-                      {selectedModel === 'gemini-3.1-flash-lite' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
+                      {selectedModel === 'gemini-3.5-flash-lite' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
                     </button>
                   </div>
                 </div>
@@ -470,7 +470,7 @@ export default function App() {
   const [showChangelog, setShowChangelog] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
-  const [selectedModel, setSelectedModel] = useState<'gemini-3.5-flash' | 'gemini-3.1-flash-lite'>('gemini-3.1-flash-lite');
+  const [selectedModel, setSelectedModel] = useState<'gemini-3.6-flash' | 'gemini-3.5-flash-lite'>('gemini-3.5-flash-lite');
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('dictionary_history_v2');
     return saved ? JSON.parse(saved) : [];
@@ -534,7 +534,7 @@ export default function App() {
       try {
         const ai = new GoogleGenAI({ apiKey: key });
         await ai.models.generateContent({
-          model: 'gemini-3.1-flash-lite',
+          model: 'gemini-3.5-flash-lite',
           contents: 'Ping',
           config: { maxOutputTokens: 1 },
         });
@@ -711,11 +711,11 @@ export default function App() {
       console.error(err);
       const isQuotaError = err?.message?.includes('429') || err?.message?.toLowerCase().includes('quota');
       
-      if (isQuotaError && selectedModel === 'gemini-3.5-flash') {
+      if (isQuotaError && selectedModel === 'gemini-3.6-flash') {
         // Fallback to Lite model if Flash fails due to quota
         try {
           console.log("Flash quota exceeded, falling back to Lite...");
-          let text = await tryGenerate('gemini-3.1-flash-lite');
+          let text = await tryGenerate('gemini-3.5-flash-lite');
           if (text) {
             setResult(text);
             return;
