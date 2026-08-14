@@ -17,7 +17,7 @@ import { Header } from './components/Header';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.3.0",
+    title: "SOẠN TỪ ĐIỂN v4.4.2",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -41,6 +41,10 @@ const translations = {
     apiChecking: "Đang kiểm tra...",
     keywordLabel: "Từ khóa",
     keywordPlaceholder: "Ví dụ: benefit, information, aware...",
+    targetBoldWordsLabel: "Các từ in đậm cần xuất hiện",
+    targetBoldWordsPlaceholder: "Ví dụ: financial benefit, benefit from, mutual benefit...",
+    targetBoldWordsHint: "Nhập các từ/cụm từ (cách nhau bằng dấu phẩy) muốn xuất hiện in đậm trong câu ví dụ và làm đáp án.",
+    optionalTag: "Tùy chọn",
     levelLabel: "Cấp độ & Bộ lọc từ vựng",
     levelGrade6: "Lớp 6: Đầu bậc A2 (Ví dụ đơn giản)",
     levelGrade7: "Lớp 7: Giữa/cuối bậc A2 (Nâng cao hơn lớp 6)",
@@ -75,7 +79,7 @@ const translations = {
     dateLabel: "Ngày cập nhật",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.3.0",
+    title: "DICTIONARY ENTRY GENERATOR v4.4.2",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     homeBtn: "Back to NHAN NHAN APP Home",
     historyTitle: "Recent History",
@@ -99,6 +103,10 @@ const translations = {
     apiChecking: "Checking...",
     keywordLabel: "Keyword",
     keywordPlaceholder: "Example: benefit, information, aware...",
+    targetBoldWordsLabel: "Bold Target Words to Appear",
+    targetBoldWordsPlaceholder: "Example: financial benefit, benefit from, mutual benefit...",
+    targetBoldWordsHint: "Enter specific words/phrases (comma-separated) to be bolded in example sentences and used as answers.",
+    optionalTag: "Optional",
     levelLabel: "Grade Level & Vocabulary Filter",
     levelGrade6: "Grade 6: Early A2 Level (Simple Examples)",
     levelGrade7: "Grade 7: Mid/Late A2 Level (Advanced than Grade 6)",
@@ -140,7 +148,10 @@ Nhiệm vụ: Soạn bài tập dạng Dictionary Entry (câu 1–2) dựa trên
 
 YÊU CẦU VỀ NỘI DUNG:
 1. Dictionary Entry: Word, Phonetic, Part of speech, Definition (ngắn gọn), Synonym (nếu có).
-2. Examples: 5 câu ví dụ đơn giản, tự nhiên. Trong đó 4 câu đầu phải chứa cụm từ (2-3 từ) làm đáp án cho 4 câu hỏi bên dưới. TẤT CẢ 5 câu ví dụ đều phải in đậm cụm từ chứa từ khóa để đảm bảo tính thống nhất.
+2. Examples: 5 câu ví dụ đơn giản, tự nhiên. Trong đó 4 câu đầu phải chứa cụm từ (2-3 từ) làm đáp án cho 4 câu hỏi bên dưới. TẤT CẢ 5 câu ví dụ đều phải in đậm cụm từ chứa từ khóa để đảm bảo tính thống nhất. 
+   QUY TẮC BẮT BUỘC VỀ TỪ IN ĐẬM:
+   - Tất cả các phần được in đậm BẮT BUỘC phải là cụm từ có độ dài TỪ 2 ĐẾN 3 TỪ (ít nhất 2 từ, nhiều nhất 3 từ). TUYỆT ĐỐI KHÔNG ĐƯỢC IN ĐẬM 1 TỪ ĐƠN LẺ.
+   - Từ/cụm từ in đậm ở MỖI câu ví dụ PHẢI KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU (mỗi câu 1 cụm in đậm riêng biệt, không lặp lại).
 3. Questions: 2 câu chính (1, 2) và 2 câu dự phòng (3, 4). Câu hỏi phải có ngữ cảnh khác ví dụ nhưng đáp án phải giữ nguyên văn từ ví dụ.
 
 YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD KHÔNG LỖI):
@@ -158,11 +169,11 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 *definition*
 **SYNONYM**: ...
 
-• example 1 (có **cụm đáp án**)
-• example 2 (có **cụm đáp án**)
-• example 3 (có **cụm đáp án dự phòng**)
-• example 4 (có **cụm đáp án dự phòng**)
-• example 5 (cũng phải **in đậm từ khóa**)
+• example 1 (có **cụm đáp án 1**)
+• example 2 (có **cụm đáp án 2** - khác cụm 1)
+• example 3 (có **cụm đáp án dự phòng 3** - khác cụm 1 và 2)
+• example 4 (có **cụm đáp án dự phòng 4** - khác các cụm trên)
+• example 5 (có **cụm/từ in đậm 5** - khác các cụm trên)
 
 1. [câu hỏi 1 có chỗ trống _______ để điền từ]
 2. [câu hỏi 2 có chỗ trống _______ để điền từ]
@@ -179,7 +190,7 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 3. [đáp án của câu dự phòng 3]
 4. [đáp án của câu dự phòng 4]
 
-LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.`;
+LƯU Ý: Thay _____ bằng từ khóa. ĐẶC BIỆT LƯU Ý: Tất cả cụm từ in đậm BẮT BUỘC phải từ 2 đến 3 từ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ). Từ/cụm từ in đậm ở mỗi câu ví dụ PHẢI HOÀN TOÀN KHÁC NHAU, KHÔNG TRÙNG LẮP. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.`;
 
 // Helper hàm tạo prompt bổ sung theo Cấp độ & Bộ lọc từ vựng
 const getGradeLevelPrompt = (level: string) => {
@@ -212,6 +223,7 @@ interface HistoryItem {
   keyword: string;
   result: string;
   level?: string;
+  boldWords?: string;
 }
 
 function SettingsModal({ 
@@ -513,6 +525,9 @@ export default function App() {
   const [gradeLevel, setGradeLevel] = useState<string>(() => {
     return localStorage.getItem('dictionary_grade_level') || 'entrance10';
   });
+  const [targetBoldWords, setTargetBoldWords] = useState<string>(() => {
+    return localStorage.getItem('dictionary_bold_words') || '';
+  });
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('dictionary_history_v2');
     return saved ? JSON.parse(saved) : [];
@@ -521,6 +536,11 @@ export default function App() {
   const handleGradeLevelChange = (val: string) => {
     setGradeLevel(val);
     localStorage.setItem('dictionary_grade_level', val);
+  };
+
+  const handleTargetBoldWordsChange = (val: string) => {
+    setTargetBoldWords(val);
+    localStorage.setItem('dictionary_bold_words', val);
   };
 
   const sampleKeywords = [
@@ -732,7 +752,21 @@ export default function App() {
 
       const ai = new GoogleGenAI({ apiKey: activeKey });
       const levelPrompt = getGradeLevelPrompt(gradeLevel);
-      const fullPrompt = `${BASE_PROMPT}\n\n${levelPrompt}\n\nTừ khóa: ${keyword}`;
+
+      let boldWordsPrompt = '';
+      if (targetBoldWords && targetBoldWords.trim()) {
+        boldWordsPrompt = `\n\nYÊU CẦU BẮT BUỘC VỀ CÁC TỪ IN ĐẬM / CỤM ĐÁP ÁN:
+Người dùng ĐÃ CHỈ ĐỊNH CỤ THỂ các từ/cụm từ in đậm (sẽ là đáp án điền vào chỗ trống trong các câu ví dụ và câu hỏi) như sau:
+"${targetBoldWords.trim()}"
+
+QUY TẮC BẮT BUỘC:
+1. BẮT BUỘC phải sử dụng lần lượt đúng các từ/cụm từ trên làm các từ/cụm từ được IN ĐẬM (**từ_in_đậm**) trong 4-5 câu ví dụ (Examples). Mỗi câu ví dụ PHẢI DÙNG một từ/cụm từ in đậm KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU HOẶC LẶP LẠI TỪ IN ĐẬM CỦA CÂU KHÁC.
+2. Tất cả các cụm từ in đậm BẮT BUỘC phải gồm TỪ 2 ĐẾN 3 TỪ (độ dài ít nhất 2 từ, nhiều nhất 3 từ). TUYỆT ĐỐI KHÔNG ĐƯỢC IN ĐẬM 1 TỪ ĐƠN LẺ.
+3. Các từ/cụm từ in đậm độc lập này BẮT BUỘC phải được dùng làm đáp án chính xác tương ứng cho các câu hỏi 1, 2, 3, 4.
+4. Soạn ngữ cảnh xung quanh câu ví dụ và câu hỏi sao cho hoàn chỉnh, tự nhiên và phù hợp với từ khóa "${keyword}".`;
+      }
+
+      const fullPrompt = `${BASE_PROMPT}\n\n${levelPrompt}${boldWordsPrompt}\n\nTừ khóa: ${keyword}`;
 
       const response = await ai.models.generateContent({
         model: modelName,
@@ -746,10 +780,10 @@ export default function App() {
       
       if (text) {
         setResult(text);
-        // Update history with result and level
+        // Update history with result, level, and boldWords
         setHistory(prev => {
           const newHistory = [
-            { keyword, result: text, level: gradeLevel }, 
+            { keyword, result: text, level: gradeLevel, boldWords: targetBoldWords }, 
             ...prev.filter(item => item.keyword !== keyword)
           ].slice(0, 10);
           return newHistory;
@@ -804,6 +838,10 @@ export default function App() {
       setGradeLevel(item.level);
       localStorage.setItem('dictionary_grade_level', item.level);
     }
+    if (item.boldWords !== undefined) {
+      setTargetBoldWords(item.boldWords);
+      localStorage.setItem('dictionary_bold_words', item.boldWords);
+    }
   };
 
   return (
@@ -811,7 +849,7 @@ export default function App() {
       {/* Header */}
       <Header 
         title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.3.0"
+        version="v4.4.2"
         subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         showBack={!!result}
@@ -904,6 +942,45 @@ export default function App() {
                       </button>
                     </div>
                   </div>
+                </div>
+
+                {/* Target Bold Words Field */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="boldWords" className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                      {t.targetBoldWordsLabel}
+                    </label>
+                    <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
+                      {t.optionalTag}
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="boldWords"
+                      type="text"
+                      value={targetBoldWords}
+                      onChange={(e) => handleTargetBoldWordsChange(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
+                      placeholder={t.targetBoldWordsPlaceholder}
+                      className="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-xs font-semibold text-slate-700"
+                    />
+                    <AnimatePresence>
+                      {targetBoldWords && (
+                        <motion.button
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          onClick={() => handleTargetBoldWordsChange('')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-200 rounded-full text-slate-400 transition-colors"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </motion.button>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                    {t.targetBoldWordsHint}
+                  </p>
                 </div>
 
                 {/* Grade Level & Vocabulary Filter */}

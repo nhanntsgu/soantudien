@@ -9,6 +9,58 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.4.2",
+    date: "2026-08-14",
+    changes: {
+      vi: [
+        "Bổ sung quy tắc giới hạn độ dài cụm từ in đậm:",
+        "- Bắt buộc các phần được in đậm trong câu ví dụ (Examples) và làm đáp án phải có độ dài từ 2 đến 3 từ.",
+        "- Nghiêm cấm tuyệt đối việc in đậm 1 từ đơn lẻ (ví dụ: 'benefit' đơn lẻ) để đúng chuẩn cấu trúc câu 1-2 đề thi Tuyển sinh 10 (chỉ điền two or three words)."
+      ],
+      en: [
+        "Added length constraint for bold target phrases:",
+        "- Enforces that all bolded target phrases in examples and gap-fill answers MUST be 2 or 3 words long.",
+        "- Strictly forbids single bolded words to match the Grade 10 exam specification (complete sentences with two or three words)."
+      ]
+    }
+  },
+  {
+    version: "4.4.1",
+    date: "2026-08-14",
+    changes: {
+      vi: [
+        "Bổ sung quy tắc kiểm soát nghiêm ngặt cho Prompt:",
+        "- Bắt buộc các từ/cụm từ in đậm trong 5 câu ví dụ (Examples) PHẢI HOÀN TOÀN KHÁC NHAU, tuyệt đối không trùng lặp.",
+        "- Đảm bảo tính đa dạng từ vựng và tính chính xác cho từng đáp án câu hỏi điền từ."
+      ],
+      en: [
+        "Added strict Prompt control rule:",
+        "- Enforces that bold target words/phrases across all 5 example sentences MUST BE UNIQUE and non-duplicate.",
+        "- Guarantees vocabulary diversity and unambiguous gap-fill answers."
+      ]
+    }
+  },
+  {
+    version: "4.4.0",
+    date: "2026-08-14",
+    changes: {
+      vi: [
+        "Thêm tùy chọn 'Các từ in đậm cần xuất hiện':",
+        "- Cho phép thầy/cô tự nhập các từ/cụm từ cụ thể (ví dụ: financial benefit, benefit from...).",
+        "- AI sẽ bắt buộc đưa chính xác các cụm từ này vào câu ví dụ dưới dạng in đậm và sử dụng chúng làm đáp án điền vào chỗ trống.",
+        "- Giúp giới hạn chuẩn xác dạng từ/cụm từ cần kiểm tra trong bài tập.",
+        "- Tự động lưu và khôi phục khi mở lại trong Lịch sử gần đây."
+      ],
+      en: [
+        "Added 'Bold Target Words to Appear' option:",
+        "- Allows teachers to specify target words/phrases (e.g., financial benefit, benefit from...).",
+        "- AI forces these exact phrases to appear bolded in example sentences and used as gap-fill answers.",
+        "- Accurately restricts target collocations/word forms for testing.",
+        "- Auto-saves and restores in Recent History."
+      ]
+    }
+  },
+  {
     version: "4.3.0",
     date: "2026-08-14",
     changes: {
