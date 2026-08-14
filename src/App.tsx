@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft, GraduationCap, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
@@ -17,7 +17,7 @@ import { Header } from './components/Header';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.2.0",
+    title: "SOẠN TỪ ĐIỂN v4.3.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -41,6 +41,12 @@ const translations = {
     apiChecking: "Đang kiểm tra...",
     keywordLabel: "Từ khóa",
     keywordPlaceholder: "Ví dụ: benefit, information, aware...",
+    levelLabel: "Cấp độ & Bộ lọc từ vựng",
+    levelGrade6: "Lớp 6: Đầu bậc A2 (Ví dụ đơn giản)",
+    levelGrade7: "Lớp 7: Giữa/cuối bậc A2 (Nâng cao hơn lớp 6)",
+    levelGrade8: "Lớp 8: Cuối A2 / Đầu B1",
+    levelGrade9: "Lớp 9: Đầu B1 đến giữa B1",
+    levelEntrance10: "Tuyển sinh 10: Nâng cao B1 (B1+)",
     generateBtn: "Tạo",
     generatingBtn: "Đang xử lý...",
     errorEmpty: "Vui lòng nhập từ khóa!",
@@ -69,7 +75,7 @@ const translations = {
     dateLabel: "Ngày cập nhật",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.2.0",
+    title: "DICTIONARY ENTRY GENERATOR v4.3.0",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     homeBtn: "Back to NHAN NHAN APP Home",
     historyTitle: "Recent History",
@@ -93,6 +99,12 @@ const translations = {
     apiChecking: "Checking...",
     keywordLabel: "Keyword",
     keywordPlaceholder: "Example: benefit, information, aware...",
+    levelLabel: "Grade Level & Vocabulary Filter",
+    levelGrade6: "Grade 6: Early A2 Level (Simple Examples)",
+    levelGrade7: "Grade 7: Mid/Late A2 Level (Advanced than Grade 6)",
+    levelGrade8: "Grade 8: Late A2 / Early B1 Level",
+    levelGrade9: "Grade 9: Early B1 to Mid B1 Level",
+    levelEntrance10: "Grade 10 Entrance Exam: Advanced B1 (B1+)",
     generateBtn: "Generate",
     generatingBtn: "Processing...",
     errorEmpty: "Please enter a keyword!",
@@ -167,12 +179,39 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 3. [đáp án của câu dự phòng 3]
 4. [đáp án của câu dự phòng 4]
 
-LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.
-Từ khóa: `;
+LƯU Ý: Thay _____ bằng từ khóa. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.`;
+
+// Helper hàm tạo prompt bổ sung theo Cấp độ & Bộ lọc từ vựng
+const getGradeLevelPrompt = (level: string) => {
+  switch (level) {
+    case 'grade6':
+      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
+- Trình độ target: Lớp 6 (Đầu bậc A2 CEFR).
+- Từ vựng & Cấu trúc: Các câu ví dụ (example), định nghĩa và ngữ cảnh câu hỏi BẮT BUỘC ở dạng đơn giản, ngắn gọn, cấu trúc ngữ pháp cơ bản, cực kỳ dễ hiểu phù hợp với học sinh Lớp 6 đầu cấp THCS.`;
+    case 'grade7':
+      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
+- Trình độ target: Lớp 7 (Giữa/cuối bậc A2 CEFR).
+- Từ vựng & Cấu trúc: Các câu ví dụ và ngữ cảnh câu hỏi nâng cao hơn hẳn so với lớp 6, câu dài hơn một chút nhưng nằm hoàn toàn trong phạm vi chuẩn mực bậc A2.`;
+    case 'grade8':
+      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
+- Trình độ target: Lớp 8 (Cuối bậc A2 đến Đầu bậc B1 CEFR).
+- Từ vựng & Cấu trúc: Ngữ cảnh đa dạng, kết hợp hài hòa từ vựng A2 nâng cao và từ vựng/ngữ pháp mới tiếp cận bậc B1.`;
+    case 'grade9':
+      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
+- Trình độ target: Lớp 9 (Đầu B1 đến giữa bậc B1 CEFR).
+- Từ vựng & Cấu trúc: Sử dụng ngữ pháp phong phú, từ vựng chuẩn chương trình Lớp 9 THCS, ngữ cảnh bài tập thực tế.`;
+    case 'entrance10':
+    default:
+      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
+- Trình độ target: Ôn thi Tuyển sinh Lớp 10 (Nâng cao B1+ CEFR).
+- Từ vựng & Cấu trúc: Ngữ cảnh câu mang tính phân hóa cao, từ vựng chuẩn cấu trúc đề thi Tuyển sinh 10 TP.HCM, cấu trúc câu tự nhiên, chặt chẽ.`;
+  }
+};
 
 interface HistoryItem {
   keyword: string;
   result: string;
+  level?: string;
 }
 
 function SettingsModal({ 
@@ -471,10 +510,18 @@ export default function App() {
   const [copySuccess, setCopySuccess] = useState(false);
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [selectedModel, setSelectedModel] = useState<'gemini-3.6-flash' | 'gemini-3.5-flash-lite'>('gemini-3.5-flash-lite');
+  const [gradeLevel, setGradeLevel] = useState<string>(() => {
+    return localStorage.getItem('dictionary_grade_level') || 'entrance10';
+  });
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('dictionary_history_v2');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const handleGradeLevelChange = (val: string) => {
+    setGradeLevel(val);
+    localStorage.setItem('dictionary_grade_level', val);
+  };
 
   const sampleKeywords = [
     'benefit', 'information', 'aware', 'environment', 'technology', 
@@ -684,9 +731,12 @@ export default function App() {
       }
 
       const ai = new GoogleGenAI({ apiKey: activeKey });
+      const levelPrompt = getGradeLevelPrompt(gradeLevel);
+      const fullPrompt = `${BASE_PROMPT}\n\n${levelPrompt}\n\nTừ khóa: ${keyword}`;
+
       const response = await ai.models.generateContent({
         model: modelName,
-        contents: `${BASE_PROMPT} ${keyword}`,
+        contents: fullPrompt,
       });
       return response.text;
     };
@@ -696,10 +746,10 @@ export default function App() {
       
       if (text) {
         setResult(text);
-        // Update history with result
+        // Update history with result and level
         setHistory(prev => {
           const newHistory = [
-            { keyword, result: text }, 
+            { keyword, result: text, level: gradeLevel }, 
             ...prev.filter(item => item.keyword !== keyword)
           ].slice(0, 10);
           return newHistory;
@@ -750,6 +800,10 @@ export default function App() {
   const loadHistoryItem = (item: HistoryItem) => {
     setKeyword(item.keyword);
     setResult(item.result);
+    if (item.level) {
+      setGradeLevel(item.level);
+      localStorage.setItem('dictionary_grade_level', item.level);
+    }
   };
 
   return (
@@ -757,7 +811,7 @@ export default function App() {
       {/* Header */}
       <Header 
         title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.2.0"
+        version="v4.3.0"
         subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         showBack={!!result}
@@ -852,6 +906,38 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Grade Level & Vocabulary Filter */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="gradeLevel" className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                      {t.levelLabel}
+                    </label>
+                    <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                      {gradeLevel === 'grade6' && 'Đầu A2'}
+                      {gradeLevel === 'grade7' && 'A2'}
+                      {gradeLevel === 'grade8' && 'A2 / B1'}
+                      {gradeLevel === 'grade9' && 'B1'}
+                      {gradeLevel === 'entrance10' && 'B1+'}
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <select
+                      id="gradeLevel"
+                      value={gradeLevel}
+                      onChange={(e) => handleGradeLevelChange(e.target.value)}
+                      className="w-full pl-9 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-xs font-semibold text-slate-700 appearance-none cursor-pointer"
+                    >
+                      <option value="grade6">{t.levelGrade6}</option>
+                      <option value="grade7">{t.levelGrade7}</option>
+                      <option value="grade8">{t.levelGrade8}</option>
+                      <option value="grade9">{t.levelGrade9}</option>
+                      <option value="entrance10">{t.levelEntrance10}</option>
+                    </select>
+                    <GraduationCap className="w-4 h-4 text-blue-800 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
                 <button
                   onClick={generateExercise}
                   disabled={isLoading}
@@ -936,7 +1022,17 @@ export default function App() {
                       onClick={() => loadHistoryItem(item)}
                       className="group flex items-center justify-between gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-all shadow-sm"
                     >
-                      <span className="text-xs text-slate-600 group-hover:text-blue-800 font-medium truncate">{item.keyword}</span>
+                      <div className="flex items-center gap-2 truncate flex-1">
+                        <span className="text-xs text-slate-600 group-hover:text-blue-800 font-medium truncate">{item.keyword}</span>
+                        {item.level && (
+                          <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded-md flex-shrink-0">
+                            {item.level === 'grade6' ? 'Lớp 6' :
+                             item.level === 'grade7' ? 'Lớp 7' :
+                             item.level === 'grade8' ? 'Lớp 8' :
+                             item.level === 'grade9' ? 'Lớp 9' : 'TS 10'}
+                          </span>
+                        )}
+                      </div>
                       <button
                         onClick={(e) => deleteHistoryItem(e, item)}
                         className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover:opacity-100"

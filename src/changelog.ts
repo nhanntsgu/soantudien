@@ -9,6 +9,30 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.3.0",
+    date: "2026-08-14",
+    changes: {
+      vi: [
+        "Thêm mục Cấp độ & Bộ lọc từ vựng linh hoạt theo trình độ THCS:",
+        "- Lớp 6: Đầu bậc A2 (câu ví dụ dạng đơn giản, dễ hiểu).",
+        "- Lớp 7: Giữa/cuối bậc A2 (nâng cao hơn so với Lớp 6).",
+        "- Lớp 8: Cuối A2 / Đầu B1 (phong phú ngữ cảnh).",
+        "- Lớp 9: Đầu B1 đến giữa B1 (ngữ pháp đa dạng, ngữ cảnh thực tế).",
+        "- Tuyển sinh 10: Nâng cao B1 (B1+) chuẩn đề thi Tuyển sinh 10 TP.HCM.",
+        "Lưu lại cấp độ đã chọn trong Lịch sử soạn thảo."
+      ],
+      en: [
+        "Added Grade Level & Vocabulary Filter based on Secondary School CEFR targets:",
+        "- Grade 6: Early A2 Level (Simple example sentences).",
+        "- Grade 7: Mid/Late A2 Level (Advanced than Grade 6).",
+        "- Grade 8: Late A2 / Early B1 Level.",
+        "- Grade 9: Early B1 to Mid B1 Level.",
+        "- Grade 10 Entrance Exam: Advanced B1 (B1+).",
+        "Saves selected grade level in drafting history."
+      ]
+    }
+  },
+  {
     version: "4.2.0",
     date: "2026-05-22",
     changes: {
