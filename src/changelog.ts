@@ -13,6 +13,9 @@ export const changelog: ChangelogEntry[] = [
     date: "2026-08-19",
     changes: {
       vi: [
+        "Chuẩn hóa 5 câu ví dụ (Examples) & Cụm in đậm chứa từ khóa:",
+        "- Bắt buộc cả 5 câu ví dụ đều phải chứa từ khóa đã chỉ định.",
+        "- Toàn bộ các cụm in đậm (2-3 từ) trong 5 câu ví dụ bắt buộc phải là collocations/phrases chứa từ khóa, loại bỏ hoàn toàn tình trạng in đậm cụm từ ngẫu nhiên không liên quan.",
         "Hộp thoại Loading & Thông báo hoàn tất thông minh:",
         "- Khi bấm nút 'Tạo', tự động hiển thị hộp thoại loading với hiệu ứng AI đang xử lý và các bước cập nhật trạng thái trực quan.",
         "- Khi tạo xong, hiển thị trạng thái 'Đã tạo xong' kèm biểu tượng dấu check xanh lá nổi bật trước khi chuyển tiếp sang nội dung bài tập.",
@@ -23,6 +26,9 @@ export const changelog: ChangelogEntry[] = [
         "- Giúp khung nhập liệu chính gọn gàng, thoáng đãng và tập trung tối đa vào việc soạn đề."
       ],
       en: [
+        "Enforced 5 Examples & Keyword Collocation Bold Constraint:",
+        "- Guarantees that ALL 5 example sentences MUST contain the specified keyword.",
+        "- Enforces that all bolded phrases (2-3 words) across all 5 examples MUST be collocations/phrases directly containing the keyword, preventing irrelevant random bold phrases.",
         "Smart Loading Dialog & Success Celebration:",
         "- Clicking 'Generate' automatically displays an interactive loading modal with AI animation and live status steps.",
         "- Once complete, displays 'Generated Successfully' with a prominent green checkmark before revealing the exercise.",
