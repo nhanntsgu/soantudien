@@ -14,6 +14,7 @@ interface HeaderProps {
   showBack?: boolean;
   showSettings?: boolean;
   hasHistoryData?: boolean;
+  historyCount?: number;
   apiKeyStatus: 'valid' | 'invalid' | 'checking' | 'empty';
 }
 
@@ -29,6 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
   showBack = false,
   showSettings = true,
   hasHistoryData = false,
+  historyCount = 0,
   apiKeyStatus = 'empty',
 }) => {
   return (
@@ -83,33 +85,37 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Section: Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* History Button */}
           <motion.button
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={onHistory}
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all"
+            className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all text-white border border-white/10"
+            title="Lịch sử gần đây (Recent History)"
             aria-label="History"
           >
             <History className="h-5 w-5" />
             {hasHistoryData && (
-              <span className="absolute right-2.5 top-2.5 flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-pulse rounded-full bg-red-500 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-red-600"></span>
+              <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-amber-500 text-[10px] font-extrabold text-blue-950 shadow-md border-2 border-blue-800">
+                {historyCount > 0 ? (historyCount > 9 ? '9+' : historyCount) : ''}
               </span>
             )}
           </motion.button>
 
+          {/* App Info Button */}
           <motion.button
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={onInfo}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all text-white border border-white/10"
+            title="Thông tin ứng dụng & Nhật ký thay đổi"
             aria-label="Information"
           >
             <Info className="h-5 w-5" />
           </motion.button>
 
+          {/* Settings Button */}
           {showSettings && (
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -122,20 +128,21 @@ export const Header: React.FC<HeaderProps> = ({
                   ? 'bg-amber-500 hover:bg-amber-400 text-white font-bold shadow-md'
                   : 'bg-red-600 hover:bg-red-500 text-white font-bold shadow-md'
               }`}
+              title="Cấu hình API Key"
               aria-label="Config API Key"
             >
               <Key className="h-4.5 w-4.5 flex-shrink-0" />
               <span className="text-xs font-bold hidden md:inline">
-                {apiKeyStatus === 'valid' && 'API Key: Đang hoạt động'}
-                {apiKeyStatus === 'checking' && 'API Key: Đang kiểm tra...'}
-                {apiKeyStatus === 'invalid' && 'API Key: Lỗi kết nối'}
-                {apiKeyStatus === 'empty' && 'API Key: Chưa nhập key'}
+                {apiKeyStatus === 'valid' && 'API: Hoạt động'}
+                {apiKeyStatus === 'checking' && 'API: Kiểm tra...'}
+                {apiKeyStatus === 'invalid' && 'API: Lỗi key'}
+                {apiKeyStatus === 'empty' && 'API: Chưa có key'}
               </span>
               <span className="text-xs font-bold md:hidden">
-                {apiKeyStatus === 'valid' && 'API: OK'}
-                {apiKeyStatus === 'checking' && 'API: ...'}
-                {apiKeyStatus === 'invalid' && 'API: Lỗi'}
-                {apiKeyStatus === 'empty' && 'API: Trống'}
+                {apiKeyStatus === 'valid' && 'API'}
+                {apiKeyStatus === 'checking' && '...'}
+                {apiKeyStatus === 'invalid' && 'Lỗi'}
+                {apiKeyStatus === 'empty' && 'Key'}
               </span>
               {apiKeyStatus === 'valid' && <CheckCircle2 className="h-3.5 w-3.5" />}
               {(apiKeyStatus === 'invalid' || apiKeyStatus === 'empty') && <AlertCircle className="h-3.5 w-3.5" />}

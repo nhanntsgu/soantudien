@@ -9,6 +9,32 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.5.0",
+    date: "2026-08-19",
+    changes: {
+      vi: [
+        "Hộp thoại Loading & Thông báo hoàn tất thông minh:",
+        "- Khi bấm nút 'Tạo', tự động hiển thị hộp thoại loading với hiệu ứng AI đang xử lý và các bước cập nhật trạng thái trực quan.",
+        "- Khi tạo xong, hiển thị trạng thái 'Đã tạo xong' kèm biểu tượng dấu check xanh lá nổi bật trước khi chuyển tiếp sang nội dung bài tập.",
+        "Tối ưu hóa giao diện thanh Header & Không gian làm việc:",
+        "- Chuyển 'Thông tin ứng dụng' và 'Lịch sử gần đây' lên thành 2 biểu tượng độc lập, trực quan ở góc phải thanh Header.",
+        "- Tích hợp hộp thoại 'Lịch sử gần đây' chuyên nghiệp: hiển thị danh sách bài đã soạn, huy hiệu cấp độ, từ in đậm, xem lại bài cũ, xóa từng bài hoặc xóa tất cả.",
+        "- Tích hợp hộp thoại 'Thông tin ứng dụng & Nhật ký thay đổi' dạng tab tiện lợi, hiển thị đầy đủ thông tin tác giả, liên hệ và các phiên bản cập nhật.",
+        "- Giúp khung nhập liệu chính gọn gàng, thoáng đãng và tập trung tối đa vào việc soạn đề."
+      ],
+      en: [
+        "Smart Loading Dialog & Success Celebration:",
+        "- Clicking 'Generate' automatically displays an interactive loading modal with AI animation and live status steps.",
+        "- Once complete, displays 'Generated Successfully' with a prominent green checkmark before revealing the exercise.",
+        "Header UI Optimization & Workspace Cleanup:",
+        "- Moved 'App Information' and 'Recent History' to dedicated interactive icon buttons on the top right of the Header.",
+        "- Integrated a comprehensive 'Recent History' modal: displays generated exercises, grade badges, target words, quick load, and deletion management.",
+        "- Integrated 'App Info & Changelog' tabbed dialog with full teacher details, contact info, and release history.",
+        "- Provides a cleaner, more spacious workspace focusing purely on exercise generation."
+      ]
+    }
+  },
+  {
     version: "4.4.2",
     date: "2026-08-14",
     changes: {

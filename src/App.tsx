@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft, GraduationCap, ChevronDown } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft, GraduationCap, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
@@ -17,7 +17,7 @@ import { Header } from './components/Header';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.4.2",
+    title: "SOẠN TỪ ĐIỂN v4.5.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -79,7 +79,7 @@ const translations = {
     dateLabel: "Ngày cập nhật",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.4.2",
+    title: "DICTIONARY ENTRY GENERATOR v4.5.0",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     homeBtn: "Back to NHAN NHAN APP Home",
     historyTitle: "Recent History",
@@ -413,17 +413,29 @@ function SettingsModal({
   );
 }
 
-function ChangelogModal({ 
+function HistoryModal({ 
   show, 
   onClose, 
-  t, 
-  lang 
+  history, 
+  onSelect, 
+  onDelete, 
+  onClear, 
+  t 
 }: { 
   show: boolean; 
   onClose: () => void; 
+  history: HistoryItem[]; 
+  onSelect: (item: HistoryItem) => void; 
+  onDelete: (e: React.MouseEvent, item: HistoryItem) => void; 
+  onClear: () => void; 
   t: any; 
-  lang: 'vi' | 'en';
 }) {
+  const [search, setSearch] = useState('');
+  const filteredHistory = history.filter(item => 
+    item.keyword.toLowerCase().includes(search.toLowerCase()) ||
+    (item.boldWords && item.boldWords.toLowerCase().includes(search.toLowerCase()))
+  );
+
   return (
     <AnimatePresence>
       {show && (
@@ -439,50 +451,123 @@ function ChangelogModal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
+            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]"
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                    <Info className="w-5 h-5 text-blue-800" />
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-800">{t.changelogTitle}</h2>
+            {/* Header */}
+            <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-800">
+                  <History className="w-5 h-5" />
                 </div>
-                <button 
-                  onClick={onClose}
-                  className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-slate-800">{t.historyTitle}</h2>
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full">
+                      {history.length} bài
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400">Xem và mở lại các bài tập đã tạo</p>
+                </div>
+              </div>
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Search & Actions Bar */}
+            {history.length > 0 && (
+              <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-3">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm từ khóa..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-800"
+                />
+                <button
+                  onClick={onClear}
+                  className="text-xs font-bold text-red-500 hover:text-red-700 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 flex-shrink-0"
                 >
-                  <X className="w-5 h-5" />
+                  <Trash2 className="w-3.5 h-3.5" />
+                  {t.clearHistory}
                 </button>
               </div>
+            )}
 
-              <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {changelog.map((entry, idx) => (
-                  <div key={entry.version} className={`pb-6 ${idx !== changelog.length - 1 ? 'border-b border-slate-100' : ''}`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="px-3 py-1 bg-blue-800 text-white text-[10px] font-bold rounded-full">
-                        {t.versionLabel} {entry.version}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        {t.dateLabel}: {entry.date}
-                      </span>
-                    </div>
-                    <ul className="space-y-2">
-                      {entry.changes[lang].map((change, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
-                          {change}
-                        </li>
-                      ))}
-                    </ul>
+            {/* List */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-2.5 custom-scrollbar">
+              {history.length === 0 ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-3">
+                    <History className="w-8 h-8 text-blue-300" />
                   </div>
-                ))}
-              </div>
+                  <p className="text-sm font-bold text-slate-700">Chưa có lịch sử soạn bài</p>
+                  <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">
+                    Khi bạn nhập từ khóa và bấm "Tạo", bài tập sẽ tự động được lưu tại đây.
+                  </p>
+                </div>
+              ) : filteredHistory.length === 0 ? (
+                <div className="py-8 text-center text-slate-400 text-xs">
+                  Không tìm thấy bài tập nào phù hợp với "{search}".
+                </div>
+              ) : (
+                filteredHistory.map((item, idx) => (
+                  <div
+                    key={item.keyword + idx}
+                    onClick={() => {
+                      onSelect(item);
+                      onClose();
+                    }}
+                    className="group p-3.5 bg-slate-50 hover:bg-blue-50/70 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer flex items-center justify-between gap-3 shadow-sm hover:shadow"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-bold text-sm text-slate-800 group-hover:text-blue-900 truncate">
+                          {item.keyword}
+                        </span>
+                        {item.level && (
+                          <span className="text-[10px] font-bold text-blue-800 bg-blue-100/70 px-2 py-0.5 rounded-md border border-blue-200 flex-shrink-0">
+                            {item.level === 'grade6' ? 'Lớp 6' :
+                             item.level === 'grade7' ? 'Lớp 7' :
+                             item.level === 'grade8' ? 'Lớp 8' :
+                             item.level === 'grade9' ? 'Lớp 9' : 'Tuyển sinh 10'}
+                          </span>
+                        )}
+                      </div>
+                      {item.boldWords && (
+                        <p className="text-[11px] text-slate-500 truncate">
+                          <span className="font-semibold text-slate-600">In đậm:</span> {item.boldWords}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <span className="text-[11px] font-bold text-blue-800 bg-white border border-blue-200 px-2.5 py-1 rounded-lg shadow-2xs group-hover:bg-blue-800 group-hover:text-white transition-colors">
+                        Mở bài
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(e, item);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Xóa bài này"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
 
+            {/* Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
               <button
                 onClick={onClose}
-                className="w-full mt-6 bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] text-sm"
+                className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition-colors"
               >
                 Đóng
               </button>
@@ -494,10 +579,327 @@ function ChangelogModal({
   );
 }
 
+function AppInfoModal({ 
+  show, 
+  onClose, 
+  t, 
+  lang 
+}: { 
+  show: boolean; 
+  onClose: () => void; 
+  t: any; 
+  lang: 'vi' | 'en';
+}) {
+  const [activeTab, setActiveTab] = useState<'info' | 'changelog'>('info');
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]"
+          >
+            {/* Header */}
+            <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-900/20">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-800">
+                    {lang === 'vi' ? 'Thông tin ứng dụng' : 'Application Information'}
+                  </h2>
+                  <p className="text-xs text-slate-400">SOẠN TỪ ĐIỂN v4.5.0 - by Thầy Nhân Nhân</p>
+                </div>
+              </div>
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex border-b border-slate-100 bg-slate-50/70 px-6 pt-2">
+              <button
+                onClick={() => setActiveTab('info')}
+                className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 flex items-center gap-2 ${
+                  activeTab === 'info'
+                    ? 'border-blue-800 text-blue-800'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Info className="w-3.5 h-3.5" />
+                {lang === 'vi' ? 'Giới thiệu & Tác giả' : 'About & Author'}
+              </button>
+              <button
+                onClick={() => setActiveTab('changelog')}
+                className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 flex items-center gap-2 ${
+                  activeTab === 'changelog'
+                    ? 'border-blue-800 text-blue-800'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {lang === 'vi' ? 'Nhật ký thay đổi (Changelog)' : 'Release Notes'}
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
+              {activeTab === 'info' ? (
+                <div className="space-y-4 text-slate-700 text-xs">
+                  {/* Author Card */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50/40 border border-blue-100 rounded-2xl p-4 flex items-center gap-4">
+                    <img
+                      src="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
+                      alt="Logo"
+                      className="w-14 h-14 rounded-xl object-cover border-2 border-white shadow-sm flex-shrink-0"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 block">Tác giả biên soạn</span>
+                      <h4 className="text-base font-black text-slate-900 leading-tight">Thầy Nhân Nhân</h4>
+                      <p className="text-[11px] text-slate-600 font-medium mt-0.5">
+                        Giáo viên Tiếng Anh - Trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM
+                      </p>
+                      <a
+                        href="mailto:nhanntsgu@gmail.com"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-800 hover:underline mt-1"
+                      >
+                        nhanntsgu@gmail.com
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-2">
+                    <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Mục đích ứng dụng</h5>
+                    <p className="text-slate-600 leading-relaxed">
+                      {t.appDescription.split('nhanntsgu@gmail.com').map((part: string, i: number, arr: any[]) => (
+                        <React.Fragment key={i}>
+                          {part}
+                          {i < arr.length - 1 && (
+                            <a href="mailto:nhanntsgu@gmail.com" className="text-blue-800 font-semibold hover:underline">
+                              nhanntsgu@gmail.com
+                            </a>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </div>
+
+                  {/* Key Highlights */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-800 block mb-1">🎯 5 Cấp độ chuẩn năng lực</span>
+                      <p className="text-[11px] text-slate-500 leading-normal">
+                        Lớp 6 (Đầu A2), Lớp 7 (A2), Lớp 8 (A2/B1), Lớp 9 (B1) và Tuyển sinh 10 (B1+).
+                      </p>
+                    </div>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-800 block mb-1">📝 Cụm từ in đậm 2-3 từ</span>
+                      <p className="text-[11px] text-slate-500 leading-normal">
+                        Chuẩn hóa câu 1-2 đề TS10: bắt buộc cụm từ in đậm phải từ 2 đến 3 từ, không in đậm 1 từ đơn.
+                      </p>
+                    </div>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-800 block mb-1">📄 Xuất file Word (.docx)</span>
+                      <p className="text-[11px] text-slate-500 leading-normal">
+                        Xuất file Word chuẩn định dạng, canh lề bài bản, sẵn sàng in hoặc chèn vào đề kiểm tra.
+                      </p>
+                    </div>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-800 block mb-1">⚡ Lưu lịch sử tự động</span>
+                      <p className="text-[11px] text-slate-500 leading-normal">
+                        Toàn bộ từ khóa và bài tập đã tạo được lưu cục bộ an toàn, truy cập lại nhanh ở góc phải thanh Header.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {changelog.map((entry, idx) => (
+                    <div key={entry.version} className={`pb-6 ${idx !== changelog.length - 1 ? 'border-b border-slate-100' : ''}`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="px-3 py-1 bg-blue-800 text-white text-[10px] font-bold rounded-full">
+                          {t.versionLabel} {entry.version}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">
+                          {t.dateLabel}: {entry.date}
+                        </span>
+                      </div>
+                      <ul className="space-y-2">
+                        {entry.changes[lang].map((change, i) => (
+                          <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                            {change}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={onClose}
+                className="px-5 py-2 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs transition-colors shadow-sm"
+              >
+                Đóng
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function GeneratingModal({
+  show,
+  status,
+  keyword,
+  loadingMsg,
+  lang,
+}: {
+  show: boolean;
+  status: 'loading' | 'success';
+  keyword: string;
+  loadingMsg: string;
+  lang: 'vi' | 'en';
+}) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 15 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-7 border border-slate-100 flex flex-col items-center text-center overflow-hidden"
+          >
+            {status === 'loading' ? (
+              <div className="flex flex-col items-center w-full">
+                {/* AI Animation Ring */}
+                <div className="relative w-20 h-20 mb-5 flex items-center justify-center">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
+                    className="absolute inset-0 rounded-full border-4 border-blue-100 border-t-blue-800 border-r-blue-600"
+                  />
+                  <motion.div
+                    animate={{ scale: [1, 1.12, 1] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-800 flex items-center justify-center shadow-inner"
+                  >
+                    <Sparkles className="w-6 h-6 text-blue-800" />
+                  </motion.div>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-bold text-slate-800 mb-1">
+                  {lang === 'vi' ? 'Đang soạn bài tập...' : 'Generating Exercise...'}
+                </h3>
+                <div className="px-3 py-1 bg-slate-100 rounded-full text-slate-600 text-xs font-semibold mb-3 truncate max-w-full">
+                  {lang === 'vi' ? 'Từ khóa:' : 'Keyword:'} <span className="text-blue-800 font-bold">"{keyword}"</span>
+                </div>
+
+                {/* Step Message */}
+                <div className="min-h-[42px] flex items-center justify-center px-2">
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={loadingMsg}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      className="text-xs font-medium text-slate-500 leading-relaxed"
+                    >
+                      {loadingMsg}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+
+                {/* Progress bar */}
+                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-4">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-blue-700 to-indigo-600 rounded-full"
+                    animate={{ x: ["-100%", "100%"] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center w-full py-2"
+              >
+                {/* Green Checkmark Icon */}
+                <motion.div
+                  initial={{ scale: 0, rotate: -45 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 18 }}
+                  className="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 border-4 border-emerald-100 shadow-lg shadow-emerald-500/20"
+                >
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+                </motion.div>
+
+                {/* Success Title */}
+                <motion.h3
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-xl font-black text-emerald-700 tracking-tight mb-1"
+                >
+                  {lang === 'vi' ? 'Đã tạo xong!' : 'Generated Successfully!'}
+                </motion.h3>
+
+                {/* Subtitle */}
+                <motion.p
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                  className="text-xs font-medium text-slate-500 mt-1"
+                >
+                  {lang === 'vi' ? 'Bài tập đã sẵn sàng sử dụng!' : 'Exercise is ready to use!'}
+                </motion.p>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function App() {
   const [keyword, setKeyword] = useState('');
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showGeneratingModal, setShowGeneratingModal] = useState(false);
+  const [generatingStatus, setGeneratingStatus] = useState<'loading' | 'success'>('loading');
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
 
   const [error, setError] = useState('');
@@ -518,7 +920,8 @@ export default function App() {
       : !!localStorage.getItem('gemini_api_key');
     return !hasKey;
   });
-  const [showChangelog, setShowChangelog] = useState(false);
+  const [showAppInfoModal, setShowAppInfoModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [selectedModel, setSelectedModel] = useState<'gemini-3.6-flash' | 'gemini-3.5-flash-lite'>('gemini-3.5-flash-lite');
@@ -738,6 +1141,8 @@ export default function App() {
     }
 
     setIsLoading(true);
+    setShowGeneratingModal(true);
+    setGeneratingStatus('loading');
     setError('');
     setResult('');
 
@@ -780,6 +1185,7 @@ QUY TẮC BẮT BUỘC:
       
       if (text) {
         setResult(text);
+        setGeneratingStatus('success');
         // Update history with result, level, and boldWords
         setHistory(prev => {
           const newHistory = [
@@ -788,7 +1194,15 @@ QUY TẮC BẮT BUỘC:
           ].slice(0, 10);
           return newHistory;
         });
+
+        // Show "Đã tạo xong" with green checkmark for ~1.3s before smoothly closing
+        setTimeout(() => {
+          setShowGeneratingModal(false);
+          setIsLoading(false);
+        }, 1300);
       } else {
+        setShowGeneratingModal(false);
+        setIsLoading(false);
         setError(t.errorFailed);
       }
     } catch (err: any) {
@@ -802,6 +1216,18 @@ QUY TẮC BẮT BUỘC:
           let text = await tryGenerate('gemini-3.5-flash-lite');
           if (text) {
             setResult(text);
+            setGeneratingStatus('success');
+            setHistory(prev => {
+              const newHistory = [
+                { keyword, result: text, level: gradeLevel, boldWords: targetBoldWords }, 
+                ...prev.filter(item => item.keyword !== keyword)
+              ].slice(0, 10);
+              return newHistory;
+            });
+            setTimeout(() => {
+              setShowGeneratingModal(false);
+              setIsLoading(false);
+            }, 1300);
             return;
           }
         } catch (fallbackErr) {
@@ -809,14 +1235,15 @@ QUY TẮC BẮT BUỘC:
         }
       }
 
+      setShowGeneratingModal(false);
+      setIsLoading(false);
+
       if (isQuotaError) {
         setError(lang === 'vi' ? "Hạn mức API đã hết (Rate Limit). Vui lòng nhập API Key khác." : "API Rate Limit exceeded. Please enter a different API Key.");
         setShowSettings(true);
       } else {
         setError(t.errorConnect);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -849,21 +1276,16 @@ QUY TẮC BẮT BUỘC:
       {/* Header */}
       <Header 
         title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.4.2"
+        version="v4.5.0"
         subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         showBack={!!result}
         onBack={() => setResult('')}
-        onHistory={() => {
-          // Scroll to history or open a history modal if needed
-          // For now, we can just ensure the left column is visible
-          if (window.innerWidth < 1024) {
-            document.getElementById('history-section')?.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}
-        onInfo={() => setShowChangelog(true)}
+        onHistory={() => setShowHistoryModal(true)}
+        onInfo={() => setShowAppInfoModal(true)}
         onSettings={() => setShowSettings(!showSettings)}
         showSettings={true}
+        historyCount={history.length}
         hasHistoryData={history.length > 0}
         apiKeyStatus={apiKeyStatus}
       />
@@ -871,33 +1293,7 @@ QUY TẮC BẮT BUỘC:
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 lg:overflow-hidden">
         <div className="flex flex-col lg:flex-row gap-4 lg:h-full">
           {/* Left Column: Controls */}
-          <div className="w-full lg:w-[340px] flex flex-col gap-4 lg:overflow-y-auto pr-1 pb-4 lg:pb-0">
-            {/* App Description */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white border border-black/5 rounded-2xl p-5 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-blue-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/20">
-                  <BookOpen className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="font-sans text-[15px] font-bold text-slate-800 uppercase tracking-wider">Thông tin ứng dụng</h3>
-              </div>
-              <p className="text-slate-600 leading-relaxed text-[12px] font-bold italic">
-                {t.appDescription.split('nhanntsgu@gmail.com').map((part, i, arr) => (
-                  <React.Fragment key={i}>
-                    {part}
-                    {i < arr.length - 1 && (
-                      <a href="mailto:nhanntsgu@gmail.com" className="text-blue-800 font-semibold hover:underline">
-                        nhanntsgu@gmail.com
-                      </a>
-                    )}
-                  </React.Fragment>
-                ))}
-              </p>
-            </motion.div>
-
+          <div className="w-full lg:w-[380px] flex flex-col gap-4 lg:overflow-y-auto pr-1 pb-4 lg:pb-0">
             {/* Input Section */}
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -1018,7 +1414,7 @@ QUY TẮC BẮT BUỘC:
                 <button
                   onClick={generateExercise}
                   disabled={isLoading}
-                  className="w-full bg-blue-800 hover:bg-blue-900 disabled:bg-slate-400 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] text-sm"
+                  className="w-full bg-blue-800 hover:bg-blue-900 disabled:bg-slate-400 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] text-sm cursor-pointer"
                 >
                   {isLoading ? (
                     <>
@@ -1068,59 +1464,6 @@ QUY TẮC BẮT BUỘC:
                 )}
               </div>
             </motion.div>
-
-            {/* History Section */}
-            {history.length > 0 && (
-              <motion.div
-                id="history-section"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex-1 min-h-0 flex flex-col"
-              >
-                <div className="flex items-center justify-between mb-2 px-2">
-                  <div className="flex items-center gap-2 text-slate-500">
-                    <History className="w-3.5 h-3.5" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">{t.historyTitle}</span>
-                  </div>
-                  <button 
-                    onClick={clearHistory}
-                    className="text-[9px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-wider"
-                  >
-                    {t.clearHistory}
-                  </button>
-                </div>
-                <div className="flex flex-col gap-1.5 overflow-y-auto pr-1">
-                  {history.map((item, index) => (
-                    <motion.div
-                      key={item.keyword}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.03 }}
-                      onClick={() => loadHistoryItem(item)}
-                      className="group flex items-center justify-between gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-all shadow-sm"
-                    >
-                      <div className="flex items-center gap-2 truncate flex-1">
-                        <span className="text-xs text-slate-600 group-hover:text-blue-800 font-medium truncate">{item.keyword}</span>
-                        {item.level && (
-                          <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded-md flex-shrink-0">
-                            {item.level === 'grade6' ? 'Lớp 6' :
-                             item.level === 'grade7' ? 'Lớp 7' :
-                             item.level === 'grade8' ? 'Lớp 8' :
-                             item.level === 'grade9' ? 'Lớp 9' : 'TS 10'}
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        onClick={(e) => deleteHistoryItem(e, item)}
-                        className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover:opacity-100"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
           </div>
 
           {/* Right Column: Result */}
@@ -1145,14 +1488,14 @@ QUY TẮC BẮT BUỘC:
                     <div className="flex items-center gap-2">
                       <button
                         onClick={copyToClipboard}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-[10px] font-bold transition-all shadow-sm"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-[10px] font-bold transition-all shadow-sm cursor-pointer"
                       >
                         {copySuccess ? <Check className="w-3 h-3 text-blue-800" /> : <Copy className="w-3 h-3" />}
                         {copySuccess ? t.copiedBtn : t.copyBtn}
                       </button>
                       <button
                         onClick={exportToWord}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-800 hover:bg-blue-900 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-800 hover:bg-blue-900 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm cursor-pointer"
                       >
                         <FileDown className="w-3 h-3" />
                         {t.exportBtn}
@@ -1222,11 +1565,31 @@ QUY TẮC BẮT BUỘC:
         apiKeyStatus={apiKeyStatus}
       />
 
-      {/* Changelog Modal */}
-      <ChangelogModal
-        show={showChangelog}
-        onClose={() => setShowChangelog(false)}
+      {/* App Info & Changelog Modal */}
+      <AppInfoModal
+        show={showAppInfoModal}
+        onClose={() => setShowAppInfoModal(false)}
         t={t}
+        lang={lang}
+      />
+
+      {/* History Modal */}
+      <HistoryModal
+        show={showHistoryModal}
+        onClose={() => setShowHistoryModal(false)}
+        history={history}
+        onSelect={loadHistoryItem}
+        onDelete={deleteHistoryItem}
+        onClear={clearHistory}
+        t={t}
+      />
+
+      {/* Generating Loading & Success Modal */}
+      <GeneratingModal
+        show={showGeneratingModal}
+        status={generatingStatus}
+        keyword={keyword}
+        loadingMsg={t.loadingMessages[loadingMsgIndex]}
         lang={lang}
       />
     </div>
