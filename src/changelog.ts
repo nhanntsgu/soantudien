@@ -9,6 +9,40 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.5.2",
+    date: "2026-08-20",
+    changes: {
+      vi: [
+        "Chuẩn hóa định dạng câu ví dụ (loại bỏ nhãn 'example 1, example 2'):",
+        "- Loại bỏ hoàn toàn các tiền tố thừa như 'example 1:', 'Example 1:', 'Ex 1:' trước mỗi câu ví dụ.",
+        "- Mỗi câu ví dụ bắt đầu trực tiếp bằng dấu chấm tròn ('• ') kèm câu văn tiếng Anh tự nhiên chứa cụm từ in đậm chuẩn từ điển."
+      ],
+      en: [
+        "Cleaned Example Sentences Format (Removed 'example 1, example 2' labels):",
+        "- Completely removed redundant prefixes such as 'example 1:', 'Example 1:', 'Ex 1:' before each sentence.",
+        "- Each example sentence starts directly with a bullet point ('• ') followed by a natural English sentence containing the bold phrase."
+      ]
+    }
+  },
+  {
+    version: "4.5.1",
+    date: "2026-08-20",
+    changes: {
+      vi: [
+        "Tối ưu hóa tỷ lệ cụm in đậm 2 từ và 3 từ (40% cụm 3 từ):",
+        "- Bắt buộc trong 5 câu ví dụ (Examples) phải có khoảng 40% là cụm in đậm 3 từ (đúng 2 trên 5 câu ví dụ; ví dụ: 'reap the benefit', 'of great benefit', 'have the benefit', 'bring great benefit'...).",
+        "- Khoảng 60% còn lại (3 trên 5 câu ví dụ) là cụm in đậm 2 từ (ví dụ: 'benefit from', 'health benefit', 'mutual benefit'...).",
+        "- Giúp các câu hỏi kiểm tra điền từ đa dạng, cân đối hoàn hảo theo đúng đặc tả câu 1-2 đề thi Tuyển sinh 10 ('complete the sentences with two or three words')."
+      ],
+      en: [
+        "Optimized 2-Word vs 3-Word Bold Ratio (40% 3-Word Phrases):",
+        "- Enforces that approximately 40% of the 5 examples (exactly 2 out of 5 sentences) must have a 3-word bold phrase (e.g., 'reap the benefit', 'of great benefit', 'have the benefit'...).",
+        "- The remaining 60% (3 out of 5 sentences) have 2-word bold phrases (e.g., 'benefit from', 'health benefit'...).",
+        "- Provides a balanced variety matching the Grade 10 Entrance Exam standard ('complete the sentences with two or three words')."
+      ]
+    }
+  },
+  {
     version: "4.5.0",
     date: "2026-08-19",
     changes: {
