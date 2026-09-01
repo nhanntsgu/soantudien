@@ -17,7 +17,7 @@ import { Header } from './components/Header';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.5.2",
+    title: "SOẠN TỪ ĐIỂN v4.6.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -146,19 +146,24 @@ const translations = {
 const BASE_PROMPT = `Bạn là một chuyên gia soạn đề thi tiếng Anh lớp 10 tại TP.HCM.
 Nhiệm vụ: Soạn bài tập dạng Dictionary Entry (câu 1–2) dựa trên từ khóa được cung cấp.
 
-YÊU CẦU VỀ NỘI DUNG (CỰC KỲ QUAN TRỌNG):
+YÊU CẦU VỀ NỘI DUNG (CỰC KỲ QUAN TRỌNG & BẮT BUỘC TUÂN THỦ):
 1. Dictionary Entry: Word, Phonetic, Part of speech, Definition (ngắn gọn), Synonym (nếu có).
 2. Examples (5 câu ví dụ):
    - TẤT CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI CHỨA TỪ KHÓA ĐÃ CHO. Tuyệt đối không được có bất kỳ câu ví dụ nào thiếu từ khóa.
    - ĐỊNH DẠNG CÂU VÍ DỤ: Mỗi câu ví dụ BẮT ĐẦU TRỰC TIẾP bằng dấu chấm tròn "• " kèm câu văn tiếng Anh tự nhiên. TUYỆT ĐỐI KHÔNG ghi chữ "example 1", "example 2", "Example 1:", "Ex 1:" hay "câu ví dụ 1" trước câu.
-   - CỤM TỪ IN ĐẬM Ở CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI LÀ CÁC COLLOCATIONS / CỤM TỪ (2-3 TỪ) CHỨA TRỰC TIẾP TỪ KHÓA (Ví dụ: Từ khóa là "benefit" thì các cụm in đậm phải là "**health benefit**", "**benefit from**", "**mutual benefit**", "**financial benefit**", "**reap the benefit**", "**of great benefit**"...). TUYỆT ĐỐI KHÔNG ĐƯỢC in đậm bất kỳ cụm từ ngẫu nhiên nào không chứa từ khóa (như "**take care of**", "**in addition to**"...).
-   - TỶ LỆ ĐỘ DÀI CỤM IN ĐẬM (BẮT BUỘC PHÂN BỔ 40% 3 TỪ & 60% 2 TỪ):
-     + BẮT BUỘC trong 5 câu ví dụ phải có ĐÚNG 2 CÂU in đậm CỤM 3 TỪ (chiếm 40%; ví dụ: "**reap the benefit**", "**of great benefit**", "**derive much benefit**", "**have the benefit**", "**bring great benefit**"...).
-     + 3 CÂU CÒN LẠI in đậm CỤM 2 TỪ (chiếm 60%; ví dụ: "**benefit from**", "**health benefit**", "**mutual benefit**"...).
-     + TUYỆT ĐỐI KHÔNG ĐƯỢC để 100% đều là cụm 2 từ, và TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ.
+   - CỤM TỪ IN ĐẬM Ở CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI LÀ CÁC COLLOCATIONS / CỤM TỪ CHỨA TRỰC TIẾP TỪ KHÓA (Ví dụ: Từ khóa là "benefit" thì các cụm in đậm phải là "**health benefit**", "**benefit from**", "**mutual benefit**", "**financial benefit**", "**reap the benefit**", "**of great benefit**"...). TUYỆT ĐỐI KHÔNG ĐƯỢC in đậm bất kỳ cụm từ ngẫu nhiên nào không chứa từ khóa (như "**take care of**", "**in addition to**"...).
+   - QUY TẮC ĐỘ DÀI IN ĐẬM (NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ):
+     + CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ. TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ VÀ TUYỆT ĐỐI KHÔNG IN ĐẬM CỤM TỪ DÀI TỪ 4 TỪ TRỞ LÊN.
+     + Phân bổ tỷ lệ độ dài: Đúng 2 câu in đậm CỤM 3 TỪ (40%; ví dụ: "**reap the benefit**", "**of great benefit**", "**derive much benefit**", "**have the benefit**", "**bring great benefit**"...) và 3 câu in đậm CỤM 2 TỪ (60%; ví dụ: "**benefit from**", "**health benefit**", "**mutual benefit**"...). TUYỆT ĐỐI KHÔNG để 100% đều là cụm 2 từ.
    - TÍNH ĐỘC LẬP / KHÔNG TRÙNG NHAU: Cụm từ in đậm ở mỗi câu ví dụ PHẢI KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU (mỗi câu 1 cụm in đậm riêng biệt, không lặp lại).
    - 4 câu ví dụ đầu chứa 4 cụm in đậm làm đáp án cho 4 câu hỏi bên dưới (câu 1, 2 và câu dự phòng 3, 4). Câu ví dụ 5 cũng phải chứa cụm in đậm chứa từ khóa (khác biệt với 4 cụm trước).
-3. Questions: 2 câu chính (1, 2) và 2 câu dự phòng (3, 4). Câu hỏi phải có ngữ cảnh khác ví dụ nhưng đáp án phải giữ nguyên văn cụm in đậm (2 hoặc 3 từ) tương ứng từ phần ví dụ.
+3. Questions (Câu hỏi bài tập - QUY ĐỊNH NGHIÊM NGẶT ĐẦU RA):
+   - NGUYÊN TẮC PARAPHRASE 100% (TUYỆT ĐỐI KHÔNG SAO CHÉP VÍ DỤ): Các câu hỏi (1, 2 và dự phòng 3, 4) BẮT BUỘC PHẢI ĐƯỢC PARAPHRASE TOÀN DIỆN, sử dụng ngữ cảnh, tình huống, chủ ngữ, vị ngữ mới hoàn toàn. TUYỆT ĐỐI KHÔNG ĐƯỢC LẤY NGUYÊN CÂU hoặc sao chép cấu trúc từ phần câu ví dụ.
+   - NGUYÊN TẮC ĐÁP ÁN DUY NHẤT & KHÔNG GÂY TRANH CÃI (MỘT CHỖ TRỐNG CHỈ CÓ 1 ĐÁP ÁN):
+     + TUYỆT ĐỐI KHÔNG ra đề mơ hồ khiến một chỗ trống _______ có thể điền được nhiều đáp án khác nhau trong số các cụm in đậm.
+     + Ngữ cảnh câu hỏi, vị trí từ loại, giới từ đi kèm xung quanh chỗ trống BẮT BUỘC phải dẫn đến DUY NHẤT 1 ĐÁP ÁN ĐÚNG trong số các cụm in đậm ở phần từ điển.
+     + Ví dụ: Câu hỏi cần cụm động từ "**benefit from**" thì cấu trúc phải yêu cầu động từ sau chủ ngữ; câu hỏi cần cụm danh từ "**health benefit**" thì chỗ trống phải ở vị trí danh từ sau mạo từ/tính từ và nêu rõ ngữ cảnh sức khỏe để loại trừ các cụm danh từ khác như "**financial benefit**".
+   - Giữ nguyên văn đáp án: Đáp án điền vào chỗ trống phải giữ nguyên văn cụm in đậm (2 hoặc 3 từ) tương ứng từ phần ví dụ.
 
 YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD KHÔNG LỖI):
 - KHÔNG sử dụng dấu # hay ## cho tiêu đề.
@@ -181,22 +186,22 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 • [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 3 từ có từ khóa 4**]
 • [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 5**]
 
-1. [câu hỏi 1 có chỗ trống _______ để điền cụm 1 (2 từ)]
-2. [câu hỏi 2 có chỗ trống _______ để điền cụm 2 (3 từ)]
+1. [câu hỏi 1 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 1 (2 từ)]
+2. [câu hỏi 2 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 2 (3 từ)]
 
 **ĐÁP ÁN**
 1. [đáp án của câu 1 - nguyên văn cụm 1]
 2. [đáp án của câu 2 - nguyên văn cụm 2]
 
 **CÂU DỰ PHÒNG**
-3. [câu hỏi dự phòng 3 có chỗ trống _______ để điền cụm 3 (2 từ)]
-4. [câu hỏi dự phòng 4 có chỗ trống _______ để điền cụm 4 (3 từ)]
+3. [câu hỏi dự phòng 3 ngữ cảnh mới paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
+4. [câu hỏi dự phòng 4 ngữ cảnh mới paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
 
 **ĐÁP ÁN CÂU DỰ PHÒNG**
 3. [đáp án của câu dự phòng 3 - nguyên văn cụm 3]
 4. [đáp án của câu dự phòng 4 - nguyên văn cụm 4]
 
-LƯU Ý: Thay _____ bằng từ khóa. ĐẶC BIỆT LƯU Ý: CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA và cụm in đậm trong cả 5 câu BẮT BUỘC phải là cụm chứa trực tiếp từ khóa, trong đó ĐÚNG 2 CÂU LÀ CỤM 3 TỪ (40%) và 3 CÂU LÀ CỤM 2 TỪ (60%). TUYỆT ĐỐI KHÔNG ghi chữ "example 1", "example 2" hay số thứ tự trước câu ví dụ (chỉ dùng dấu "• " rồi viết câu). TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG để 100% là 2 từ, và TUYỆT ĐỐI KHÔNG in đậm cụm từ không chứa từ khóa. Từ/cụm từ in đậm ở mỗi câu ví dụ PHẢI HOÀN TOÀN KHÁC NHAU, KHÔNG TRÙNG LẮP. Đảm bảo các ví dụ (example) nằm trên các dòng riêng biệt. Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.`;
+LƯU Ý: Thay _____ bằng từ khóa. ĐẶC BIỆT LƯU Ý: CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA. CHỈ ĐƯỢC IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG in đậm cụm dài trên 3 từ, và TUYỆT ĐỐI KHÔNG in đậm cụm từ không chứa từ khóa). CÁC CÂU ĐỀ BÀI PHẢI ĐƯỢC PARAPHRASE 100%, TUYỆT ĐỐI KHÔNG LẤY NGUYÊN CÂU TỪ VÍ DỤ VÀ TUYỆT ĐỐI KHÔNG ĐƯỢC RA ĐỀ GÂY TRANH CÃI (1 CHỖ TRỐNG CHỈ ĐƯỢC PHÉP CÓ DUY NHẤT 1 ĐÁP ÁN PHÙ HỢP). Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.`;
 
 // Helper hàm tạo prompt bổ sung theo Cấp độ & Bộ lọc từ vựng
 const getGradeLevelPrompt = (level: string) => {
@@ -1166,27 +1171,32 @@ export default function App() {
 
       let boldWordsPrompt = '';
       if (targetBoldWords && targetBoldWords.trim()) {
-        boldWordsPrompt = `\n\nYÊU CẦU BẮT BUỘC VỀ CÁC TỪ IN ĐẬM / CỤM ĐÁP ÁN:
+        boldWordsPrompt = `\n\nYÊU CẦU BẮT BUỘC VỀ CÁC TỪ IN ĐẬM & PARAPHRASE ĐỀ BÀI:
 Người dùng ĐÃ CHỈ ĐỊNH CỤ THỂ các từ/cụm từ in đậm (sẽ là đáp án điền vào chỗ trống trong các câu ví dụ và câu hỏi) như sau:
 "${targetBoldWords.trim()}"
 
 QUY TẮC BẮT BUỘC:
-1. TẤT CẢ 5 câu ví dụ (Examples 1, 2, 3, 4, 5) BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${keyword}".
+1. TẤT CẢ 5 câu ví dụ (Examples 1 đến 5) BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${keyword}".
 2. BẮT BUỘC phải sử dụng lần lượt đúng các từ/cụm từ trên làm các cụm từ được IN ĐẬM (**từ_in_đậm**) trong các câu ví dụ. Mỗi câu ví dụ PHẢI DÙNG một cụm in đậm KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU.
-3. Tất cả các cụm từ in đậm BẮT BUỘC phải gồm TỪ 2 ĐẾN 3 TỪ (độ dài ít nhất 2 từ, nhiều nhất 3 từ). TUYỆT ĐỐI KHÔNG ĐƯỢC IN ĐẬM 1 TỪ ĐƠN LẺ và TUYỆT ĐỐI KHÔNG in đậm cụm từ không liên quan đến từ khóa "${keyword}".
-4. Các cụm từ in đậm độc lập này BẮT BUỘC phải được dùng làm đáp án chính xác tương ứng cho các câu hỏi 1, 2, 3, 4.
-5. Soạn ngữ cảnh xung quanh câu ví dụ và câu hỏi sao cho hoàn chỉnh, tự nhiên và phù hợp với từ khóa "${keyword}".`;
+3. QUY TẮC ĐỘ DÀI: CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG in đậm cụm dài từ 4 từ trở lên, và KHÔNG in đậm cụm từ không liên quan đến "${keyword}").
+4. QUY TẮC PARAPHRASE VÀ ĐÁP ÁN DUY NHẤT (KHÔNG TRANH CÃI):
+   - Các câu hỏi bài tập (1, 2, 3, 4) PHẢI ĐƯỢC PARAPHRASE 100%, tuyệt đối không lấy nguyên câu hay sao chép cấu trúc từ phần câu ví dụ.
+   - Ngữ cảnh câu hỏi, vị trí từ loại, giới từ đi kèm phải được thiết kế chặt chẽ để mỗi chỗ trống _______ CHỈ CÓ DUY NHẤT 1 ĐÁP ÁN PHÙ HỢP NHẤT, tuyệt đối KHÔNG ra đề mơ hồ khiến 1 chỗ trống có thể điền được 2-3 đáp án khác nhau.
+5. Các cụm từ in đậm này BẮT BUỘC phải là đáp án chính xác tương ứng cho các câu hỏi 1, 2, 3, 4.`;
       } else {
-        boldWordsPrompt = `\n\nQUY TẮC BẮT BUỘC VỀ TỪ KHÓA VÀ PHÂN BỔ TỶ LỆ CỤM IN ĐẬM:
+        boldWordsPrompt = `\n\nQUY TẮC BẮT BUỘC VỀ TỪ KHÓA, PARAPHRASE VÀ ĐÁP ÁN KHÔNG GÂY TRANH CÃI:
 - Từ khóa chính: "${keyword}".
 - TẤT CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${keyword}". Tuyệt đối không được bỏ sót từ khóa ở bất kỳ câu nào.
 - TUYỆT ĐỐI KHÔNG ghi chữ "example 1", "example 2", "Example 1:", "Ex 1:" trước mỗi câu ví dụ. Bắt đầu trực tiếp bằng dấu chấm tròn "• " rồi viết câu văn.
 - Cụm từ in đậm ở CẢ 5 CÂU VÍ DỤ BẮT BUỘC phải là cụm từ / collocation CHỨA TRỰC TIẾP TỪ KHÓA "${keyword}". Tuyệt đối KHÔNG ĐƯỢC in đậm cụm từ ngẫu nhiên không chứa từ khóa "${keyword}".
-- QUY TẮC TỶ LỆ ĐỘ DÀI CỤM IN ĐẬM (BẮT BUỘC 40% CỤM 3 TỪ):
+- QUY TẮC ĐỘ DÀI IN ĐẬM (NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ):
+  + CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ. TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ VÀ KHÔNG IN ĐẬM CỤM TỪ DÀI TỪ 4 TỪ TRỞ LÊN.
   + BẮT BUỘC trong 5 câu ví dụ phải có ĐÚNG 2 CÂU in đậm CỤM 3 TỪ (chiếm 40%; ví dụ nếu từ khóa là "benefit": "**reap the benefit**", "**of great benefit**", "**have the benefit**", "**bring great benefit**", "**derive much benefit**"...).
   + 3 CÂU CÒN LẠI in đậm CỤM 2 TỪ (chiếm 60%; ví dụ: "**health benefit**", "**benefit from**", "**mutual benefit**", "**financial benefit**"...).
-  + TUYỆT ĐỐI KHÔNG để 100% đều là cụm 2 từ, và TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ.
-- Mỗi câu ví dụ có 1 cụm in đậm KHÁC NHAU hoàn toàn, không lặp lại.`;
+  + TUYỆT ĐỐI KHÔNG để 100% đều là cụm 2 từ.
+- Mỗi câu ví dụ có 1 cụm in đậm KHÁC NHAU hoàn toàn, không lặp lại.
+- NGUYÊN TẮC PARAPHRASE 100%: Các câu hỏi bài tập (1, 2, 3, 4) PHẢI ĐƯỢC PARAPHRASE TOÀN DIỆN, tuyệt đối không được chép lại câu ví dụ.
+- NGUYÊN TẮC ĐÁP ÁN DUY NHẤT (KHÔNG TRANH CÃI): Mỗi câu hỏi phải có ngữ pháp, vị trí từ loại hoặc ngữ cảnh loại trừ chặt chẽ để mỗi chỗ trống _______ chỉ chấp nhận ĐÚNG 1 ĐÁP ÁN DUY NHẤT trong số các cụm in đậm, không thể thay thế bằng cụm in đậm khác.`;
       }
 
       const fullPrompt = `${BASE_PROMPT}\n\n${levelPrompt}${boldWordsPrompt}\n\nTừ khóa: ${keyword}`;
@@ -1294,7 +1304,7 @@ QUY TẮC BẮT BUỘC:
       {/* Header */}
       <Header 
         title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.5.2"
+        version="v4.6.0"
         subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         showBack={!!result}

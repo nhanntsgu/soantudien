@@ -9,6 +9,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.6.0",
+    date: "2026-08-31",
+    changes: {
+      vi: [
+        "Quy định nghiêm ngặt về câu hỏi đề bài & tính độc bản của đáp án:",
+        "- Paraphrase 100% các câu đề bài: Bắt buộc các câu hỏi (câu 1, 2 và câu dự phòng 3, 4) phải được paraphrase toàn diện với ngữ cảnh, chủ ngữ, vị ngữ mới, tuyệt đối không được lấy nguyên câu hay sao chép cấu trúc từ phần câu ví dụ.",
+        "- Ngăn ngừa đề thi gây tranh cãi: Ngữ cảnh và cấu trúc ngữ pháp xung quanh chỗ trống (_______) phải được thiết kế chặt chẽ, đảm bảo CHỈ CÓ DUY NHẤT 1 CỤM TỪ IN ĐẬM phù hợp làm đáp án, loại bỏ hoàn toàn tình trạng 1 chỗ trống có thể điền nhiều đáp án khác nhau.",
+        "- Kiểm soát độ dài cụm in đậm: Giới hạn nghiêm ngặt từ 2 đến 3 từ (ít nhất 2 từ, nhiều nhất 3 từ), nghiêm cấm in đậm 1 từ đơn lẻ hoặc cụm dài từ 4 từ trở lên."
+      ],
+      en: [
+        "Strict Question Paraphrasing & Unambiguous Single-Answer Rules:",
+        "- 100% Paraphrased Questions: Exercise questions (1, 2 and backup 3, 4) must be thoroughly paraphrased with new context and sentence structure, strictly forbidding copying verbatim from example sentences.",
+        "- Elimination of Question Ambiguity: Grammatical cues, prepositions, and contextual nuances around blanks (_______) must strictly ensure that ONLY ONE bold phrase can validly fit, eliminating dual-answer controversies.",
+        "- Strict Bold Phrase Length: Enforces strictly 2 to 3 words (at least 2, at most 3 words), strictly prohibiting single words or 4+ word phrases."
+      ]
+    }
+  },
+  {
     version: "4.5.2",
     date: "2026-08-20",
     changes: {
