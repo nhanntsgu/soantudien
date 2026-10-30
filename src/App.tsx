@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft, GraduationCap, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
@@ -999,27 +998,22 @@ export default function App() {
 
   // key checking effect
   useEffect(() => {
-    const key = apiMode === 'default' 
-      ? import.meta.env.VITE_GEMINI_API_KEY 
-      : customApiKey;
-
-    if (!key) {
-      setApiKeyStatus('empty');
-      return;
-    }
-
     setApiKeyStatus('checking');
 
     const delay = apiMode === 'custom' ? 800 : 0;
     const timer = setTimeout(async () => {
       try {
-        const ai = new GoogleGenAI({ apiKey: key });
-        await ai.models.generateContent({
-          model: 'gemini-3.5-flash-lite',
-          contents: 'Ping',
-          config: { maxOutputTokens: 1 },
+        const res = await fetch('/api/gemini/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey: customApiKey, apiMode })
         });
-        setApiKeyStatus('valid');
+        const data = await res.json();
+        if (res.ok && data.valid) {
+          setApiKeyStatus('valid');
+        } else {
+          setApiKeyStatus('invalid');
+        }
       } catch (err) {
         console.error("API Connection checking failed:", err);
         setApiKeyStatus('invalid');
@@ -1158,15 +1152,7 @@ export default function App() {
     setResult('');
 
     const tryGenerate = async (modelName: string) => {
-      const activeKey = apiMode === 'default' 
-        ? import.meta.env.VITE_GEMINI_API_KEY 
-        : customApiKey;
-
-      if (!activeKey) {
-        throw new Error("No API key configured");
-      }
-
-      const ai = new GoogleGenAI({ apiKey: activeKey });
+      const activeKey = customApiKey;
       const levelPrompt = getGradeLevelPrompt(gradeLevel);
 
       let boldWordsPrompt = '';
@@ -1201,11 +1187,17 @@ QUY TẮC BẮT BUỘC:
 
       const fullPrompt = `${BASE_PROMPT}\n\n${levelPrompt}${boldWordsPrompt}\n\nTừ khóa: ${keyword}`;
 
-      const response = await ai.models.generateContent({
-        model: modelName,
-        contents: fullPrompt,
+      const res = await fetch('/api/gemini/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: fullPrompt, model: modelName, apiKey: activeKey, apiMode })
       });
-      return response.text;
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Generation failed');
+      }
+      return data.text;
     };
 
     try {
