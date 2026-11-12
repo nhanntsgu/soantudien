@@ -9,6 +9,26 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.7.0",
+    date: "2026-11-11",
+    changes: {
+      vi: [
+        "Chuẩn hóa bố cục xuất kết quả mới & Tích hợp bước Tổ trưởng chuyên môn thẩm định:",
+        "- Điều chỉnh bố cục đầu ra gọn gàng, liền mạch: Ngay sau 5 câu ví dụ (Examples) là 4 câu hỏi đề bài (1, 2, 3, 4), tiếp theo là mục ĐÁP ÁN của cả 4 câu đó (loại bỏ việc tách rời mục Câu dự phòng).",
+        "- Bước 1 (Biên soạn bản thảo): Giáo viên AI biên soạn mục từ điển, 5 câu ví dụ và 4 câu hỏi đề bài.",
+        "- Bước 2 (Tổ trưởng chuyên môn kiểm định chéo): Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm vào từng chỗ trống (_______) của câu 1, 2, 3, 4 để phát hiện và sửa ngay lập tức bất kỳ câu hỏi nào có nguy cơ điền được từ 2 đáp án trở lên.",
+        "- Hiển thị trạng thái trực quan từng bước (Bước 1/2: Soạn thảo đề -> Bước 2/2: Tổ trưởng CM rà soát) và gắn nhãn xác nhận thẩm định trên khung kết quả."
+      ],
+      en: [
+        "Streamlined Output Structure & Integrated Head of Department QA Verification:",
+        "- Unified output layout: Right after the 5 example sentences are all 4 exercise questions (1, 2, 3, 4), followed directly by the answers for all 4 questions under ĐÁP ÁN.",
+        "- Step 1 (Drafting): AI composes the dictionary entry, 5 examples, and 4 exercise questions.",
+        "- Step 2 (Head of Department Cross-Check): Performs a cross-substitution test of all 5 bold phrases against each blank (_______) in questions 1, 2, 3, and 4, immediately rewriting any question that could accept more than one valid answer.",
+        "- Displays real-time 2-step progress in the loading modal and a verification badge on the final result card."
+      ]
+    }
+  },
+  {
     version: "4.6.0",
     date: "2026-08-31",
     changes: {

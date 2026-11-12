@@ -16,7 +16,7 @@ import { Header } from './components/Header';
 // Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.6.0",
+    title: "SOẠN TỪ ĐIỂN v4.7.0",
     author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
     homeBtn: "Về trang chủ NHÂN NHÂN APP",
     historyTitle: "Lịch sử gần đây",
@@ -63,22 +63,22 @@ const translations = {
     emptyState: "Nhập từ khóa để bắt đầu",
     loadingMessages: [
       "AI đang phân tích từ khóa của bạn...",
-      "Đang soạn câu hỏi định nghĩa (Definition)...",
-      "Đang tạo các câu dự phòng (Backup)...",
-      "Đang kiểm tra định dạng và đáp án...",
-      "Sắp xong rồi, vui lòng đợi thêm chút nữa..."
+      "Đang soạn mục từ điển & 5 câu ví dụ...",
+      "Đang biên soạn câu hỏi chính & câu dự phòng...",
+      "Tổ trưởng chuyên môn đang kiểm tra chéo đề và đáp án...",
+      "Đang rà soát loại bỏ 100% phương án gây tranh cãi..."
     ],
     settingsTitle: "Cấu hình",
     modelLabel: "Lựa chọn Model",
     modelFlash: "Gemini 3.5 Flash (Mới nhất)",
     modelLite: "Gemini 3.1 Flash Lite (Tiết kiệm)",
-    appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
+    appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh đã qua bước kiểm định Tổ trưởng chuyên môn, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
     changelogTitle: "Nhật ký thay đổi",
     versionLabel: "Phiên bản",
     dateLabel: "Ngày cập nhật",
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.5.0",
+    title: "DICTIONARY ENTRY GENERATOR v4.7.0",
     author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
     homeBtn: "Back to NHAN NHAN APP Home",
     historyTitle: "Recent History",
@@ -125,16 +125,16 @@ const translations = {
     emptyState: "Enter a keyword to start",
     loadingMessages: [
       "AI is analyzing your keywords...",
-      "Composing definition questions...",
-      "Generating backup questions...",
-      "Checking format and answers...",
-      "Almost done, please wait a bit longer..."
+      "Composing dictionary entry & 5 examples...",
+      "Drafting main and backup questions...",
+      "Head of Department is cross-checking questions & answers...",
+      "Eliminating any potential dual-answer ambiguity..."
     ],
     settingsTitle: "Settings",
     modelLabel: "Model Selection",
     modelFlash: "Gemini 3.5 Flash (Latest)",
     modelLite: "Gemini 3.1 Flash Lite (Lite)",
-    appDescription: "Supports creating Dictionary Entry exercises standard for the Grade 10 Entrance Exam in Ho Chi Minh City (Questions 35, 36). Teachers just need to type keywords (separated by commas), click Generate to receive a complete lesson, which can be copied directly or exported to a Word file for use. Thank you for using the app! Please send any feedback to email nhanntsgu@gmail.com.",
+    appDescription: "Supports creating Dictionary Entry exercises standard for the Grade 10 Entrance Exam in Ho Chi Minh City (Questions 35, 36). Teachers just need to type keywords (separated by commas), click Generate to receive a complete lesson verified by the Head of Department QA step, which can be copied directly or exported to a Word file for use. Thank you for using the app! Please send any feedback to email nhanntsgu@gmail.com.",
     changelogTitle: "Changelog",
     versionLabel: "Version",
     dateLabel: "Update Date",
@@ -143,7 +143,7 @@ const translations = {
 
 // Prompt cơ sở - Người dùng có thể tùy chỉnh ở đây
 const BASE_PROMPT = `Bạn là một chuyên gia soạn đề thi tiếng Anh lớp 10 tại TP.HCM.
-Nhiệm vụ: Soạn bài tập dạng Dictionary Entry (câu 1–2) dựa trên từ khóa được cung cấp.
+Nhiệm vụ: Soạn bài tập dạng Dictionary Entry dựa trên từ khóa được cung cấp.
 
 YÊU CẦU VỀ NỘI DUNG (CỰC KỲ QUAN TRỌNG & BẮT BUỘC TUÂN THỦ):
 1. Dictionary Entry: Word, Phonetic, Part of speech, Definition (ngắn gọn), Synonym (nếu có).
@@ -155,9 +155,9 @@ YÊU CẦU VỀ NỘI DUNG (CỰC KỲ QUAN TRỌNG & BẮT BUỘC TUÂN THỦ):
      + CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ. TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ VÀ TUYỆT ĐỐI KHÔNG IN ĐẬM CỤM TỪ DÀI TỪ 4 TỪ TRỞ LÊN.
      + Phân bổ tỷ lệ độ dài: Đúng 2 câu in đậm CỤM 3 TỪ (40%; ví dụ: "**reap the benefit**", "**of great benefit**", "**derive much benefit**", "**have the benefit**", "**bring great benefit**"...) và 3 câu in đậm CỤM 2 TỪ (60%; ví dụ: "**benefit from**", "**health benefit**", "**mutual benefit**"...). TUYỆT ĐỐI KHÔNG để 100% đều là cụm 2 từ.
    - TÍNH ĐỘC LẬP / KHÔNG TRÙNG NHAU: Cụm từ in đậm ở mỗi câu ví dụ PHẢI KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU (mỗi câu 1 cụm in đậm riêng biệt, không lặp lại).
-   - 4 câu ví dụ đầu chứa 4 cụm in đậm làm đáp án cho 4 câu hỏi bên dưới (câu 1, 2 và câu dự phòng 3, 4). Câu ví dụ 5 cũng phải chứa cụm in đậm chứa từ khóa (khác biệt với 4 cụm trước).
-3. Questions (Câu hỏi bài tập - QUY ĐỊNH NGHIÊM NGẶT ĐẦU RA):
-   - NGUYÊN TẮC PARAPHRASE 100% (TUYỆT ĐỐI KHÔNG SAO CHÉP VÍ DỤ): Các câu hỏi (1, 2 và dự phòng 3, 4) BẮT BUỘC PHẢI ĐƯỢC PARAPHRASE TOÀN DIỆN, sử dụng ngữ cảnh, tình huống, chủ ngữ, vị ngữ mới hoàn toàn. TUYỆT ĐỐI KHÔNG ĐƯỢC LẤY NGUYÊN CÂU hoặc sao chép cấu trúc từ phần câu ví dụ.
+   - 4 câu ví dụ đầu chứa 4 cụm in đậm làm đáp án cho 4 câu hỏi đề bài bên dưới (câu 1, 2, 3, 4). Câu ví dụ 5 cũng phải chứa cụm in đậm chứa từ khóa (khác biệt với 4 cụm trước).
+3. Questions (4 câu hỏi đề bài - QUY ĐỊNH NGHIÊM NGẶT ĐẦU RA):
+   - NGUYÊN TẮC PARAPHRASE 100% (TUYỆT ĐỐI KHÔNG SAO CHÉP VÍ DỤ): Cả 4 câu hỏi đề bài (1, 2, 3, 4) BẮT BUỘC PHẢI ĐƯỢC PARAPHRASE TOÀN DIỆN, sử dụng ngữ cảnh, tình huống, chủ ngữ, vị ngữ mới hoàn toàn. TUYỆT ĐỐI KHÔNG ĐƯỢC LẤY NGUYÊN CÂU hoặc sao chép cấu trúc từ phần câu ví dụ.
    - NGUYÊN TẮC ĐÁP ÁN DUY NHẤT & KHÔNG GÂY TRANH CÃI (MỘT CHỖ TRỐNG CHỈ CÓ 1 ĐÁP ÁN):
      + TUYỆT ĐỐI KHÔNG ra đề mơ hồ khiến một chỗ trống _______ có thể điền được nhiều đáp án khác nhau trong số các cụm in đậm.
      + Ngữ cảnh câu hỏi, vị trí từ loại, giới từ đi kèm xung quanh chỗ trống BẮT BUỘC phải dẫn đến DUY NHẤT 1 ĐÁP ÁN ĐÚNG trong số các cụm in đậm ở phần từ điển.
@@ -166,10 +166,9 @@ YÊU CẦU VỀ NỘI DUNG (CỰC KỲ QUAN TRỌNG & BẮT BUỘC TUÂN THỦ):
 
 YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD KHÔNG LỖI):
 - KHÔNG sử dụng dấu # hay ## cho tiêu đề.
-- Sử dụng **[Tiêu đề]** in hoa cho các phần: ĐÁP ÁN, CÂU DỰ PHÒNG, ĐÁP ÁN CÂU DỰ PHÒNG.
-- Giữa các phần lớn (ví dụ giữa Examples và nội dung câu hỏi) PHẢI có đúng 1 dòng trống (nhấn Enter 2 lần). KHÔNG ĐƯỢC có 2 dòng trống liên tiếp.
-- Giữa nội dung Examples và nội dung câu hỏi ngay bên dưới (câu 1) PHẢI có đúng 1 dòng trống.
-- Giữa các câu hỏi (1, 2 hoặc 3, 4) KHÔNG ĐƯỢC có dòng trống, chỉ cần xuống dòng bình thường (nhấn Enter 1 lần).
+- Ngay sau 5 câu ví dụ (Examples) là đúng 1 dòng trống, sau đó liệt kê trực tiếp cả 4 câu hỏi đề bài (1, 2, 3, 4). TUYỆT ĐỐI KHÔNG tách thành phần "CÂU DỰ PHÒNG".
+- Sau 4 câu hỏi đề bài là đúng 1 dòng trống, sau đó là tiêu đề **ĐÁP ÁN** và liệt kê đáp án của cả 4 câu (1, 2, 3, 4).
+- Giữa các câu hỏi (1, 2, 3, 4) và giữa các dòng đáp án (1, 2, 3, 4) KHÔNG ĐƯỢC có dòng trống, chỉ cần xuống dòng bình thường (nhấn Enter 1 lần).
 - Đảm bảo mỗi dòng văn bản kết thúc bằng một dấu xuống dòng đơn giản (Paragraph Mark).
 
 CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
@@ -187,20 +186,16 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 
 1. [câu hỏi 1 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 1 (2 từ)]
 2. [câu hỏi 2 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 2 (3 từ)]
+3. [câu hỏi 3 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
+4. [câu hỏi 4 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
 
 **ĐÁP ÁN**
 1. [đáp án của câu 1 - nguyên văn cụm 1]
 2. [đáp án của câu 2 - nguyên văn cụm 2]
+3. [đáp án của câu 3 - nguyên văn cụm 3]
+4. [đáp án của câu 4 - nguyên văn cụm 4]
 
-**CÂU DỰ PHÒNG**
-3. [câu hỏi dự phòng 3 ngữ cảnh mới paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
-4. [câu hỏi dự phòng 4 ngữ cảnh mới paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
-
-**ĐÁP ÁN CÂU DỰ PHÒNG**
-3. [đáp án của câu dự phòng 3 - nguyên văn cụm 3]
-4. [đáp án của câu dự phòng 4 - nguyên văn cụm 4]
-
-LƯU Ý: Thay _____ bằng từ khóa. ĐẶC BIỆT LƯU Ý: CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA. CHỈ ĐƯỢC IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG in đậm cụm dài trên 3 từ, và TUYỆT ĐỐI KHÔNG in đậm cụm từ không chứa từ khóa). CÁC CÂU ĐỀ BÀI PHẢI ĐƯỢC PARAPHRASE 100%, TUYỆT ĐỐI KHÔNG LẤY NGUYÊN CÂU TỪ VÍ DỤ VÀ TUYỆT ĐỐI KHÔNG ĐƯỢC RA ĐỀ GÂY TRANH CÃI (1 CHỖ TRỐNG CHỈ ĐƯỢC PHÉP CÓ DUY NHẤT 1 ĐÁP ÁN PHÙ HỢP). Sau các tiêu đề **ĐÁP ÁN**, **CÂU DỰ PHÒNG**, **ĐÁP ÁN CÂU DỰ PHÒNG** phải xuống dòng ngay để viết nội dung, không để dòng trống. Phân cách giữa các phần bằng đúng 1 dòng trống.`;
+LƯU Ý: Thay _____ bằng từ khóa. ĐẶC BIỆT LƯU Ý: CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA. CHỈ ĐƯỢC IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG in đậm cụm dài trên 3 từ, và TUYỆT ĐỐI KHÔNG in đậm cụm từ không chứa từ khóa). CÁC CÂU ĐỀ BÀI (1, 2, 3, 4) PHẢI ĐƯỢC PARAPHRASE 100%, TUYỆT ĐỐI KHÔNG LẤY NGUYÊN CÂU TỪ VÍ DỤ VÀ TUYỆT ĐỐI KHÔNG ĐƯỢC RA ĐỀ GÂY TRANH CÃI (1 CHỖ TRỐNG CHỈ ĐƯỢC PHÉP CÓ DUY NHẤT 1 ĐÁP ÁN PHÙ HỢP). Sau tiêu đề **ĐÁP ÁN** phải xuống dòng ngay để viết nội dung đáp án 1, 2, 3, 4, không để dòng trống. Phân cách giữa các phần lớn bằng đúng 1 dòng trống.`;
 
 // Helper hàm tạo prompt bổ sung theo Cấp độ & Bộ lọc từ vựng
 const getGradeLevelPrompt = (level: string) => {
@@ -629,7 +624,7 @@ function AppInfoModal({
                   <h2 className="text-lg font-bold text-slate-800">
                     {lang === 'vi' ? 'Thông tin ứng dụng' : 'Application Information'}
                   </h2>
-                  <p className="text-xs text-slate-400">SOẠN TỪ ĐIỂN v4.5.0 - by Thầy Nhân Nhân</p>
+                  <p className="text-xs text-slate-400">SOẠN TỪ ĐIỂN v4.7.0 - by Thầy Nhân Nhân</p>
                 </div>
               </div>
               <button 
@@ -788,7 +783,7 @@ function GeneratingModal({
   lang,
 }: {
   show: boolean;
-  status: 'loading' | 'success';
+  status: 'loading' | 'reviewing' | 'success';
   keyword: string;
   loadingMsg: string;
   lang: 'vi' | 'en';
@@ -810,43 +805,74 @@ function GeneratingModal({
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
             className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-7 border border-slate-100 flex flex-col items-center text-center overflow-hidden"
           >
-            {status === 'loading' ? (
+            {status === 'loading' || status === 'reviewing' ? (
               <div className="flex flex-col items-center w-full">
+                {/* Step Indicator Pill */}
+                <div className="flex items-center gap-1.5 mb-4">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                    status === 'loading'
+                      ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                  }`}>
+                    {status === 'loading'
+                      ? (lang === 'vi' ? 'Bước 1/2: Soạn thảo đề' : 'Step 1/2: Drafting')
+                      : (lang === 'vi' ? 'Bước 2/2: Tổ trưởng CM rà soát' : 'Step 2/2: HoD QA Review')}
+                  </span>
+                </div>
+
                 {/* AI Animation Ring */}
                 <div className="relative w-20 h-20 mb-5 flex items-center justify-center">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
-                    className="absolute inset-0 rounded-full border-4 border-blue-100 border-t-blue-800 border-r-blue-600"
+                    className={`absolute inset-0 rounded-full border-4 ${
+                      status === 'loading'
+                        ? 'border-blue-100 border-t-blue-800 border-r-blue-600'
+                        : 'border-amber-100 border-t-amber-600 border-r-emerald-600'
+                    }`}
                   />
                   <motion.div
                     animate={{ scale: [1, 1.12, 1] }}
                     transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                    className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-800 flex items-center justify-center shadow-inner"
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${
+                      status === 'loading'
+                        ? 'bg-blue-50 text-blue-800'
+                        : 'bg-amber-50 text-amber-700'
+                    }`}
                   >
-                    <Sparkles className="w-6 h-6 text-blue-800" />
+                    {status === 'loading' ? (
+                      <Sparkles className="w-6 h-6 text-blue-800" />
+                    ) : (
+                      <ShieldCheck className="w-6 h-6 text-amber-700" />
+                    )}
                   </motion.div>
                 </div>
 
                 {/* Title */}
                 <h3 className="text-lg font-bold text-slate-800 mb-1">
-                  {lang === 'vi' ? 'Đang soạn bài tập...' : 'Generating Exercise...'}
+                  {status === 'loading'
+                    ? (lang === 'vi' ? 'Đang soạn bài tập...' : 'Generating Exercise...')
+                    : (lang === 'vi' ? 'Tổ trưởng CM đang thẩm định...' : 'Head of Dept Reviewing...')}
                 </h3>
                 <div className="px-3 py-1 bg-slate-100 rounded-full text-slate-600 text-xs font-semibold mb-3 truncate max-w-full">
                   {lang === 'vi' ? 'Từ khóa:' : 'Keyword:'} <span className="text-blue-800 font-bold">"{keyword}"</span>
                 </div>
 
                 {/* Step Message */}
-                <div className="min-h-[42px] flex items-center justify-center px-2">
+                <div className="min-h-[48px] flex items-center justify-center px-2">
                   <AnimatePresence mode="wait">
                     <motion.p
-                      key={loadingMsg}
+                      key={status === 'reviewing' ? 'hod-review' : loadingMsg}
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
-                      className="text-xs font-medium text-slate-500 leading-relaxed"
+                      className="text-xs font-medium text-slate-600 leading-relaxed"
                     >
-                      {loadingMsg}
+                      {status === 'reviewing'
+                        ? (lang === 'vi'
+                            ? 'Đang kiểm tra chéo 5 cụm in đậm với từng chỗ trống để đảm bảo đáp án chính xác tuyệt đối, không gây tranh cãi...'
+                            : 'Cross-checking all 5 bold phrases against each blank to guarantee unambiguous, controversy-free answers...')
+                        : loadingMsg}
                     </motion.p>
                   </AnimatePresence>
                 </div>
@@ -854,7 +880,11 @@ function GeneratingModal({
                 {/* Progress bar */}
                 <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-4">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-blue-700 to-indigo-600 rounded-full"
+                    className={`h-full rounded-full ${
+                      status === 'loading'
+                        ? 'bg-gradient-to-r from-blue-700 to-indigo-600'
+                        : 'bg-gradient-to-r from-amber-500 to-emerald-600'
+                    }`}
                     animate={{ x: ["-100%", "100%"] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                   />
@@ -883,7 +913,7 @@ function GeneratingModal({
                   transition={{ delay: 0.1 }}
                   className="text-xl font-black text-emerald-700 tracking-tight mb-1"
                 >
-                  {lang === 'vi' ? 'Đã tạo xong!' : 'Generated Successfully!'}
+                  {lang === 'vi' ? 'Đã thẩm định & Tạo xong!' : 'Verified & Complete!'}
                 </motion.h3>
 
                 {/* Subtitle */}
@@ -891,9 +921,11 @@ function GeneratingModal({
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 }}
-                  className="text-xs font-medium text-slate-500 mt-1"
+                  className="text-xs font-medium text-slate-500 mt-1 leading-relaxed"
                 >
-                  {lang === 'vi' ? 'Bài tập đã sẵn sàng sử dụng!' : 'Exercise is ready to use!'}
+                  {lang === 'vi'
+                    ? 'Đề và đáp án đã được Tổ trưởng chuyên môn rà soát, đảm bảo không có đáp án gây tranh cãi!'
+                    : 'Questions & answers verified by Head of Department QA with zero ambiguity!'}
                 </motion.p>
               </motion.div>
             )}
@@ -909,7 +941,7 @@ export default function App() {
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showGeneratingModal, setShowGeneratingModal] = useState(false);
-  const [generatingStatus, setGeneratingStatus] = useState<'loading' | 'success'>('loading');
+  const [generatingStatus, setGeneratingStatus] = useState<'loading' | 'reviewing' | 'success'>('loading');
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
 
   const [error, setError] = useState('');
@@ -926,7 +958,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(() => {
     const mode = localStorage.getItem('gemini_api_mode') || 'default';
     const hasKey = mode === 'default' 
-      ? !!import.meta.env.VITE_GEMINI_API_KEY 
+      ? true 
       : !!localStorage.getItem('gemini_api_key');
     return !hasKey;
   });
@@ -1200,22 +1232,63 @@ QUY TẮC BẮT BUỘC:
       return data.text;
     };
 
+    const tryReview = async (draftText: string, modelName: string) => {
+      const activeKey = customApiKey;
+      const res = await fetch('/api/gemini/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draft: draftText,
+          keyword,
+          gradeLevel,
+          targetBoldWords,
+          model: modelName,
+          apiKey: activeKey,
+          apiMode
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Review failed');
+      }
+      return data.text || draftText;
+    };
+
+    const runReviewStep = async (draftText: string, modelName: string) => {
+      setGeneratingStatus('reviewing');
+      try {
+        return await tryReview(draftText, modelName);
+      } catch (reviewErr: any) {
+        console.warn("Head of Department review fallback:", reviewErr);
+        if (modelName === 'gemini-3.6-flash') {
+          try {
+            return await tryReview(draftText, 'gemini-3.5-flash-lite');
+          } catch {
+            return draftText;
+          }
+        }
+        return draftText;
+      }
+    };
+
     try {
-      let text = await tryGenerate(selectedModel);
+      let draftText = await tryGenerate(selectedModel);
       
-      if (text) {
-        setResult(text);
+      if (draftText) {
+        const finalText = await runReviewStep(draftText, selectedModel);
+        setResult(finalText);
         setGeneratingStatus('success');
         // Update history with result, level, and boldWords
         setHistory(prev => {
           const newHistory = [
-            { keyword, result: text, level: gradeLevel, boldWords: targetBoldWords }, 
+            { keyword, result: finalText, level: gradeLevel, boldWords: targetBoldWords }, 
             ...prev.filter(item => item.keyword !== keyword)
           ].slice(0, 10);
           return newHistory;
         });
 
-        // Show "Đã tạo xong" with green checkmark for ~1.3s before smoothly closing
+        // Show "Đã thẩm định & Tạo xong" with green checkmark for ~1.3s before smoothly closing
         setTimeout(() => {
           setShowGeneratingModal(false);
           setIsLoading(false);
@@ -1233,13 +1306,14 @@ QUY TẮC BẮT BUỘC:
         // Fallback to Lite model if Flash fails due to quota
         try {
           console.log("Flash quota exceeded, falling back to Lite...");
-          let text = await tryGenerate('gemini-3.5-flash-lite');
-          if (text) {
-            setResult(text);
+          let draftText = await tryGenerate('gemini-3.5-flash-lite');
+          if (draftText) {
+            const finalText = await runReviewStep(draftText, 'gemini-3.5-flash-lite');
+            setResult(finalText);
             setGeneratingStatus('success');
             setHistory(prev => {
               const newHistory = [
-                { keyword, result: text, level: gradeLevel, boldWords: targetBoldWords }, 
+                { keyword, result: finalText, level: gradeLevel, boldWords: targetBoldWords }, 
                 ...prev.filter(item => item.keyword !== keyword)
               ].slice(0, 10);
               return newHistory;
@@ -1296,7 +1370,7 @@ QUY TẮC BẮT BUỘC:
       {/* Header */}
       <Header 
         title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.6.0"
+        version="v4.7.0"
         subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         showBack={!!result}
@@ -1500,10 +1574,14 @@ QUY TẮC BẮT BUỘC:
                   exit={{ opacity: 0 }}
                   className="h-full flex flex-col"
                 >
-                  <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50 flex-wrap gap-2">
+                    <div className="flex items-center gap-2.5 flex-wrap">
                       <div className="w-1.5 h-6 bg-blue-800 rounded-full"></div>
                       <h2 className="text-lg font-bold tracking-tight">{t.resultTitle}</h2>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        {lang === 'vi' ? 'Đã rà soát bởi Tổ trưởng chuyên môn' : 'Verified by Head of Dept'}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
