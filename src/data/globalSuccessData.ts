@@ -30,13 +30,11 @@ export const EXAM_PARTS: ExamPartSpec[] = [
     questionRange: 'Câu 1–14',
     points: '3.5 điểm',
     questionCount: 14,
-    shortDesc: 'Phát âm (1–2), Dấu nhấn (3–4), Từ vựng - Ngữ pháp (5–12), Giao tiếp (13–14)',
+    shortDesc: 'Phát âm (1–2), Dấu nhấn (3–4), Đối thoại Từ vựng - Ngữ pháp (5–12), Giao tiếp (13–14)',
     matrixRules: [
-      'Câu 1: Phát âm nguyên âm cơ bản (a, e, i, o, u)',
-      'Câu 2: Phát âm đuôi -s/es hoặc -ed',
-      'Câu 3: Trọng âm từ 2 âm tiết · Câu 4: Trọng âm từ 3 âm tiết (hậu tố -tion, -ate, -ity, -ic...)',
-      'Câu 5–12: 1 giới từ (in/on/at), 1 verb tense, 1 liên từ, 1 phrasal verb, 4 câu từ vựng/cấu trúc (ưu tiên từ vựng)',
-      'Câu 13–14: 2 câu giao tiếp (1 câu chọn vế nói, 1 câu chọn vế đáp)',
+      'Câu 1–2: Phát âm nguyên âm cơ bản (a, e, i, o, u) & đuôi -s/es hoặc -ed · Câu 3–4: Trọng âm 2 & 3 âm tiết',
+      'Câu 5–12 (Đối thoại 2 nhân vật, tỷ lệ chỗ trống 50–50: 4 câu ở người nói đầu, 4 câu ở người nói sau): 1 giới từ, 1 verb tense, 1 liên từ, 1 phrasal verb, 4 từ vựng Global Success',
+      'Câu 13–14: 2 câu tình huống giao tiếp (1 câu chọn vế nói, 1 câu chọn vế đáp)',
     ],
   },
   {

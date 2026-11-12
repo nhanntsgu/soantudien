@@ -193,8 +193,49 @@ function splitQuestionsAndAnswers(raw: string): { questionsPart: string; answers
   };
 }
 
+const PART_START_NUMBER: Record<string, { start: number; count: number }> = {
+  part1: { start: 1, count: 14 },
+  part2: { start: 15, count: 2 },
+  part3: { start: 17, count: 6 },
+  part4: { start: 23, count: 6 },
+  part5: { start: 29, count: 6 },
+  part6: { start: 35, count: 4 },
+  part7: { start: 37, count: 4 },
+};
+
+function normalizePartQuestionNumbers(raw: string, partId: string): string {
+  const cfg = PART_START_NUMBER[partId];
+  if (!cfg || cfg.start === 1 || !raw) return raw;
+
+  return raw
+    .split('\n')
+    .map((line) => {
+      // Match lines starting with 1. .. count. or **1.** .. **count.**
+      const match = line.match(/^(\s*)(\*\*)?(\d+)(\.\*\*|\.)\s+(.*)$/);
+      if (match) {
+        const [, indent, boldOpen, numStr, dotPart, rest] = match;
+        const num = parseInt(numStr, 10);
+        if (num >= 1 && num <= cfg.count) {
+          const mappedNum = cfg.start + num - 1;
+          return `${indent}${boldOpen || ''}${mappedNum}${dotPart} ${rest}`;
+        }
+      }
+      return line;
+    })
+    .join('\n');
+}
+
+function preserveMarkdownQuestionNumbers(text: string): string {
+  if (!text) return '';
+  return text
+    .split('\n')
+    .map((line) => line.replace(/^(\s*)(\d+)\.\s+/, '$1**$2.** '))
+    .join('\n');
+}
+
 function parseDictionaryOutput(raw: string): ParsedExam {
-  const lines = raw.split('\n');
+  const normalized = normalizePartQuestionNumbers(raw, 'part6');
+  const lines = normalized.split('\n');
   let instructionLine = '';
   const dictionaryLines: string[] = [];
   const questionLines: string[] = [];
@@ -226,7 +267,7 @@ function parseDictionaryOutput(raw: string): ParsedExam {
       continue;
     }
 
-    if (/^([1-4]|35|36)\.\s+/.test(line)) {
+    if (/^(\*\*)?([1-4]|35|36|37|38)(\.\*\*|\.)\s+/.test(line)) {
       section = 'questions';
       questionLines.push(line);
       continue;
@@ -1489,7 +1530,8 @@ export default function App() {
       const draftText = await tryGenerate(selectedModel);
 
       if (draftText) {
-        const finalText = await runReviewStep(draftText, selectedModel);
+        const reviewedText = await runReviewStep(draftText, selectedModel);
+        const finalText = normalizePartQuestionNumbers(reviewedText, activePartId);
         setResult(finalText);
         if (activePartId !== 'full_exam') {
           setExamCart((prev) => ({
@@ -1533,7 +1575,8 @@ export default function App() {
         try {
           const draftText = await tryGenerate('gemini-3.5-flash-lite');
           if (draftText) {
-            const finalText = await runReviewStep(draftText, 'gemini-3.5-flash-lite');
+            const reviewedText = await runReviewStep(draftText, 'gemini-3.5-flash-lite');
+            const finalText = normalizePartQuestionNumbers(reviewedText, activePartId);
             setResult(finalText);
             if (activePartId !== 'full_exam') {
               setExamCart((prev) => ({
@@ -1593,8 +1636,9 @@ export default function App() {
 
   const splitResult = React.useMemo(() => {
     if (!result) return { questionsPart: '', answersPart: '' };
-    return splitQuestionsAndAnswers(result);
-  }, [result]);
+    const normalized = normalizePartQuestionNumbers(result, activePartId);
+    return splitQuestionsAndAnswers(normalized);
+  }, [result, activePartId]);
 
   const cartFilledCount = Object.keys(examCart).length;
 
@@ -2175,24 +2219,21 @@ export default function App() {
                       )}
 
                       {parsedDictionaryExam.questionLines.length > 0 && (
-                        <div className="space-y-2 pt-1">
+                        <div className="space-y-2.5 pt-1">
                           <ReactMarkdown
                             remarkPlugins={[remarkBreaks]}
                             components={{
                               p: ({ children }) => (
-                                <p className="text-slate-900 leading-relaxed m-0">{children}</p>
+                                <p className="text-slate-900 leading-relaxed mb-2">{children}</p>
                               ),
-                              ol: ({ children }) => (
-                                <ol className="list-decimal pl-5 space-y-2 m-0 text-slate-900">
-                                  {children}
-                                </ol>
-                              ),
-                              li: ({ children }) => (
-                                <li className="text-slate-900 leading-relaxed">{children}</li>
+                              strong: ({ children }) => (
+                                <strong className="font-bold text-slate-950">{children}</strong>
                               ),
                             }}
                           >
-                            {parsedDictionaryExam.questionLines.join('\n')}
+                            {preserveMarkdownQuestionNumbers(
+                              parsedDictionaryExam.questionLines.join('\n')
+                            )}
                           </ReactMarkdown>
                         </div>
                       )}
@@ -2247,7 +2288,7 @@ export default function App() {
                             ),
                           }}
                         >
-                          {splitResult.questionsPart}
+                          {preserveMarkdownQuestionNumbers(splitResult.questionsPart)}
                         </ReactMarkdown>
                       </div>
 
@@ -2263,7 +2304,7 @@ export default function App() {
                                   remarkPlugins={[remarkBreaks]}
                                   components={{
                                     p: ({ children }) => (
-                                      <p className="text-slate-900 leading-relaxed m-0">
+                                      <p className="text-slate-900 leading-relaxed mb-1.5">
                                         {children}
                                       </p>
                                     ),
@@ -2274,7 +2315,7 @@ export default function App() {
                                     ),
                                   }}
                                 >
-                                  {splitResult.answersPart}
+                                  {preserveMarkdownQuestionNumbers(splitResult.answersPart)}
                                 </ReactMarkdown>
                               </div>
                             </div>

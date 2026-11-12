@@ -20,8 +20,11 @@ QUY TRÌNH THẨM ĐỊNH BẮT BUỘC THEO TỪNG PHẦN:
 1. NẾU LÀ PHẦN I (MULTIPLE CHOICE - CÂU 1–14):
    - Kiểm tra phiên âm IPA chuẩn Oxford cho Câu 1 (nguyên âm cơ bản a, e, i, o, u) và Câu 2 (-s/es hoặc -ed): Nếu có từ bị sai nhóm phát âm khiến câu hỏi có 2 đáp án hoặc không có đáp án, PHẢI THAY TỪ ĐÓ NGAY.
    - Kiểm tra dấu nhấn trọng âm Câu 3 (2 âm tiết) và Câu 4 (3 âm tiết, ưu tiên hậu tố -tion, -ate, -ity, -ic, hạn chế từ ghép): Đảm bảo đúng 3 từ cùng trọng âm và 1 từ khác trọng âm.
-   - Kiểm tra Câu 5–12: Đảm bảo đủ 1 câu giới từ (in/on/at), 1 câu verb tense, 1 câu liên từ, 1 câu phrasal verb, 4 câu từ vựng/cấu trúc (ưu tiên từ vựng sách Global Success). Loại bỏ mọi phương án nhiễu có thể lắp vừa câu gây tranh cãi.
-   - Kiểm tra Câu 13–14: 1 câu chọn vế nói, 1 câu chọn vế đáp tự nhiên.
+   - Kiểm tra Câu 5–12:
+     + BẮT BUỘC cả 8 câu (Câu 5 đến Câu 12) PHẢI ở dạng ĐỐI THOẠI 2 NHÂN VẬT (2 lượt lời: Nhân vật A và Nhân vật B).
+     + KIỂM TRA TỶ LỆ CHỖ TRỐNG 50–50: Trong 8 câu (Câu 5–12), bắt buộc phải có **đúng 4 câu (50%) đặt chỗ trống ______ ở lượt lời của người nói đầu tiên** và **đúng 4 câu (50%) đặt chỗ trống ______ ở lượt lời của người nói sau**. Nếu tỷ lệ này bị lệch (ví dụ: đa số chỗ trống nằm ở người nói sau), PHẢI ĐẢO LẠI CẤU TRÚC LƯỢT LỜI của một số câu để đạt đúng tỷ lệ 4 câu đầu - 4 câu sau (50–50).
+     + Đảm bảo đủ ma trận: 1 câu giới từ (in/on/at), 1 câu verb tense, 1 câu liên từ, 1 câu phrasal verb, 4 câu từ vựng/cấu trúc (ưu tiên từ vựng sách Global Success). Loại bỏ mọi phương án nhiễu có thể lắp vừa câu gây tranh cãi.
+   - Kiểm tra Câu 13–14: 1 câu chọn cả vế nói, 1 câu chọn cả vế đáp tự nhiên.
 
 2. NẾU LÀ PHẦN II (SIGNS & NOTICES - CÂU 15–16):
    - Câu 15 phải là biển báo (cần làm gì must/should hoặc KHÔNG được làm gì mustn't/not allowed).
@@ -41,13 +44,23 @@ QUY TRÌNH THẨM ĐỊNH BẮT BUỘC THEO TỪNG PHẦN:
    - Đếm kỹ từ loại của 6 đáp án (29–34): BẮT BUỘC phải có đúng **2 Nouns, 2 Adjectives, 1 Verb và 1 Adverb** (tối đa 01 câu vận dụng cao). Nếu lệch tỷ lệ này, phải sửa lại câu hỏi tương ứng để đạt chuẩn 2N - 2Adj - 1V - 1Adv.
    - Kiểm tra dấu hiệu ngữ pháp trước và sau chỗ trống (số ít/số nhiều, khẳng định/phủ định) để chỉ có duy nhất 1 đáp án đúng.
 
-6. NẾU LÀ PHẦN VI (DICTIONARY ENTRY - CÂU 35–36 HOẶC 1–4):
+6. NẾU LÀ PHẦN VI (DICTIONARY ENTRY - CÂU 35–38):
    - Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm (bắt buộc dài 2–3 từ, chứa từ khóa) vào từng chỗ trống _______. Nếu bất kỳ câu hỏi nào có thể điền được từ 2 cụm in đậm trở lên, PHẢI VIẾT LẠI CÂU HỎI ĐÓ NGAY để chỉ có duy nhất 1 đáp án đúng.
-   - Giữ đúng bố cục: sau 5 câu ví dụ (• ...) là các câu hỏi đề bài, tiếp theo là phần **ĐÁP ÁN**.
+   - BẮT BUỘC đánh số thứ tự 4 câu hỏi và đáp án là **35., 36., 37., 38.** (nếu bản thảo đang đánh số 1, 2, 3, 4 thì phải đổi thành 35, 36, 37, 38). Giữ đúng bố cục: sau 5 câu ví dụ (• ...) là các câu hỏi đề bài, tiếp theo là phần **ĐÁP ÁN**.
 
 7. NẾU LÀ PHẦN VII (WRITING - CÂU 37–40):
    - Đảm bảo có ít nhất 01 câu biến đổi câu sử dụng **Phrasal Verb** trong chương trình Global Success.
    - Kiểm tra câu viết lại hoàn chỉnh chuẩn ngữ pháp, tự nhiên và sát nghĩa câu gốc.
+   - BẮT BUỘC đánh số thứ tự câu hỏi và đáp án là **37., 38., 39., 40.**
+
+QUY TẮC ĐÁNH SỐ THỨ TỰ CÂU BẮT BUỘC THEO TỪNG PHẦN:
+- Phần I (Multiple Choice): Đánh số từ **1.** đến **14.**
+- Phần II (Signs & Notices): Đánh số **15.** và **16.**
+- Phần III (Cloze Text): Đánh số chỗ trống **(17)** đến **(22)** và câu hỏi từ **17.** đến **22.**
+- Phần IV (Reading True/False): Đánh số từ **23.** đến **28.**
+- Phần V (Word Form): Đánh số từ **29.** đến **34.**
+- Phần VI (Dictionary): Đánh số từ **35.** đến **38.** (hoặc **35., 36.** trong đề 40 câu)
+- Phần VII (Writing): Đánh số từ **37.** đến **40.**
 
 QUY TẮC XUẤT KẾT QUẢ CUỐI CÙNG:
 - CHỈ XUẤT RA NỘI DUNG ĐỀ BÀI VÀ ĐÁP ÁN ĐÃ ĐƯỢC HIỆU ĐÍNH HOÀN CHỈNH (không dùng dấu #, giữ đúng định dạng để copy sang Word).

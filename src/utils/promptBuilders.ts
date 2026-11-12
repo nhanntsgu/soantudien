@@ -85,17 +85,38 @@ QUY TẮC MA TRẬN BẮT BUỘC CHO TỪNG CÂU (TUYỆT ĐỐI TUÂN THỦ):
 2. **Câu 3–4 (Stress - Dấu nhấn trọng âm)**:
    - **Câu 3**: Trọng âm của từ có **2 âm tiết** (lấy từ vựng Global Success).
    - **Câu 4**: Trọng âm của từ có **3 âm tiết** (Hạn chế từ ghép; KHUYẾN KHÍCH sử dụng các từ có hậu tố như *-tion, -ate, -ity, -ic, -ical* trong sách Global Success). Bắt buộc 3 từ cùng vị trí trọng âm và 1 từ khác vị trí trọng âm.
-3. **Câu 5–12 (Lexico-Grammar - 8 câu trắc nghiệm A, B, C, D)**:
-   Bắt buộc phân bổ ĐÚNG VÀ ĐỦ ma trận sau:
-   - **1 câu** về giới từ chỉ thời gian hoặc nơi chốn (**in / on / at**).
-   - **1 câu** về thì của động từ (**verb tense** - có dấu hiệu thời gian rõ ràng).
-   - **1 câu** về liên từ (**conjunction**: *although, though, because, since, however, therefore, so that...*).
-   - **1 câu** về cụm động từ (**phrasal verb** trong SGK Global Success như *pass down, get around, come down with, look after, cut down on, pick up, look up, wipe out...*).
-   - **4 câu còn lại**: Kiểm tra từ vựng (collocations, word choice theo ngữ cảnh bài học Global Success) và cấu trúc câu, nhưng **ƯU TIÊN TỪ VỰNG NHIỀU HƠN**.
-   - Mỗi câu hỏi chỉ có DUY NHẤT 1 đáp án đúng, 3 phương án nhiễu phải sai rõ ràng về ngữ nghĩa hoặc ngữ pháp.
+3. **Câu 5–12 (Lexico-Grammar - 8 câu trắc nghiệm A, B, C, D dạng ĐỐI THOẠI 2 NHÂN VẬT - TỶ LỆ CHỖ TRỐNG 50–50)**:
+   - **ĐỊNH DẠNG & TỶ LỆ 50–50 BẮT BUỘC TUYỆT ĐỐI CHO CẢ 8 CÂU (CÂU 5 ĐẾN CÂU 12)**:
+     + Tất cả 8 câu từ **Câu 5 đến Câu 12** BẮT BUỘC phải được viết dưới dạng **đối thoại ngắn giữa 2 nhân vật** (ví dụ: *Lan / Mai, Nam / Tom, Hoa / Linda, Minh / Peter, Anna / Ben, Tony / Nick, Linh / Nga, Jack / Emma, Lucy / Kate...*).
+     + **TỶ LỆ BỐ TRÍ CHỖ TRỐNG 50–50 (4 CÂU - 4 CÂU)**: Trong 8 câu (từ Câu 5 đến Câu 12), BẮT BUỘC phải có **ĐÚNG 4 CÂU (50%) đặt chỗ trống '______' ở lượt lời của người nói đầu tiên** và **ĐÚNG 4 CÂU (50%) đặt chỗ trống '______' ở lượt lời của người nói sau (người đáp)**, đan xen tự nhiên.
+     + Lượt lời không chứa chỗ trống phải cung cấp ngữ cảnh rõ ràng, tự nhiên để khóa chặt duy nhất 1 đáp án đúng.
+     + TUYỆT ĐỐI KHÔNG viết câu đơn 1 dòng không có nhân vật đối thoại cho Câu 5–12.
+   - **PHÂN BỔ MA TRẬN KIẾN THỨC TRONG CÂU 5–12 (ĐÚNG VÀ ĐỦ)**:
+     + **1 câu** về giới từ chỉ thời gian hoặc nơi chốn (**in / on / at**) lồng trong đối thoại 2 nhân vật.
+     + **1 câu** về thì của động từ (**verb tense** - có dấu hiệu thời gian rõ ràng trong lời thoại).
+     + **1 câu** về liên từ (**conjunction**: *although, though, because, since, however, therefore, so that...*) lồng trong đối thoại 2 nhân vật.
+     + **1 câu** về cụm động từ (**phrasal verb** trong SGK Global Success như *pass down, get around, come down with, look after, cut down on, pick up, look up, find out...*) lồng trong đối thoại 2 nhân vật.
+     + **4 câu còn lại**: Kiểm tra từ vựng (danh từ, tính từ, động từ theo chủ đề bài học Global Success như *artisan, garbage collectors, pottery, traffic congestion, bustling, pricey, priority, stressed out, counsellor, accomplished...*) và cấu trúc câu, **ƯU TIÊN TỪ VỰNG NHIỀU HƠN**.
+   - **MẪU THAM KHẢO CHUẨN CHO CÂU 5–12 (50% CHỖ TRỐNG Ở NGƯỜI NÓI ĐẦU - 50% Ở NGƯỜI NÓI SAU)**:
+     *Ví dụ mẫu 1 (Chỗ trống ở người nói đầu):*
+     Jack: You look really ______. Are you okay?
+     Emma: I have two exams and a big assignment this week.
+     A. optimistic   B. additional   C. stressed out   D. well-balanced
+     *Ví dụ mẫu 2 (Chỗ trống ở người nói sau):*
+     Lan: Who made these beautiful bowls and vases?
+     Mai: A local ______ made them by hand.
+     A. firefighter   B. artisan   C. counsellor   D. electrician
+     *Ví dụ mẫu 3 (Chỗ trống ở người nói đầu):*
+     Minh: Why did the artisan ______ this traditional craft to his youngest son?
+     Peter: Because his son has a great passion for pottery.
+     A. pass down   B. cut down   C. look around   D. come back
+     *Ví dụ mẫu 4 (Chỗ trống ở người nói sau):*
+     Linh: I have three assignments to finish tonight. I don't know which one to do first.
+     Nga: You should decide which task is your top ______.
+     A. anxiety   B. priority   C. distraction   D. ingredient
 4. **Câu 13–14 (Communication - Giao tiếp thực tế)**:
-   - **Câu 13**: Cho 2 lượt lời nói-đáp, trong đó để trống **VẾ NÓI (lời mở đầu/hỏi/đề nghị)** và cho sẵn vế đáp để học sinh chọn vế nói phù hợp ngữ cảnh.
-   - **Câu 14**: Cho 2 lượt lời nói-đáp, trong đó cho sẵn vế nói và để trống **VẾ ĐÁP (lời phản hồi)** để học sinh chọn câu trả lời phù hợp.
+   - **Câu 13**: Cho 2 lượt lời nói-đáp, trong đó để trống **VẾ NÓI (cả câu mở đầu/hỏi/đề nghị)** và cho sẵn vế đáp để học sinh chọn câu nói phù hợp ngữ cảnh.
+   - **Câu 14**: Cho 2 lượt lời nói-đáp, trong đó cho sẵn vế nói và để trống **VẾ ĐÁP (cả câu phản hồi)** để học sinh chọn câu trả lời phù hợp.
 
 ${COMMON_FORMAT_RULES}
 
@@ -111,9 +132,13 @@ CẤU TRÚC MẪU BẮT BUỘC:
 4. A. ...   B. ...   C. ...   D. ...
 
 **Choose the word / phrase / sentence (A, B, C or D) that best fits the space in each sentence.**
-5. [Câu hỏi 5...]
+5. [Tên nhân vật A]: [Lời thoại A (có thể chứa ______)]
+[Tên nhân vật B]: [Lời thoại B (có thể chứa ______)]
 A. ...   B. ...   C. ...   D. ...
-... (liệt kê đầy đủ từ câu 5 đến câu 14)
+6. [Tên nhân vật A]: [Lời thoại A (có thể chứa ______)]
+[Tên nhân vật B]: [Lời thoại B (có thể chứa ______)]
+A. ...   B. ...   C. ...   D. ...
+... (liệt kê đầy đủ từ câu 5 đến câu 14 theo đúng dạng đối thoại 2 nhân vật)
 
 **ĐÁP ÁN**
 1. [A/B/C/D] (Giải thích ngắn gọn kèm phiên âm IPA của cả 4 từ)
@@ -301,19 +326,19 @@ Người dùng ĐÃ CHỈ ĐỊNH CỤ THỂ các từ/cụm từ in đậm (s�
 1. TẤT CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${targetWord}".
 2. BẮT BUỘC sử dụng lần lượt đúng các từ/cụm từ trên làm các cụm từ được IN ĐẬM (**từ_in_đậm**) trong các câu ví dụ, mỗi câu 1 cụm khác nhau.
 3. CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ.
-4. Cả 4 câu hỏi đề bài phải được PARAPHRASE 100% và mỗi chỗ trống chỉ có DUY NHẤT 1 đáp án đúng, không gây tranh cãi.`;
+4. Cả 4 câu hỏi đề bài (đánh số thứ tự **35, 36, 37, 38** tương ứng với Phần VI của đề thi) phải được PARAPHRASE 100% và mỗi chỗ trống chỉ có DUY NHẤT 1 đáp án đúng, không gây tranh cãi.`;
       } else {
         boldWordsPrompt = `\n\nQUY TẮC BẮT BUỘC VỀ TỪ KHÓA "${targetWord}", PARAPHRASE VÀ ĐÁP ÁN:
 - TẤT CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${targetWord}".
 - Bắt đầu trực tiếp mỗi câu ví dụ bằng dấu chấm tròn "• " (TUYỆT ĐỐI KHÔNG ghi "Example 1:", "Ex 1:").
 - Cụm từ in đậm ở CẢ 5 CÂU VÍ DỤ phải chứa trực tiếp từ khóa "${targetWord}", hoàn toàn khác nhau, độ dài NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ (Đúng 2 câu in đậm cụm 3 từ chiếm 40%, và 3 câu in đậm cụm 2 từ chiếm 60%).
-- Cả 4 câu hỏi đề bài (1, 2, 3, 4) phải được PARAPHRASE 100% và khóa chặt ngữ cảnh/ngữ pháp để mỗi chỗ trống _______ chỉ có DUY NHẤT 1 đáp án đúng trong số các cụm in đậm.`;
+- Cả 4 câu hỏi đề bài (BẮT BUỘC đánh số thứ tự **35, 36, 37, 38** tương ứng với Phần VI của đề thi, trong đó 35–36 là 2 câu chính thức và 37–38 là 2 câu dự phòng) phải được PARAPHRASE 100% và khóa chặt ngữ cảnh/ngữ pháp để mỗi chỗ trống _______ chỉ có DUY NHẤT 1 đáp án đúng trong số các cụm in đậm.`;
       }
 
       return `Bạn là chuyên gia soạn đề thi tiếng Anh lớp 10 tại TP.HCM.
 ${gsContext}${boldWordsPrompt}
 
-CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
+CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ VÀ SỐ CÂU 35, 36, 37, 38):
 **VI. Look at the entry of the word “${targetWord}” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words. (0.5 pt)**
 
 **${targetWord}** /[phonetic]/ *([part of speech])*
@@ -326,16 +351,16 @@ CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
 • [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 3 từ có từ khóa 4**]
 • [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 5**]
 
-1. [câu hỏi 1 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 1 (2 từ)]
-2. [câu hỏi 2 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 2 (3 từ)]
-3. [câu hỏi 3 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
-4. [câu hỏi 4 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
+35. [câu hỏi 35 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 1 (2 từ)]
+36. [câu hỏi 36 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 2 (3 từ)]
+37. [câu hỏi 37 (dự phòng) ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
+38. [câu hỏi 38 (dự phòng) ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
 
 **ĐÁP ÁN**
-1. [đáp án của câu 1 - nguyên văn cụm 1]
-2. [đáp án của câu 2 - nguyên văn cụm 2]
-3. [đáp án của câu 3 - nguyên văn cụm 3]
-4. [đáp án của câu 4 - nguyên văn cụm 4]
+35. [đáp án của câu 35 - nguyên văn cụm 1]
+36. [đáp án của câu 36 - nguyên văn cụm 2]
+37. [đáp án của câu 37 - nguyên văn cụm 3]
+38. [đáp án của câu 38 - nguyên văn cụm 4]
 
 ${COMMON_FORMAT_RULES}`;
     }
@@ -393,7 +418,7 @@ MA TRẬN 40 CÂU BẮT BUỘC TUÂN THỦ TUYỆT ĐỐI:
   + Câu 2: Phát âm đuôi -s/es hoặc -ed.
   + Câu 3: Trọng âm từ 2 âm tiết.
   + Câu 4: Trọng âm từ 3 âm tiết (khuyến khích hậu tố -tion, -ate, -ity, -ic; hạn chế từ ghép).
-  + Câu 5–12: Đúng 1 câu giới từ (in/on/at), 1 câu verb tense, 1 câu liên từ, 1 câu phrasal verb, 4 câu từ vựng/cấu trúc (ưu tiên từ vựng Global Success).
+  + Câu 5–12: BẮT BUỘC 100% ở dạng ĐỐI THOẠI 2 NHÂN VẬT với tỷ lệ chỗ trống 50–50 (đúng 4 câu có chỗ trống ______ ở lượt lời người nói đầu tiên và 4 câu có chỗ trống ______ ở lượt lời người nói sau), gồm đúng 1 câu giới từ (in/on/at), 1 câu verb tense, 1 câu liên từ, 1 câu phrasal verb, 4 câu từ vựng/cấu trúc (ưu tiên từ vựng Global Success).
   + Câu 13–14: 2 câu giao tiếp (1 câu chọn vế nói, 1 câu chọn vế đáp).
 - **II. Signs & Notices (0.5 pt | Câu 15–16)**:
   + Câu 15: Biển báo (cần làm gì và KHÔNG được làm gì).
