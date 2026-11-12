@@ -9,15 +9,55 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "6.0.0",
+    date: "2026-11-12",
+    changes: {
+      vi: [
+        "Nâng cấp toàn diện thành Hệ thống Soạn Đề Thi Tiếng Anh Global Success (40 Câu / 7 Phần chuẩn Sở GD&ĐT TP.HCM 2025):",
+        "- Tích hợp trọn bộ ngân hàng dữ liệu 48 Units SGK Tiếng Anh Global Success (Lớp 6, 7, 8, 9 - NXB Giáo dục Việt Nam) gồm từ vựng cốt lõi, Phrasal Verbs, chủ điểm ngữ pháp và chủ đề đọc hiểu.",
+        "- Hỗ trợ soạn chuyên sâu từng phần trong 7 phần đề thi: Phần I (Multiple Choice Câu 1–14), Phần II (Signs & Notices Câu 15–16), Phần III (Cloze Text Câu 17–22), Phần IV (Reading True/False Câu 23–28), Phần V (Word Form Câu 29–34), Phần VI (Dictionary Câu 35–36), Phần VII (Writing Câu 37–40).",
+        "- Tích hợp Giỏ Đề Thi 40 Câu (Exam Cart): Cho phép lưu từng phần vừa ý và ghép nối thành đề thi hoàn chỉnh 40 câu (10 điểm) hoặc tạo tự động nguyên đề 40 câu chỉ với 1 cú nhấp chuột.",
+        "- Nâng cấp hệ thống thẩm định tự động (Bước 2/2 - Đã thẩm định): Kiểm tra chéo phiên âm IPA, đếm số chữ đoạn văn (80–100 chữ / 180–200 chữ), kiểm tra tỷ lệ từ loại (2N-2Adj-1V-1Adv), kiểm tra câu Phrasal Verb và loại bỏ hoàn toàn đáp án gây tranh cãi."
+      ],
+      en: [
+        "Complete Upgrade to Global Success English Exam Studio (40 Questions / 7 Sections matching 2025 HCMC Dept. of Education Blueprint):",
+        "- Built-in database of all 48 Units from the Global Success curriculum (Grades 6, 7, 8, 9) including core vocabulary, phrasal verbs, grammar structures, and reading topics.",
+        "- Specialized generators for all 7 Exam Sections: Part I (Multiple Choice Q1–14), Part II (Signs & Notices Q15–16), Part III (Cloze Text Q17–22), Part IV (Reading True/False Q23–28), Part V (Word Form Q29–34), Part VI (Dictionary Q35–36), and Part VII (Writing Q37–40).",
+        "- Integrated 40-Question Exam Cart: Save individual sections and assemble a complete 40-question (10-point) exam paper, or generate a full 40-question exam at once.",
+        "- Upgraded Automated QA Verification (Step 2/2): Validates IPA phonetics, passage word counts (80–100 / 180–200 words), POS distribution (2N-2Adj-1V-1Adv), Phrasal Verb transformations, and eliminates multi-answer ambiguity."
+      ]
+    }
+  },
+  {
+    version: "5.0.0",
+    date: "2026-11-11",
+    changes: {
+      vi: [
+        "Tái thiết kế toàn diện giao diện (Lexicon Studio v5.0) hiện đại, học thuật và tối ưu thao tác cho Giáo viên:",
+        "- Bảng điều khiển 3 bước trực quan: Chọn nhanh từ khóa Tuyển sinh 10 với 1 chạm, chọn cấp độ học sinh (Lớp 6 -> Tuyển sinh 10) bằng thanh nút bấm trực tiếp thay cho menu thả xuống.",
+        "- Tùy chọn nâng cao thu gọn thông minh: Hỗ trợ cảnh báo tự động nếu cụm từ in đậm chỉ định không đúng chuẩn độ dài 2–3 từ.",
+        "- Khung Giấy Thi Trực Quan (Live Exam Paper Canvas): Hiển thị đề bài bằng phông chữ Times New Roman chuẩn đề thi Sở GD&ĐT, đóng khung hộp từ điển, làm nổi bật các cụm in đậm 2–3 từ.",
+        "- Bộ công cụ lớp học mới: Nút Ẩn/Hiện đáp án khi trình chiếu trên lớp, chế độ Sửa trực tiếp nội dung ngay trên web, và nút Copy riêng phần Đề bài (không kèm đáp án)."
+      ],
+      en: [
+        "Complete UI/UX Redesign (Lexicon Studio v5.0) – Modern, Academic, and Zero-Friction for Teachers:",
+        "- Guided 3-Step Control Deck: 1-tap high-frequency exam keyword buttons and direct 1-tap segmented grade level selector (Grade 6 to Entrance 10).",
+        "- Smart Collapsible Advanced Options: Includes live word-count validation for custom 2–3 word bold phrases.",
+        "- Live Exam Paper Canvas: Renders the exercise in authentic Times New Roman exam typography with a boxed dictionary excerpt and highlighted 2–3 word target collocations.",
+        "- New Classroom & Export Utilities: Show/Hide Answer Key toggle for classroom projection, Direct In-Place Text Editing, and Copy Questions Only button."
+      ]
+    }
+  },
+  {
     version: "4.7.0",
     date: "2026-11-11",
     changes: {
       vi: [
-        "Chuẩn hóa bố cục xuất kết quả mới & Tích hợp bước Tổ trưởng chuyên môn thẩm định:",
+        "Chuẩn hóa bố cục xuất kết quả mới & Tích hợp bước thẩm định đề:",
         "- Điều chỉnh bố cục đầu ra gọn gàng, liền mạch: Ngay sau 5 câu ví dụ (Examples) là 4 câu hỏi đề bài (1, 2, 3, 4), tiếp theo là mục ĐÁP ÁN của cả 4 câu đó (loại bỏ việc tách rời mục Câu dự phòng).",
         "- Bước 1 (Biên soạn bản thảo): Giáo viên AI biên soạn mục từ điển, 5 câu ví dụ và 4 câu hỏi đề bài.",
-        "- Bước 2 (Tổ trưởng chuyên môn kiểm định chéo): Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm vào từng chỗ trống (_______) của câu 1, 2, 3, 4 để phát hiện và sửa ngay lập tức bất kỳ câu hỏi nào có nguy cơ điền được từ 2 đáp án trở lên.",
-        "- Hiển thị trạng thái trực quan từng bước (Bước 1/2: Soạn thảo đề -> Bước 2/2: Tổ trưởng CM rà soát) và gắn nhãn xác nhận thẩm định trên khung kết quả."
+        "- Bước 2 (Kiểm định chéo - Đã thẩm định): Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm vào từng chỗ trống (_______) của câu 1, 2, 3, 4 để phát hiện và sửa ngay lập tức bất kỳ câu hỏi nào có nguy cơ điền được từ 2 đáp án trở lên.",
+        "- Hiển thị trạng thái trực quan từng bước (Bước 1/2: Soạn thảo đề -> Bước 2/2: Đã thẩm định) và gắn nhãn xác nhận Đã thẩm định trên khung kết quả."
       ],
       en: [
         "Streamlined Output Structure & Integrated Head of Department QA Verification:",

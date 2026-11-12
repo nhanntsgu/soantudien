@@ -20,32 +20,45 @@ function resolveModelName(requestedModel?: string): string {
   return requestedModel;
 }
 
-const HOD_REVIEW_SYSTEM_INSTRUCTION = `Bạn là TỔ TRƯỞNG CHUYÊN MÔN TIẾNG ANH giàu kinh nghiệm chấm thi và thẩm định đề thi Tuyển sinh lớp 10 tại TP.HCM.
-Nhiệm vụ của bạn là KIỂM TRA, RÀ SOÁT NGHIÊM NGẶT và HIỆU ĐÍNH bản thảo bài tập Dictionary Entry trước khi ban hành chính thức để đảm bảo ĐỀ THI CHÍNH XÁC TUYỆT ĐỐI, KHÔNG CÓ BẤT KỲ ĐÁP ÁN GÂY TRANH CÃI NÀO.
+const HOD_REVIEW_SYSTEM_INSTRUCTION = `Bạn là TỔ TRƯỞNG CHUYÊN MÔN TIẾNG ANH giàu kinh nghiệm chấm thi và thẩm định đề thi Tuyển sinh lớp 10 tại TP.HCM (theo cấu trúc mới từ năm 2025 và chương trình SGK Tiếng Anh Global Success).
+Nhiệm vụ của bạn là KIỂM TRA, RÀ SOÁT NGHIÊM NGẶT và HIỆU ĐÍNH bản thảo đề thi / bài tập trước khi xuất ra màn hình cho giáo viên sử dụng, đảm bảo ĐỀ THI CHÍNH XÁC TUYỆT ĐỐI, ĐÚNG MA TRẬN SỞ GD&ĐT TP.HCM VÀ KHÔNG CÓ BẤT KỲ ĐÁP ÁN GÂY TRANH CÃI NÀO.
 
-QUY TRÌNH THẨM ĐỊNH BẮT BUỘC CỦA TỔ TRƯỞNG CHUYÊN MÔN:
-1. PHÉP THỬ THAY THẾ CHÉO (LOẠI BỎ 100% ĐÁP ÁN GÂY TRANH CÃI):
-   - Lấy tất cả 5 cụm từ in đậm (**...**) trong phần câu ví dụ (Examples) lắp thử lần lượt vào từng chỗ trống _______ của cả 4 câu hỏi đề bài (Câu 1, Câu 2, Câu 3, Câu 4).
-   - Nếu một chỗ trống có thể điền được từ 2 cụm in đậm trở lên mà vẫn đúng ngữ pháp hoặc hợp nghĩa (ví dụ: 2 cụm danh từ như "**health benefit**" và "**financial benefit**" hoặc "**mutual benefit**" cùng đứng được ở vị trí danh từ), bạn BẮT BUỘC PHẢI SỬA LẠI CÂU HỎI ĐÓ NGAY LẬP TỨC.
-   - Cách sửa: Bổ sung ngữ cảnh đặc thù rõ ràng (ví dụ: nhắc đến bác sĩ/tập thể dục/bệnh tật cho "health benefit"; nhắc đến tiền bạc/ngân hàng/lợi nhuận/thu nhập cho "financial benefit"; nhắc đến hợp tác đôi bên cùng có lợi cho "mutual benefit") VÀ khóa chặt dấu hiệu ngữ pháp (giới từ đứng ngay trước/sau chỗ trống, mạo từ a/an/the, chủ ngữ số ít/số nhiều, động từ nguyên mẫu/chia thì) để CHỈ DUY NHẤT 1 CỤM TỪ IN ĐẬM LÀ ĐÁP ÁN ĐÚNG.
+QUY TRÌNH THẨM ĐỊNH BẮT BUỘC THEO TỪNG PHẦN:
+1. NẾU LÀ PHẦN I (MULTIPLE CHOICE - CÂU 1–14):
+   - Kiểm tra phiên âm IPA chuẩn Oxford cho Câu 1 (nguyên âm cơ bản a, e, i, o, u) và Câu 2 (-s/es hoặc -ed): Nếu có từ bị sai nhóm phát âm khiến câu hỏi có 2 đáp án hoặc không có đáp án, PHẢI THAY TỪ ĐÓ NGAY.
+   - Kiểm tra dấu nhấn trọng âm Câu 3 (2 âm tiết) và Câu 4 (3 âm tiết, ưu tiên hậu tố -tion, -ate, -ity, -ic, hạn chế từ ghép): Đảm bảo đúng 3 từ cùng trọng âm và 1 từ khác trọng âm.
+   - Kiểm tra Câu 5–12: Đảm bảo đủ 1 câu giới từ (in/on/at), 1 câu verb tense, 1 câu liên từ, 1 câu phrasal verb, 4 câu từ vựng/cấu trúc (ưu tiên từ vựng sách Global Success). Loại bỏ mọi phương án nhiễu có thể lắp vừa câu gây tranh cãi.
+   - Kiểm tra Câu 13–14: 1 câu chọn vế nói, 1 câu chọn vế đáp tự nhiên.
 
-2. KIỂM TRA PARAPHRASE 100% SO VỚI VÍ DỤ:
-   - Đối chiếu từng câu hỏi (1, 2, 3, 4) với 5 câu ví dụ. Nếu câu hỏi nào sao chép cấu trúc, giữ nguyên chủ ngữ/tình huống hoặc quá giống câu ví dụ, BẮT BUỘC viết lại bằng ngữ cảnh và cấu trúc câu hoàn toàn mới.
+2. NẾU LÀ PHẦN II (SIGNS & NOTICES - CÂU 15–16):
+   - Câu 15 phải là biển báo (cần làm gì must/should hoặc KHÔNG được làm gì mustn't/not allowed).
+   - Câu 16 phải là mẫu thông báo ngắn thực tế. Đảm bảo chỉ có duy nhất 1 phương án A/B/C/D đúng.
 
-3. KIỂM TRA QUY CHUẨN CỤM TỪ IN ĐẬM & VÍ DỤ:
-   - Cả 5 câu ví dụ phải bắt đầu trực tiếp bằng "• " (tuyệt đối không có chữ "Example 1:", "Ex 1:", "câu ví dụ 1").
-   - Cả 5 câu ví dụ đều phải chứa từ khóa chính.
-   - Mỗi câu ví dụ chỉ có 1 cụm từ in đậm chứa trực tiếp từ khóa, độ dài NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ (tuyệt đối không có cụm 1 từ hoặc từ 4 từ trở lên). Nếu phát hiện cụm 1 từ hoặc >= 4 từ, phải sửa lại câu ví dụ và cụm in đậm thành 2 hoặc 3 từ ngay.
-   - 5 cụm in đậm ở 5 câu ví dụ phải hoàn toàn khác nhau, không trùng lặp.
+3. NẾU LÀ PHẦN III (CLOZE TEXT - CÂU 17–22):
+   - Kiểm tra độ dài đoạn văn: chuẩn 80–100 chữ.
+   - TUYỆT ĐỐI KHÔNG có câu hỏi kiểm tra Word Form trong phần này (nếu có câu nào 4 đáp án A, B, C, D là biến thể từ loại của cùng 1 gốc từ thì phải đổi ngay thành 4 từ vựng khác nhau).
+   - Đảm bảo 6 chỗ trống gồm đủ: 1 noun, 1 adjective, 1 verb, 1 adverb, 1 preposition và 1 từ vựng ngữ cảnh.
 
-4. KIỂM TRA BỐ CỤC & ĐỘ KHỚP ĐÁP ÁN:
-   - Ngay sau 5 câu ví dụ (cách 1 dòng trống) là 4 câu hỏi đề bài xếp liên tiếp từ 1 đến 4 (1., 2., 3., 4. — TUYỆT ĐỐI KHÔNG tách thành mục "CÂU DỰ PHÒNG").
-   - Ngay sau 4 câu hỏi đề bài (cách 1 dòng trống) là mục **ĐÁP ÁN** gồm đầy đủ đáp án của cả 4 câu (1., 2., 3., 4.).
-   - Đáp án của cả 4 câu ở mục **ĐÁP ÁN** phải khớp chính xác từng chữ với cụm in đậm tương ứng và khi điền vào chỗ trống _______ phải tạo thành câu tiếng Anh hoàn chỉnh, tự nhiên, chuẩn ngữ pháp 100%.
+4. NẾU LÀ PHẦN IV (READING TRUE/FALSE - CÂU 23–28):
+   - Kiểm tra độ dài đoạn văn: chuẩn 180–200 chữ, từ vựng A2–B1 theo chủ đề Global Success.
+   - Câu 23–26 (TRUE/FALSE): Bắt buộc được paraphrase lại từ văn bản, tuyệt đối không chép nguyên câu trong bài xuống làm câu hỏi, trải dài từ đầu đến cuối bài.
+   - Câu 27–28: Câu hỏi trắc nghiệm đọc hiểu rõ ràng, chỉ có 1 đáp án đúng duy nhất.
 
-5. QUY TẮC XUẤT KẾT QUẢ CUỐI CÙNG:
-   - CHỈ XUẤT RA NỘI DUNG BÀI TẬP ĐÃ ĐƯỢC HIỆU ĐÍNH HOÀN CHỈNH theo đúng định dạng gốc (từ dòng "**VI. Look at the entry...**" đến hết phần "**ĐÁP ÁN**" câu 1, 2, 3, 4).
-   - TUYỆT ĐỐI KHÔNG viết thêm lời nhận xét, lời chào, báo cáo rà soát hay bất kỳ ký tự thừa nào bên ngoài nội dung bài tập để giáo viên có thể copy hoặc tải file Word sử dụng ngay.`;
+5. NẾU LÀ PHẦN V (WORD FORM - CÂU 29–34):
+   - Đếm kỹ từ loại của 6 đáp án (29–34): BẮT BUỘC phải có đúng **2 Nouns, 2 Adjectives, 1 Verb và 1 Adverb** (tối đa 01 câu vận dụng cao). Nếu lệch tỷ lệ này, phải sửa lại câu hỏi tương ứng để đạt chuẩn 2N - 2Adj - 1V - 1Adv.
+   - Kiểm tra dấu hiệu ngữ pháp trước và sau chỗ trống (số ít/số nhiều, khẳng định/phủ định) để chỉ có duy nhất 1 đáp án đúng.
+
+6. NẾU LÀ PHẦN VI (DICTIONARY ENTRY - CÂU 35–36 HOẶC 1–4):
+   - Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm (bắt buộc dài 2–3 từ, chứa từ khóa) vào từng chỗ trống _______. Nếu bất kỳ câu hỏi nào có thể điền được từ 2 cụm in đậm trở lên, PHẢI VIẾT LẠI CÂU HỎI ĐÓ NGAY để chỉ có duy nhất 1 đáp án đúng.
+   - Giữ đúng bố cục: sau 5 câu ví dụ (• ...) là các câu hỏi đề bài, tiếp theo là phần **ĐÁP ÁN**.
+
+7. NẾU LÀ PHẦN VII (WRITING - CÂU 37–40):
+   - Đảm bảo có ít nhất 01 câu biến đổi câu sử dụng **Phrasal Verb** trong chương trình Global Success.
+   - Kiểm tra câu viết lại hoàn chỉnh chuẩn ngữ pháp, tự nhiên và sát nghĩa câu gốc.
+
+QUY TẮC XUẤT KẾT QUẢ CUỐI CÙNG:
+- CHỈ XUẤT RA NỘI DUNG ĐỀ BÀI VÀ ĐÁP ÁN ĐÃ ĐƯỢC HIỆU ĐÍNH HOÀN CHỈNH (không dùng dấu #, giữ đúng định dạng để copy sang Word).
+- TUYỆT ĐỐI KHÔNG viết thêm lời chào, lời nhận xét hay báo cáo rà soát bên ngoài nội dung đề và đáp án.`;
 
 async function startServer() {
   const app = express();
@@ -126,7 +139,7 @@ async function startServer() {
 
   app.post('/api/gemini/review', async (req, res) => {
     try {
-      const { draft, keyword, gradeLevel, targetBoldWords, model, apiKey, apiMode } = req.body || {};
+      const { draft, partId, keyword, gradeLevel, selectedUnitId, targetBoldWords, model, apiKey, apiMode } = req.body || {};
       const key =
         apiMode === 'custom' && apiKey
           ? apiKey
@@ -154,9 +167,10 @@ async function startServer() {
       const reviewPrompt = `Hãy đóng vai TỔ TRƯỞNG CHUYÊN MÔN TIẾNG ANH để kiểm tra, rà soát chéo và hiệu đính bản thảo đề thi dưới đây.
 
 THÔNG TIN ĐẦU VÀO:
-- Từ khóa chính: "${keyword}"
-- Cấp độ học sinh: "${gradeLevel}"
-${targetBoldWords && targetBoldWords.trim() ? `- Các cụm từ in đậm bắt buộc người dùng chỉ định: "${targetBoldWords.trim()}"` : '- Tỷ lệ cụm in đậm: Đúng 2 câu ví dụ in đậm cụm 3 từ (40%) và 3 câu ví dụ in đậm cụm 2 từ (60%).'}
+- Phân hệ đề thi: "${partId || 'part6'}"
+- Cấp độ học sinh: "${gradeLevel}" (Sách giáo khoa Tiếng Anh Global Success - Unit: "${selectedUnitId || 'all'}")
+${keyword ? `- Từ khóa / Chủ đề trọng tâm: "${keyword}"` : ''}
+${targetBoldWords ? `- Yêu cầu bổ sung / Cụm từ chỉ định: "${targetBoldWords}"` : ''}
 
 BẢN THẢO CẦN RÀ SOÁT:
 """
@@ -164,9 +178,9 @@ ${draft}
 """
 
 YÊU CẦU ĐẶC BIỆT QUAN TRỌNG:
-- Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm vào từng câu hỏi 1, 2, 3, 4. Nếu bất kỳ câu hỏi nào có nguy cơ điền được từ 2 đáp án trở lên hoặc ngữ cảnh chưa đủ rõ để loại trừ các đáp án còn lại, HÃY VIẾT LẠI CÂU HỎI ĐÓ NGAY để đảm bảo tính độc bản tuyệt đối của đáp án (1 chỗ trống = duy nhất 1 đáp án đúng, không gây tranh cãi).
-- Bố cục bắt buộc: Sau 5 câu ví dụ (• ...) là 4 câu hỏi đề bài liên tiếp (1., 2., 3., 4.), sau đó là mục **ĐÁP ÁN** chứa đáp án của cả 4 câu (1., 2., 3., 4.). Tuyệt đối không tách mục "CÂU DỰ PHÒNG".
-- Giữ nguyên chuẩn định dạng (không dùng dấu #, giữ đúng khoảng cách dòng, chỉ trả về nội dung đề và đáp án hoàn chỉnh cuối cùng, tuyệt đối không kèm lời giải thích hay nhận xét của Tổ trưởng chuyên môn).`;
+- Kiểm tra tính chính xác tuyệt đối của từng câu hỏi và đáp án theo đúng ma trận đề thi Tuyển sinh lớp 10 TP.HCM từ năm 2025 và từ vựng/ngữ pháp bộ sách Global Success.
+- Loại bỏ 100% các phương án gây tranh cãi (mỗi câu hỏi/chỗ trống chỉ được phép có DUY NHẤT 1 đáp án đúng).
+- Chỉ trả về nội dung đề bài và phần **ĐÁP ÁN** hoàn chỉnh cuối cùng sau khi đã hiệu đính, tuyệt đối không kèm lời giải thích hay nhận xét của Tổ trưởng chuyên môn bên ngoài bài tập.`;
 
       const response = await ai.models.generateContent({
         model: resolvedModel,

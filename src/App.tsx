@@ -4,224 +4,145 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Loader2, BookOpen, Send, X, Key, Settings, ShieldCheck, FileDown, Copy, Check, Languages, History, Trash2, Home, ExternalLink, RefreshCw, Info, ArrowLeft, GraduationCap, ChevronDown, CheckCircle2 } from 'lucide-react';
+import {
+  Loader2,
+  BookOpen,
+  Send,
+  X,
+  Key,
+  Settings,
+  ShieldCheck,
+  FileDown,
+  Copy,
+  Check,
+  History,
+  Trash2,
+  ExternalLink,
+  RefreshCw,
+  ChevronDown,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Edit3,
+  ClipboardList,
+  AlertTriangle,
+  PlusCircle,
+  Layers,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
 import { changelog } from './changelog';
 import { Header } from './components/Header';
+import {
+  EXAM_PARTS,
+  ExamPartSpec,
+  getUnitsForGrade,
+  GlobalSuccessUnit,
+} from './data/globalSuccessData';
+import { buildExamPrompt } from './utils/promptBuilders';
 
-// Translations
 const translations = {
   vi: {
-    title: "SOẠN TỪ ĐIỂN v4.7.0",
-    author: "by Nhân Nhân - Trường THCS Tùng Thiện Vương, phường Phú Định, TPHCM",
-    homeBtn: "Về trang chủ NHÂN NHÂN APP",
-    historyTitle: "Lịch sử gần đây",
-    clearHistory: "Xóa tất cả",
-    poweredBy: "Powered by Gemini",
-    apiSettings: "Cấu hình API Gemini",
-    apiGuide: "Hướng dẫn lấy API key miễn phí",
-    apiCustomLabel: "Nhập Gemini API Key",
-    apiPlaceholder: "Dán API Key của bạn vào đây...",
-    apiNote: "* API Key được lưu an toàn trong trình duyệt của bạn để sử dụng cho lần sau.",
-    apiModeLabel: "Chế độ API Key",
-    apiModeDefault: "Sử dụng API mặc định",
-    apiModeCustom: "Tự nhập API Key",
-    apiDefaultDesc: "Hệ thống sẽ tự động dùng API Key cấu hình từ biến môi trường của dự án.",
-    apiDefaultEnvText: "Tên biến môi trường cần cấu hình:",
-    apiDefaultFound: "Đã thiết lập biến môi trường VITE_GEMINI_API_KEY thành công!",
-    apiDefaultNotFound: "Chưa cấu hình biến môi trường VITE_GEMINI_API_KEY. Vui lòng thêm biến này hoặc chọn 'Tự nhập API Key'.",
-    apiDefaultStatus: "Trạng thái:",
-    apiConnected: "Đã kết nối",
-    apiConnectError: "Lỗi kết nối",
-    apiChecking: "Đang kiểm tra...",
-    keywordLabel: "Từ khóa",
-    keywordPlaceholder: "Ví dụ: benefit, information, aware...",
-    targetBoldWordsLabel: "Các từ in đậm cần xuất hiện",
-    targetBoldWordsPlaceholder: "Ví dụ: financial benefit, benefit from, mutual benefit...",
-    targetBoldWordsHint: "Nhập các từ/cụm từ (cách nhau bằng dấu phẩy) muốn xuất hiện in đậm trong câu ví dụ và làm đáp án.",
-    optionalTag: "Tùy chọn",
-    levelLabel: "Cấp độ & Bộ lọc từ vựng",
-    levelGrade6: "Lớp 6: Đầu bậc A2 (Ví dụ đơn giản)",
-    levelGrade7: "Lớp 7: Giữa/cuối bậc A2 (Nâng cao hơn lớp 6)",
-    levelGrade8: "Lớp 8: Cuối A2 / Đầu B1",
-    levelGrade9: "Lớp 9: Đầu B1 đến giữa B1",
-    levelEntrance10: "Tuyển sinh 10: Nâng cao B1 (B1+)",
-    generateBtn: "Tạo",
-    generatingBtn: "Đang xử lý...",
-    errorEmpty: "Vui lòng nhập từ khóa!",
-    errorNoCustomApi: "Vui lòng cấu hình API Key hoạt động của bạn!",
-    errorFailed: "Không thể tạo nội dung. Vui lòng thử lại.",
-    errorConnect: "Đã xảy ra lỗi khi kết nối với AI. Vui lòng kiểm tra lại cấu hình key.",
-    resultTitle: "Đã tạo xong!",
-    copyBtn: "Copy toàn bộ",
-    copiedBtn: "Đã copy",
-    exportBtn: "Tải file Word",
-    emptyState: "Nhập từ khóa để bắt đầu",
+    title: 'SOẠN ĐỀ TIẾNG ANH · GLOBAL SUCCESS',
+    author: 'Thầy Nhân Nhân · Trường THCS Tùng Thiện Vương, Phường Phú Định, TP.HCM',
+    historyTitle: 'Kho đề đã lưu',
+    clearHistory: 'Xóa tất cả',
+    apiSettings: 'Cấu hình kết nối AI',
+    apiGuide: 'Hướng dẫn lấy API key miễn phí',
+    apiCustomLabel: 'Nhập Gemini API Key cá nhân',
+    apiPlaceholder: 'Dán API Key của bạn vào đây...',
+    apiNote: '* API Key được lưu cục bộ trong trình duyệt của bạn cho các lần sử dụng sau.',
+    apiModeLabel: 'Chế độ kết nối AI',
+    apiModeDefault: 'Hệ thống mặc định',
+    apiModeCustom: 'Tự nhập API Key',
+    apiDefaultDesc: 'Hệ thống tự động sử dụng kết nối AI từ máy chủ đã được cấu hình sẵn.',
+    apiDefaultStatus: 'Trạng thái kết nối:',
+    apiConnected: 'Đang hoạt động ổn định',
+    apiConnectError: 'Lỗi kết nối máy chủ',
+    apiChecking: 'Đang kiểm tra kết nối...',
+    generateBtn: 'Soạn đề & Thẩm định ngay',
+    generatingBtn: 'Đang biên soạn & thẩm định...',
+    errorEmpty: 'Vui lòng nhập từ khóa hoặc chọn một gợi ý từ sách Global Success!',
+    errorFailed: 'Không thể tạo nội dung. Vui lòng thử lại.',
+    errorConnect: 'Đã xảy ra lỗi khi kết nối với máy chủ AI. Vui lòng thử lại.',
+    resultTitle: 'Phiếu Đề Bài & Đáp Án Chính Thức',
+    copyQuestionsBtn: 'Copy riêng Đề bài',
+    copiedQuestionsBtn: 'Đã copy Đề',
+    copyBtn: 'Copy Đề + Đáp án',
+    copiedBtn: 'Đã copy toàn bộ',
+    exportBtn: 'Tải file Word (.docx)',
+    emptyStateTitle: 'Sẵn sàng biên soạn đề thi theo sách Global Success',
+    emptyStateDesc:
+      'Chọn phần thi trên thanh công cụ (Từ Phần I đến Phần VII hoặc Đề 40 câu), chọn Unit sách Global Success ở cột bên trái và bấm “Soạn đề & Thẩm định ngay”.',
     loadingMessages: [
-      "AI đang phân tích từ khóa của bạn...",
-      "Đang soạn mục từ điển & 5 câu ví dụ...",
-      "Đang biên soạn câu hỏi chính & câu dự phòng...",
-      "Tổ trưởng chuyên môn đang kiểm tra chéo đề và đáp án...",
-      "Đang rà soát loại bỏ 100% phương án gây tranh cãi..."
+      'Đang trích xuất ngữ liệu từ vựng & ngữ pháp SGK Tiếng Anh Global Success...',
+      'Giáo viên AI đang biên soạn câu hỏi theo đúng ma trận Sở GD&ĐT TP.HCM 2025...',
+      'Đang kiểm tra độ dài đoạn văn và tỷ lệ từ loại (Noun, Verb, Adj, Adv, Prep)...',
+      'Đang thẩm định chéo từng phương án để chống tranh cãi...',
+      'Đang chuẩn hóa định dạng Times New Roman sẵn sàng xuất file Word...',
     ],
-    settingsTitle: "Cấu hình",
-    modelLabel: "Lựa chọn Model",
-    modelFlash: "Gemini 3.5 Flash (Mới nhất)",
-    modelLite: "Gemini 3.1 Flash Lite (Tiết kiệm)",
-    appDescription: "Hỗ trợ soạn bài tập dạng Từ điển (Definition Entry) chuẩn đề thi Tuyển sinh lớp 10 tại TP.HCM (Câu 35, 36). Thầy cô chỉ cần gõ từ khóa (cách nhau dấu phẩy), bấm Tạo thì sẽ nhận được bài hoàn chỉnh đã qua bước kiểm định Tổ trưởng chuyên môn, có thể copy trực tiếp hoặc xuất file Word để sử dụng. Cảm ơn thầy cô đã sử dụng app! Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.",
-    changelogTitle: "Nhật ký thay đổi",
-    versionLabel: "Phiên bản",
-    dateLabel: "Ngày cập nhật",
+    settingsTitle: 'Cấu hình hệ thống AI',
+    modelLabel: 'Lựa chọn mô hình xử lý',
+    modelFlash: 'Gemini Flash (Tốc độ cao & Phân tích sâu)',
+    modelLite: 'Gemini Flash Lite (Tiết kiệm & Mặc định)',
+    appDescription:
+      'Hệ thống biên soạn đề thi Tiếng Anh toàn diện bám sát 100% chương trình sách giáo khoa Global Success (NXB Giáo dục Việt Nam) và Cấu trúc Đề thi Tuyển sinh lớp 10 tại TP.HCM từ năm 2025 (40 câu / 7 phần). Tích hợp bước thẩm định tự động cho từng phần để đảm bảo không có đáp án gây tranh cãi. Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.',
+    changelogTitle: 'Nhật ký phiên bản',
+    versionLabel: 'Phiên bản',
+    dateLabel: 'Cập nhật ngày',
   },
   en: {
-    title: "DICTIONARY ENTRY GENERATOR v4.7.0",
-    author: "by Nhan Nhan - Tung Thien Vuong Secondary School, Ho Chi Minh City",
-    homeBtn: "Back to NHAN NHAN APP Home",
-    historyTitle: "Recent History",
-    clearHistory: "Clear All",
-    poweredBy: "Powered by Gemini",
-    apiSettings: "Gemini API Configuration",
-    apiGuide: "How to get a free API key",
-    apiCustomLabel: "Enter Gemini API Key",
-    apiPlaceholder: "Paste your API Key here...",
-    apiNote: "* Your API Key is saved securely in your browser for future use.",
-    apiModeLabel: "API Key Mode",
-    apiModeDefault: "Use Default API",
-    apiModeCustom: "Enter Custom API Key",
-    apiDefaultDesc: "The system will automatically use the API Key configured via the environment variables.",
-    apiDefaultEnvText: "Required environment variable name:",
-    apiDefaultFound: "Environment variable VITE_GEMINI_API_KEY is configured successfully!",
-    apiDefaultNotFound: "VITE_GEMINI_API_KEY not found. Please add this variable to your environment or choose 'Enter Custom API Key'.",
-    apiDefaultStatus: "Status:",
-    apiConnected: "Connected",
-    apiConnectError: "Connection Error",
-    apiChecking: "Checking...",
-    keywordLabel: "Keyword",
-    keywordPlaceholder: "Example: benefit, information, aware...",
-    targetBoldWordsLabel: "Bold Target Words to Appear",
-    targetBoldWordsPlaceholder: "Example: financial benefit, benefit from, mutual benefit...",
-    targetBoldWordsHint: "Enter specific words/phrases (comma-separated) to be bolded in example sentences and used as answers.",
-    optionalTag: "Optional",
-    levelLabel: "Grade Level & Vocabulary Filter",
-    levelGrade6: "Grade 6: Early A2 Level (Simple Examples)",
-    levelGrade7: "Grade 7: Mid/Late A2 Level (Advanced than Grade 6)",
-    levelGrade8: "Grade 8: Late A2 / Early B1 Level",
-    levelGrade9: "Grade 9: Early B1 to Mid B1 Level",
-    levelEntrance10: "Grade 10 Entrance Exam: Advanced B1 (B1+)",
-    generateBtn: "Generate",
-    generatingBtn: "Processing...",
-    errorEmpty: "Please enter a keyword!",
-    errorNoCustomApi: "Please configure an active API Key!",
-    errorFailed: "Could not generate content. Please try again.",
-    errorConnect: "An error occurred while connecting to AI. Please verify your key.",
-    resultTitle: "Generation Complete!",
-    copyBtn: "Copy All",
-    copiedBtn: "Copied",
-    exportBtn: "Download Word",
-    emptyState: "Enter a keyword to start",
+    title: 'ENGLISH EXAM STUDIO · GLOBAL SUCCESS',
+    author: 'Nhan Nhan · Tung Thien Vuong Secondary School, Ho Chi Minh City',
+    historyTitle: 'Saved Exercises',
+    clearHistory: 'Clear All',
+    apiSettings: 'AI Connection Settings',
+    apiGuide: 'How to get a free API key',
+    apiCustomLabel: 'Enter Custom Gemini API Key',
+    apiPlaceholder: 'Paste your API Key here...',
+    apiNote: '* Your API Key is saved locally in your browser for future sessions.',
+    apiModeLabel: 'AI Connection Mode',
+    apiModeDefault: 'Default Server API',
+    apiModeCustom: 'Custom API Key',
+    apiDefaultDesc: 'Automatically uses the pre-configured server-side AI connection.',
+    apiDefaultStatus: 'Connection Status:',
+    apiConnected: 'Connected & Ready',
+    apiConnectError: 'Connection Error',
+    apiChecking: 'Checking connection...',
+    generateBtn: 'Generate & Verify Section',
+    generatingBtn: 'Drafting & Verifying...',
+    errorEmpty: 'Please enter a keyword or select a Global Success suggestion!',
+    errorFailed: 'Could not generate content. Please try again.',
+    errorConnect: 'An error occurred while connecting to the AI server.',
+    resultTitle: 'Official Exam Sheet & Answer Key',
+    copyQuestionsBtn: 'Copy Questions Only',
+    copiedQuestionsBtn: 'Questions Copied',
+    copyBtn: 'Copy Full Sheet',
+    copiedBtn: 'All Copied',
+    exportBtn: 'Download Word (.docx)',
+    emptyStateTitle: 'Ready to Generate Global Success Exam Sections',
+    emptyStateDesc:
+      'Select an exam part from the top bar (Part I to Part VII or Full 40-Question Exam), choose a Global Success Unit on the left, and click Generate.',
     loadingMessages: [
-      "AI is analyzing your keywords...",
-      "Composing dictionary entry & 5 examples...",
-      "Drafting main and backup questions...",
-      "Head of Department is cross-checking questions & answers...",
-      "Eliminating any potential dual-answer ambiguity..."
+      'Extracting vocabulary & grammar from Global Success textbooks...',
+      'Drafting questions matching the 2025 HCMC Grade 10 Exam Matrix...',
+      'Checking passage word count and part-of-speech distribution...',
+      'Head of Department is cross-checking all options to eliminate ambiguity...',
+      'Formatting exam sheet for Microsoft Word export...',
     ],
-    settingsTitle: "Settings",
-    modelLabel: "Model Selection",
-    modelFlash: "Gemini 3.5 Flash (Latest)",
-    modelLite: "Gemini 3.1 Flash Lite (Lite)",
-    appDescription: "Supports creating Dictionary Entry exercises standard for the Grade 10 Entrance Exam in Ho Chi Minh City (Questions 35, 36). Teachers just need to type keywords (separated by commas), click Generate to receive a complete lesson verified by the Head of Department QA step, which can be copied directly or exported to a Word file for use. Thank you for using the app! Please send any feedback to email nhanntsgu@gmail.com.",
-    changelogTitle: "Changelog",
-    versionLabel: "Version",
-    dateLabel: "Update Date",
-  }
-};
-
-// Prompt cơ sở - Người dùng có thể tùy chỉnh ở đây
-const BASE_PROMPT = `Bạn là một chuyên gia soạn đề thi tiếng Anh lớp 10 tại TP.HCM.
-Nhiệm vụ: Soạn bài tập dạng Dictionary Entry dựa trên từ khóa được cung cấp.
-
-YÊU CẦU VỀ NỘI DUNG (CỰC KỲ QUAN TRỌNG & BẮT BUỘC TUÂN THỦ):
-1. Dictionary Entry: Word, Phonetic, Part of speech, Definition (ngắn gọn), Synonym (nếu có).
-2. Examples (5 câu ví dụ):
-   - TẤT CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI CHỨA TỪ KHÓA ĐÃ CHO. Tuyệt đối không được có bất kỳ câu ví dụ nào thiếu từ khóa.
-   - ĐỊNH DẠNG CÂU VÍ DỤ: Mỗi câu ví dụ BẮT ĐẦU TRỰC TIẾP bằng dấu chấm tròn "• " kèm câu văn tiếng Anh tự nhiên. TUYỆT ĐỐI KHÔNG ghi chữ "example 1", "example 2", "Example 1:", "Ex 1:" hay "câu ví dụ 1" trước câu.
-   - CỤM TỪ IN ĐẬM Ở CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI LÀ CÁC COLLOCATIONS / CỤM TỪ CHỨA TRỰC TIẾP TỪ KHÓA (Ví dụ: Từ khóa là "benefit" thì các cụm in đậm phải là "**health benefit**", "**benefit from**", "**mutual benefit**", "**financial benefit**", "**reap the benefit**", "**of great benefit**"...). TUYỆT ĐỐI KHÔNG ĐƯỢC in đậm bất kỳ cụm từ ngẫu nhiên nào không chứa từ khóa (như "**take care of**", "**in addition to**"...).
-   - QUY TẮC ĐỘ DÀI IN ĐẬM (NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ):
-     + CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ. TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ VÀ TUYỆT ĐỐI KHÔNG IN ĐẬM CỤM TỪ DÀI TỪ 4 TỪ TRỞ LÊN.
-     + Phân bổ tỷ lệ độ dài: Đúng 2 câu in đậm CỤM 3 TỪ (40%; ví dụ: "**reap the benefit**", "**of great benefit**", "**derive much benefit**", "**have the benefit**", "**bring great benefit**"...) và 3 câu in đậm CỤM 2 TỪ (60%; ví dụ: "**benefit from**", "**health benefit**", "**mutual benefit**"...). TUYỆT ĐỐI KHÔNG để 100% đều là cụm 2 từ.
-   - TÍNH ĐỘC LẬP / KHÔNG TRÙNG NHAU: Cụm từ in đậm ở mỗi câu ví dụ PHẢI KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU (mỗi câu 1 cụm in đậm riêng biệt, không lặp lại).
-   - 4 câu ví dụ đầu chứa 4 cụm in đậm làm đáp án cho 4 câu hỏi đề bài bên dưới (câu 1, 2, 3, 4). Câu ví dụ 5 cũng phải chứa cụm in đậm chứa từ khóa (khác biệt với 4 cụm trước).
-3. Questions (4 câu hỏi đề bài - QUY ĐỊNH NGHIÊM NGẶT ĐẦU RA):
-   - NGUYÊN TẮC PARAPHRASE 100% (TUYỆT ĐỐI KHÔNG SAO CHÉP VÍ DỤ): Cả 4 câu hỏi đề bài (1, 2, 3, 4) BẮT BUỘC PHẢI ĐƯỢC PARAPHRASE TOÀN DIỆN, sử dụng ngữ cảnh, tình huống, chủ ngữ, vị ngữ mới hoàn toàn. TUYỆT ĐỐI KHÔNG ĐƯỢC LẤY NGUYÊN CÂU hoặc sao chép cấu trúc từ phần câu ví dụ.
-   - NGUYÊN TẮC ĐÁP ÁN DUY NHẤT & KHÔNG GÂY TRANH CÃI (MỘT CHỖ TRỐNG CHỈ CÓ 1 ĐÁP ÁN):
-     + TUYỆT ĐỐI KHÔNG ra đề mơ hồ khiến một chỗ trống _______ có thể điền được nhiều đáp án khác nhau trong số các cụm in đậm.
-     + Ngữ cảnh câu hỏi, vị trí từ loại, giới từ đi kèm xung quanh chỗ trống BẮT BUỘC phải dẫn đến DUY NHẤT 1 ĐÁP ÁN ĐÚNG trong số các cụm in đậm ở phần từ điển.
-     + Ví dụ: Câu hỏi cần cụm động từ "**benefit from**" thì cấu trúc phải yêu cầu động từ sau chủ ngữ; câu hỏi cần cụm danh từ "**health benefit**" thì chỗ trống phải ở vị trí danh từ sau mạo từ/tính từ và nêu rõ ngữ cảnh sức khỏe để loại trừ các cụm danh từ khác như "**financial benefit**".
-   - Giữ nguyên văn đáp án: Đáp án điền vào chỗ trống phải giữ nguyên văn cụm in đậm (2 hoặc 3 từ) tương ứng từ phần ví dụ.
-
-YÊU CẦU VỀ ĐỊNH DẠNG (CỰC KỲ QUAN TRỌNG - ĐỂ COPY SANG WORD KHÔNG LỖI):
-- KHÔNG sử dụng dấu # hay ## cho tiêu đề.
-- Ngay sau 5 câu ví dụ (Examples) là đúng 1 dòng trống, sau đó liệt kê trực tiếp cả 4 câu hỏi đề bài (1, 2, 3, 4). TUYỆT ĐỐI KHÔNG tách thành phần "CÂU DỰ PHÒNG".
-- Sau 4 câu hỏi đề bài là đúng 1 dòng trống, sau đó là tiêu đề **ĐÁP ÁN** và liệt kê đáp án của cả 4 câu (1, 2, 3, 4).
-- Giữa các câu hỏi (1, 2, 3, 4) và giữa các dòng đáp án (1, 2, 3, 4) KHÔNG ĐƯỢC có dòng trống, chỉ cần xuống dòng bình thường (nhấn Enter 1 lần).
-- Đảm bảo mỗi dòng văn bản kết thúc bằng một dấu xuống dòng đơn giản (Paragraph Mark).
-
-CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ):
-**VI. Look at the entry of the word “_____” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words.**
-
-**[word]** /[phonetic]/ *([part of speech])*
-*definition*
-**SYNONYM**: ...
-
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 1**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 3 từ có từ khóa 2**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 3**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 3 từ có từ khóa 4**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 5**]
-
-1. [câu hỏi 1 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 1 (2 từ)]
-2. [câu hỏi 2 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 2 (3 từ)]
-3. [câu hỏi 3 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
-4. [câu hỏi 4 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
-
-**ĐÁP ÁN**
-1. [đáp án của câu 1 - nguyên văn cụm 1]
-2. [đáp án của câu 2 - nguyên văn cụm 2]
-3. [đáp án của câu 3 - nguyên văn cụm 3]
-4. [đáp án của câu 4 - nguyên văn cụm 4]
-
-LƯU Ý: Thay _____ bằng từ khóa. ĐẶC BIỆT LƯU Ý: CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA. CHỈ ĐƯỢC IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG in đậm cụm dài trên 3 từ, và TUYỆT ĐỐI KHÔNG in đậm cụm từ không chứa từ khóa). CÁC CÂU ĐỀ BÀI (1, 2, 3, 4) PHẢI ĐƯỢC PARAPHRASE 100%, TUYỆT ĐỐI KHÔNG LẤY NGUYÊN CÂU TỪ VÍ DỤ VÀ TUYỆT ĐỐI KHÔNG ĐƯỢC RA ĐỀ GÂY TRANH CÃI (1 CHỖ TRỐNG CHỈ ĐƯỢC PHÉP CÓ DUY NHẤT 1 ĐÁP ÁN PHÙ HỢP). Sau tiêu đề **ĐÁP ÁN** phải xuống dòng ngay để viết nội dung đáp án 1, 2, 3, 4, không để dòng trống. Phân cách giữa các phần lớn bằng đúng 1 dòng trống.`;
-
-// Helper hàm tạo prompt bổ sung theo Cấp độ & Bộ lọc từ vựng
-const getGradeLevelPrompt = (level: string) => {
-  switch (level) {
-    case 'grade6':
-      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
-- Trình độ target: Lớp 6 (Đầu bậc A2 CEFR).
-- Từ vựng & Cấu trúc: Các câu ví dụ (example), định nghĩa và ngữ cảnh câu hỏi BẮT BUỘC ở dạng đơn giản, ngắn gọn, cấu trúc ngữ pháp cơ bản, cực kỳ dễ hiểu phù hợp với học sinh Lớp 6 đầu cấp THCS.`;
-    case 'grade7':
-      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
-- Trình độ target: Lớp 7 (Giữa/cuối bậc A2 CEFR).
-- Từ vựng & Cấu trúc: Các câu ví dụ và ngữ cảnh câu hỏi nâng cao hơn hẳn so với lớp 6, câu dài hơn một chút nhưng nằm hoàn toàn trong phạm vi chuẩn mực bậc A2.`;
-    case 'grade8':
-      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
-- Trình độ target: Lớp 8 (Cuối bậc A2 đến Đầu bậc B1 CEFR).
-- Từ vựng & Cấu trúc: Ngữ cảnh đa dạng, kết hợp hài hòa từ vựng A2 nâng cao và từ vựng/ngữ pháp mới tiếp cận bậc B1.`;
-    case 'grade9':
-      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
-- Trình độ target: Lớp 9 (Đầu B1 đến giữa bậc B1 CEFR).
-- Từ vựng & Cấu trúc: Sử dụng ngữ pháp phong phú, từ vựng chuẩn chương trình Lớp 9 THCS, ngữ cảnh bài tập thực tế.`;
-    case 'entrance10':
-    default:
-      return `YÊU CẦU TRÌNH ĐỘ VÀ BỘ LỌC TỪ VỰNG (CỰC KỲ QUAN TRỌNG):
-- Trình độ target: Ôn thi Tuyển sinh Lớp 10 (Nâng cao B1+ CEFR).
-- Từ vựng & Cấu trúc: Ngữ cảnh câu mang tính phân hóa cao, từ vựng chuẩn cấu trúc đề thi Tuyển sinh 10 TP.HCM, cấu trúc câu tự nhiên, chặt chẽ.`;
-  }
+    settingsTitle: 'AI System Configuration',
+    modelLabel: 'Model Selection',
+    modelFlash: 'Gemini Flash (High Reasoning & Speed)',
+    modelLite: 'Gemini Flash Lite (Fast & Default)',
+    appDescription:
+      'Comprehensive English Exam Generator aligned 100% with the Global Success curriculum and the 2025 HCMC Grade 10 Entrance Exam Blueprint (40 questions / 7 sections). Includes Head of Department QA verification. Contact: nhanntsgu@gmail.com.',
+    changelogTitle: 'Release Notes',
+    versionLabel: 'Version',
+    dateLabel: 'Updated',
+  },
 };
 
 interface HistoryItem {
@@ -229,31 +150,152 @@ interface HistoryItem {
   result: string;
   level?: string;
   boldWords?: string;
+  partId?: string;
+  unitTitle?: string;
 }
 
-function SettingsModal({ 
-  show, 
-  onClose, 
-  t, 
-  apiKey, 
-  onApiKeyChange, 
-  selectedModel, 
+interface ParsedExam {
+  instructionLine: string;
+  dictionaryLines: string[];
+  questionLines: string[];
+  answerLines: string[];
+}
+
+function splitQuestionsAndAnswers(raw: string): { questionsPart: string; answersPart: string } {
+  const lines = raw.split('\n');
+  const qLines: string[] = [];
+  const aLines: string[] = [];
+  let inAnswers = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim().toUpperCase();
+    if (
+      trimmed.includes('**ĐÁP ÁN') ||
+      trimmed === 'ĐÁP ÁN' ||
+      trimmed.includes('**ANSWER KEY') ||
+      trimmed === '**ANSWERS**'
+    ) {
+      inAnswers = true;
+      continue;
+    }
+    if (inAnswers) {
+      if (line.trim()) aLines.push(line.trim());
+    } else {
+      qLines.push(line);
+    }
+  }
+
+  return {
+    questionsPart: qLines.join('\n').trim(),
+    answersPart: aLines.join('\n').trim(),
+  };
+}
+
+function parseDictionaryOutput(raw: string): ParsedExam {
+  const lines = raw.split('\n');
+  let instructionLine = '';
+  const dictionaryLines: string[] = [];
+  const questionLines: string[] = [];
+  const answerLines: string[] = [];
+
+  let section: 'header' | 'dict' | 'questions' | 'answers' = 'header';
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    if (
+      line.toUpperCase().includes('ĐÁP ÁN') ||
+      line.toUpperCase().includes('ANSWER KEY') ||
+      line.toUpperCase() === '**ANSWERS**'
+    ) {
+      section = 'answers';
+      continue;
+    }
+
+    if (section === 'header' && (line.includes('Look at the entry') || line.startsWith('**VI.'))) {
+      instructionLine = line;
+      section = 'dict';
+      continue;
+    }
+
+    if (section === 'answers') {
+      answerLines.push(line);
+      continue;
+    }
+
+    if (/^([1-4]|35|36)\.\s+/.test(line)) {
+      section = 'questions';
+      questionLines.push(line);
+      continue;
+    }
+
+    if (section === 'questions') {
+      questionLines.push(line);
+    } else {
+      dictionaryLines.push(line);
+    }
+  }
+
+  return {
+    instructionLine,
+    dictionaryLines,
+    questionLines,
+    answerLines,
+  };
+}
+
+function getQuestionsOnlyText(raw: string): string {
+  return splitQuestionsAndAnswers(raw).questionsPart;
+}
+
+const GRADE_OPTIONS = [
+  { id: 'grade6', short: 'Lớp 6', cefr: 'Global Success 6 (A2)' },
+  { id: 'grade7', short: 'Lớp 7', cefr: 'Global Success 7 (A2+)' },
+  { id: 'grade8', short: 'Lớp 8', cefr: 'Global Success 8 (A2/B1)' },
+  { id: 'grade9', short: 'Lớp 9', cefr: 'Global Success 9 (B1)' },
+  { id: 'entrance10', short: 'Tuyển sinh 10', cefr: 'Trọng tâm GS 9 (B1+)' },
+];
+
+const SIGN_SCENARIOS = [
+  'Trường học, Phòng thí nghiệm & Thư viện',
+  'An toàn giao thông & Nơi công cộng',
+  'Bảo tàng, Công viên & Du lịch sinh thái',
+  'Siêu thị, Trung tâm thương mại & Chung cư',
+  'Hồ bơi, Phòng tập thể thao & Sức khỏe',
+];
+
+const WRITING_STRUCTURES = [
+  'Phrasal Verbs (pass down, look after, take part in, cut down on, get over...)',
+  'Wish + Past Simple (Câu ước ở hiện tại)',
+  'Reported Speech (Câu tường thuật / Wh- + to V)',
+  'Relative Clauses (Mệnh đề quan hệ who, which, whose)',
+  'Double Comparatives (The more..., the more...)',
+  'Suggest / Advise + V-ing / that S (should) V',
+  'Although / Because <-> Despite / Because of / So...that',
+];
+
+function SettingsModal({
+  show,
+  onClose,
+  t,
+  apiKey,
+  onApiKeyChange,
+  selectedModel,
   onModelChange,
   apiMode,
   onApiModeChange,
-  defaultKeyExists,
-  apiKeyStatus
-}: { 
-  show: boolean; 
-  onClose: () => void; 
-  t: any; 
-  apiKey: string; 
+  apiKeyStatus,
+}: {
+  show: boolean;
+  onClose: () => void;
+  t: any;
+  apiKey: string;
   onApiKeyChange: (val: string) => void;
   selectedModel: string;
   onModelChange: (val: any) => void;
   apiMode: 'default' | 'custom';
   onApiModeChange: (val: 'default' | 'custom') => void;
-  defaultKeyExists: boolean;
   apiKeyStatus: 'valid' | 'invalid' | 'checking' | 'empty';
 }) {
   return (
@@ -265,104 +307,143 @@ function SettingsModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            className="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200"
           >
             <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                    <Settings className="w-5 h-5 text-blue-800" />
+                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-800">
+                    <Settings className="w-5 h-5" />
                   </div>
-                  <h2 className="text-xl font-bold text-slate-800">{t.apiSettings}</h2>
+                  <div>
+                    <h2 className="text-base font-bold text-slate-900">{t.settingsTitle}</h2>
+                    <p className="text-xs text-slate-500">{t.apiSettings}</p>
+                  </div>
                 </div>
-                <button 
+                <button
                   onClick={onClose}
-                  className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+                  className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="space-y-5">
-                {/* Model Selection */}
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2.5">
+                  <label className="block text-xs font-semibold text-slate-700 mb-2.5">
                     {t.modelLabel}
                   </label>
                   <div className="grid grid-cols-1 gap-2">
                     <button
+                      type="button"
                       onClick={() => onModelChange('gemini-3.6-flash')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.6-flash' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
+                      className={`flex items-center justify-between p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        selectedModel === 'gemini-3.6-flash'
+                          ? 'border-blue-800 bg-blue-50/50'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
                     >
-                      <div className="flex flex-col items-start">
-                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.6-flash' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelFlash}</span>
-                        <span className="text-[10px] text-slate-400">Gemini 3.6 Flash (Nhanh & Thông minh nhất)</span>
+                      <div className="flex flex-col">
+                        <span
+                          className={`text-sm font-bold ${
+                            selectedModel === 'gemini-3.6-flash' ? 'text-blue-900' : 'text-slate-800'
+                          }`}
+                        >
+                          {t.modelFlash}
+                        </span>
+                        <span className="text-xs text-slate-500 mt-0.5">
+                          Phân tích ma trận sâu & tối ưu đề 40 câu
+                        </span>
                       </div>
-                      {selectedModel === 'gemini-3.6-flash' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
+                      {selectedModel === 'gemini-3.6-flash' && (
+                        <ShieldCheck className="w-5 h-5 text-blue-800 shrink-0" />
+                      )}
                     </button>
                     <button
+                      type="button"
                       onClick={() => onModelChange('gemini-3.5-flash-lite')}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${selectedModel === 'gemini-3.5-flash-lite' ? 'border-blue-800 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200'}`}
+                      className={`flex items-center justify-between p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        selectedModel === 'gemini-3.5-flash-lite'
+                          ? 'border-blue-800 bg-blue-50/50'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
                     >
-                      <div className="flex flex-col items-start">
-                        <span className={`text-sm font-bold ${selectedModel === 'gemini-3.5-flash-lite' ? 'text-blue-800' : 'text-slate-700'}`}>{t.modelLite}</span>
-                        <span className="text-[10px] text-slate-400 font-medium">Gemini 3.5 Flash Lite (Tiết kiệm & Mặc định)</span>
+                      <div className="flex flex-col">
+                        <span
+                          className={`text-sm font-bold ${
+                            selectedModel === 'gemini-3.5-flash-lite'
+                              ? 'text-blue-900'
+                              : 'text-slate-800'
+                          }`}
+                        >
+                          {t.modelLite}
+                        </span>
+                        <span className="text-xs text-slate-500 mt-0.5">
+                          Tốc độ phản hồi nhanh & tiết kiệm hạn mức
+                        </span>
                       </div>
-                      {selectedModel === 'gemini-3.5-flash-lite' && <ShieldCheck className="w-5 h-5 text-blue-800" />}
+                      {selectedModel === 'gemini-3.5-flash-lite' && (
+                        <ShieldCheck className="w-5 h-5 text-blue-800 shrink-0" />
+                      )}
                     </button>
                   </div>
                 </div>
 
                 <hr className="border-slate-100" />
 
-                {/* API Key Connection Mode */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+                  <label className="block text-xs font-semibold text-slate-700 mb-2.5">
                     {t.apiModeLabel}
                   </label>
-                  <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl mb-4">
                     <button
+                      type="button"
                       onClick={() => onApiModeChange('default')}
-                      className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 text-center transition-all ${apiMode === 'default' ? 'border-blue-800 bg-blue-50/50 text-blue-800 font-bold' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
+                      className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        apiMode === 'default'
+                          ? 'bg-white text-slate-900 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
                     >
-                      <Settings className="w-5 h-5 mb-1" />
-                      <span className="text-xs">{t.apiModeDefault}</span>
+                      {t.apiModeDefault}
                     </button>
                     <button
+                      type="button"
                       onClick={() => onApiModeChange('custom')}
-                      className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 text-center transition-all ${apiMode === 'custom' ? 'border-blue-800 bg-blue-50/50 text-blue-800 font-bold' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
+                      className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        apiMode === 'custom'
+                          ? 'bg-white text-slate-900 shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
                     >
-                      <Key className="w-5 h-5 mb-1" />
-                      <span className="text-xs">{t.apiModeCustom}</span>
+                      {t.apiModeCustom}
                     </button>
                   </div>
 
                   {apiMode === 'default' ? (
                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        {t.apiDefaultDesc}
-                      </p>
-                      <div className="flex items-center gap-2 pt-1 text-xs font-semibold">
-                        <span className="text-slate-500">{t.apiDefaultStatus}</span>
+                      <p className="text-xs text-slate-600 leading-relaxed">{t.apiDefaultDesc}</p>
+                      <div className="flex items-center gap-2 pt-1 text-xs">
+                        <span className="text-slate-500 font-medium">{t.apiDefaultStatus}</span>
                         {apiKeyStatus === 'valid' ? (
-                          <span className="text-emerald-600 flex items-center gap-1.5 font-bold">
-                            <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                          <span className="text-emerald-700 flex items-center gap-1 font-bold">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             {t.apiConnected}
                           </span>
                         ) : apiKeyStatus === 'checking' ? (
-                          <span className="text-amber-500 flex items-center gap-1.5 font-bold">
-                            <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                          <span className="text-amber-700 flex items-center gap-1 font-bold">
+                            <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
                             {t.apiChecking}
                           </span>
                         ) : (
-                          <span className="text-red-500 flex items-center gap-1.5 font-bold">
-                            <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]"></span>
+                          <span className="text-red-600 flex items-center gap-1 font-bold">
+                            <AlertTriangle className="w-4 h-4 text-red-600" />
                             {t.apiConnectError}
                           </span>
                         )}
@@ -371,21 +452,21 @@ function SettingsModal({
                   ) : (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+                        <label className="text-xs font-semibold text-slate-700">
                           {t.apiCustomLabel}
                         </label>
-                        <a 
-                          href="https://aistudio.google.com/app/apikey" 
-                          target="_blank" 
+                        <a
+                          href="https://aistudio.google.com/app/apikey"
+                          target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[10px] font-bold text-blue-800 hover:underline flex items-center gap-1"
+                          className="text-xs font-semibold text-blue-800 hover:underline flex items-center gap-1"
                         >
                           {t.apiGuide}
-                          <ExternalLink className="w-2.5 h-2.5" />
+                          <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
                       <div className="relative">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                           <Key className="w-4 h-4" />
                         </div>
                         <input
@@ -393,21 +474,20 @@ function SettingsModal({
                           value={apiKey}
                           onChange={(e) => onApiKeyChange(e.target.value)}
                           placeholder={t.apiPlaceholder}
-                          className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm font-mono"
+                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm font-mono"
                         />
                       </div>
-                      <p className="text-[10px] text-slate-400 italic">
-                        {t.apiNote}
-                      </p>
+                      <p className="text-xs text-slate-500">{t.apiNote}</p>
                     </div>
                   )}
                 </div>
 
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] text-sm mt-2"
+                  className="w-full bg-[#1E3A8A] hover:bg-blue-950 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm cursor-pointer"
                 >
-                  Xong
+                  Đóng & Lưu cài đặt
                 </button>
               </div>
             </div>
@@ -418,28 +498,35 @@ function SettingsModal({
   );
 }
 
-function HistoryModal({ 
-  show, 
-  onClose, 
-  history, 
-  onSelect, 
-  onDelete, 
-  onClear, 
-  t 
-}: { 
-  show: boolean; 
-  onClose: () => void; 
-  history: HistoryItem[]; 
-  onSelect: (item: HistoryItem) => void; 
-  onDelete: (e: React.MouseEvent, item: HistoryItem) => void; 
-  onClear: () => void; 
-  t: any; 
+function HistoryModal({
+  show,
+  onClose,
+  history,
+  onSelect,
+  onDelete,
+  onClear,
+  t,
+}: {
+  show: boolean;
+  onClose: () => void;
+  history: HistoryItem[];
+  onSelect: (item: HistoryItem) => void;
+  onDelete: (e: React.MouseEvent, item: HistoryItem) => void;
+  onClear: () => void;
+  t: any;
 }) {
   const [search, setSearch] = useState('');
-  const filteredHistory = history.filter(item => 
-    item.keyword.toLowerCase().includes(search.toLowerCase()) ||
-    (item.boldWords && item.boldWords.toLowerCase().includes(search.toLowerCase()))
+  const filteredHistory = history.filter(
+    (item) =>
+      item.keyword.toLowerCase().includes(search.toLowerCase()) ||
+      (item.unitTitle && item.unitTitle.toLowerCase().includes(search.toLowerCase())) ||
+      (item.boldWords && item.boldWords.toLowerCase().includes(search.toLowerCase()))
   );
+
+  const getPartName = (partId?: string) => {
+    const found = EXAM_PARTS.find((p) => p.id === partId);
+    return found ? `${found.roman}. ${found.nameVi}` : 'VI. Dictionary Entry';
+  };
 
   return (
     <AnimatePresence>
@@ -450,51 +537,48 @@ function HistoryModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]"
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]"
           >
-            {/* Header */}
             <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-800">
+                <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-800">
                   <History className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold text-slate-800">{t.historyTitle}</h2>
-                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full">
-                      {history.length} bài
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400">Xem và mở lại các bài tập đã tạo</p>
+                  <h2 className="text-base font-bold text-slate-900">
+                    {t.historyTitle} ({history.length})
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Mở lại nhanh các phần đề thi đã biên soạn và thẩm định
+                  </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Search & Actions Bar */}
             {history.length > 0 && (
               <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between gap-3">
                 <input
                   type="text"
-                  placeholder="Tìm kiếm từ khóa..."
+                  placeholder="Tìm theo từ khóa hoặc Unit..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-800"
+                  className="flex-1 px-3.5 py-2 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-800"
                 />
                 <button
                   onClick={onClear}
-                  className="text-xs font-bold text-red-500 hover:text-red-700 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 flex-shrink-0"
+                  className="text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   {t.clearHistory}
@@ -502,21 +586,20 @@ function HistoryModal({
               </div>
             )}
 
-            {/* List */}
             <div className="flex-1 overflow-y-auto p-6 space-y-2.5 custom-scrollbar">
               {history.length === 0 ? (
                 <div className="py-12 flex flex-col items-center justify-center text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-3">
-                    <History className="w-8 h-8 text-blue-300" />
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-3">
+                    <History className="w-7 h-7 text-slate-400" />
                   </div>
-                  <p className="text-sm font-bold text-slate-700">Chưa có lịch sử soạn bài</p>
-                  <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">
-                    Khi bạn nhập từ khóa và bấm "Tạo", bài tập sẽ tự động được lưu tại đây.
+                  <p className="text-sm font-bold text-slate-800">Chưa có đề bài nào trong kho lưu trữ</p>
+                  <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">
+                    Mỗi phần đề thi sau khi biên soạn sẽ tự động lưu tại đây để thầy cô mở lại bất cứ lúc nào.
                   </p>
                 </div>
               ) : filteredHistory.length === 0 ? (
-                <div className="py-8 text-center text-slate-400 text-xs">
-                  Không tìm thấy bài tập nào phù hợp với "{search}".
+                <div className="py-8 text-center text-slate-500 text-xs">
+                  Không tìm thấy bài tập nào khớp với "{search}".
                 </div>
               ) : (
                 filteredHistory.map((item, idx) => (
@@ -526,39 +609,38 @@ function HistoryModal({
                       onSelect(item);
                       onClose();
                     }}
-                    className="group p-3.5 bg-slate-50 hover:bg-blue-50/70 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer flex items-center justify-between gap-3 shadow-sm hover:shadow"
+                    className="group p-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-blue-800 rounded-xl transition-all cursor-pointer flex items-center justify-between gap-4"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-bold text-sm text-slate-800 group-hover:text-blue-900 truncate">
+                      <div className="flex items-center gap-2 text-sm flex-wrap">
+                        <span className="font-bold text-slate-900 group-hover:text-blue-900 truncate">
+                          {getPartName(item.partId)}
+                        </span>
+                        <span className="text-slate-300" aria-hidden="true">
+                          ·
+                        </span>
+                        <span className="text-xs font-semibold text-blue-800 truncate">
                           {item.keyword}
                         </span>
-                        {item.level && (
-                          <span className="text-[10px] font-bold text-blue-800 bg-blue-100/70 px-2 py-0.5 rounded-md border border-blue-200 flex-shrink-0">
-                            {item.level === 'grade6' ? 'Lớp 6' :
-                             item.level === 'grade7' ? 'Lớp 7' :
-                             item.level === 'grade8' ? 'Lớp 8' :
-                             item.level === 'grade9' ? 'Lớp 9' : 'Tuyển sinh 10'}
-                          </span>
-                        )}
                       </div>
-                      {item.boldWords && (
-                        <p className="text-[11px] text-slate-500 truncate">
-                          <span className="font-semibold text-slate-600">In đậm:</span> {item.boldWords}
+                      {item.unitTitle && (
+                        <p className="text-xs text-slate-500 truncate mt-1">
+                          SGK Global Success: {item.unitTitle}
                         </p>
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      <span className="text-[11px] font-bold text-blue-800 bg-white border border-blue-200 px-2.5 py-1 rounded-lg shadow-2xs group-hover:bg-blue-800 group-hover:text-white transition-colors">
-                        Mở bài
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs font-semibold text-blue-800 group-hover:underline">
+                        Mở đề
                       </span>
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete(e, item);
                         }}
-                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Xóa bài này"
+                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        title="Xóa đề này"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -568,11 +650,11 @@ function HistoryModal({
               )}
             </div>
 
-            {/* Footer */}
             <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
               <button
+                type="button"
                 onClick={onClose}
-                className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition-colors"
+                className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-xl text-xs transition-colors cursor-pointer"
               >
                 Đóng
               </button>
@@ -584,15 +666,15 @@ function HistoryModal({
   );
 }
 
-function AppInfoModal({ 
-  show, 
-  onClose, 
-  t, 
-  lang 
-}: { 
-  show: boolean; 
-  onClose: () => void; 
-  t: any; 
+function AppInfoModal({
+  show,
+  onClose,
+  t,
+  lang,
+}: {
+  show: boolean;
+  onClose: () => void;
+  t: any;
   lang: 'vi' | 'en';
 }) {
   const [activeTab, setActiveTab] = useState<'info' | 'changelog'>('info');
@@ -606,129 +688,126 @@ function AppInfoModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]"
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            className="relative w-full max-w-xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]"
           >
-            {/* Header */}
             <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-800 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-900/20">
+                <div className="w-10 h-10 bg-[#1E3A8A] rounded-xl flex items-center justify-center text-white">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-slate-800">
-                    {lang === 'vi' ? 'Thông tin ứng dụng' : 'Application Information'}
+                  <h2 className="text-base font-bold text-slate-900">
+                    {lang === 'vi' ? 'Thông tin ứng dụng & Phiên bản' : 'Application Information'}
                   </h2>
-                  <p className="text-xs text-slate-400">SOẠN TỪ ĐIỂN v4.7.0 - by Thầy Nhân Nhân</p>
+                  <p className="text-xs text-slate-500">
+                    SOẠN ĐỀ TIẾNG ANH GLOBAL SUCCESS v6.0.0 · Thầy Nhân Nhân
+                  </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-100 bg-slate-50/70 px-6 pt-2">
+            <div className="flex border-b border-slate-200 bg-slate-50 px-6 pt-2 gap-6">
               <button
+                type="button"
                 onClick={() => setActiveTab('info')}
-                className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 flex items-center gap-2 ${
+                className={`pb-3 text-xs font-bold transition-all border-b-2 cursor-pointer ${
                   activeTab === 'info'
-                    ? 'border-blue-800 text-blue-800'
-                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                    ? 'border-blue-800 text-blue-900'
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
-                <Info className="w-3.5 h-3.5" />
-                {lang === 'vi' ? 'Giới thiệu & Tác giả' : 'About & Author'}
+                {lang === 'vi' ? '01. Giới thiệu & Tác giả' : '01. About & Author'}
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab('changelog')}
-                className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 flex items-center gap-2 ${
+                className={`pb-3 text-xs font-bold transition-all border-b-2 cursor-pointer ${
                   activeTab === 'changelog'
-                    ? 'border-blue-800 text-blue-800'
-                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                    ? 'border-blue-800 text-blue-900'
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                {lang === 'vi' ? 'Nhật ký thay đổi (Changelog)' : 'Release Notes'}
+                {lang === 'vi' ? '02. Nhật ký phiên bản' : '02. Release Notes'}
               </button>
             </div>
 
-            {/* Content */}
             <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
               {activeTab === 'info' ? (
-                <div className="space-y-4 text-slate-700 text-xs">
-                  {/* Author Card */}
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50/40 border border-blue-100 rounded-2xl p-4 flex items-center gap-4">
+                <div className="space-y-5 text-slate-700 text-xs">
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center gap-4">
                     <img
                       src="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
-                      alt="Logo"
-                      className="w-14 h-14 rounded-xl object-cover border-2 border-white shadow-sm flex-shrink-0"
+                      alt="Logo Thầy Nhân Nhân"
+                      className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 block">Tác giả biên soạn</span>
-                      <h4 className="text-base font-black text-slate-900 leading-tight">Thầy Nhân Nhân</h4>
-                      <p className="text-[11px] text-slate-600 font-medium mt-0.5">
-                        Giáo viên Tiếng Anh - Trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM
+                      <span className="text-xs font-semibold text-blue-800 block">
+                        Tác giả phát triển
+                      </span>
+                      <h4 className="text-base font-bold text-slate-900 leading-tight mt-0.5">
+                        Thầy Nhân Nhân
+                      </h4>
+                      <p className="text-xs text-slate-600 mt-0.5">
+                        Giáo viên Tiếng Anh · Trường THCS Tùng Thiện Vương, Phường Phú Định, TP.HCM
                       </p>
                       <a
                         href="mailto:nhanntsgu@gmail.com"
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-800 hover:underline mt-1"
+                        className="inline-block text-xs font-semibold text-blue-800 hover:underline mt-1"
                       >
                         nhanntsgu@gmail.com
                       </a>
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-2">
-                    <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Mục đích ứng dụng</h5>
-                    <p className="text-slate-600 leading-relaxed">
-                      {t.appDescription.split('nhanntsgu@gmail.com').map((part: string, i: number, arr: any[]) => (
-                        <React.Fragment key={i}>
-                          {part}
-                          {i < arr.length - 1 && (
-                            <a href="mailto:nhanntsgu@gmail.com" className="text-blue-800 font-semibold hover:underline">
-                              nhanntsgu@gmail.com
-                            </a>
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </p>
+                  <div className="space-y-2">
+                    <h5 className="font-bold text-slate-900 text-xs">Giới thiệu hệ thống</h5>
+                    <p className="text-slate-600 leading-relaxed text-xs">{t.appDescription}</p>
                   </div>
 
-                  {/* Key Highlights */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                      <span className="font-bold text-slate-800 block mb-1">🎯 5 Cấp độ chuẩn năng lực</span>
-                      <p className="text-[11px] text-slate-500 leading-normal">
-                        Lớp 6 (Đầu A2), Lớp 7 (A2), Lớp 8 (A2/B1), Lớp 9 (B1) và Tuyển sinh 10 (B1+).
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-900 block mb-1">
+                        01. 100% Ngữ liệu Global Success
+                      </span>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Tích hợp toàn bộ 12 Unit của từng khối lớp (6, 7, 8, 9) thuộc bộ sách Tiếng Anh Global Success.
                       </p>
                     </div>
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                      <span className="font-bold text-slate-800 block mb-1">📝 Cụm từ in đậm 2-3 từ</span>
-                      <p className="text-[11px] text-slate-500 leading-normal">
-                        Chuẩn hóa câu 1-2 đề TS10: bắt buộc cụm từ in đậm phải từ 2 đến 3 từ, không in đậm 1 từ đơn.
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-900 block mb-1">
+                        02. Đủ 7 Phần Đề Thi TP.HCM 2025
+                      </span>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Multiple Choice, Signs, Cloze Text (80–100 chữ), Reading T/F (180–200 chữ), Word Form, Dictionary, Writing.
                       </p>
                     </div>
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                      <span className="font-bold text-slate-800 block mb-1">📄 Xuất file Word (.docx)</span>
-                      <p className="text-[11px] text-slate-500 leading-normal">
-                        Xuất file Word chuẩn định dạng, canh lề bài bản, sẵn sàng in hoặc chèn vào đề kiểm tra.
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-900 block mb-1">
+                        03. Đã thẩm định & Kiểm định chéo
+                      </span>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Kiểm tra ma trận từ loại, phiên âm IPA và loại bỏ hoàn toàn phương án gây tranh cãi.
                       </p>
                     </div>
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                      <span className="font-bold text-slate-800 block mb-1">⚡ Lưu lịch sử tự động</span>
-                      <p className="text-[11px] text-slate-500 leading-normal">
-                        Toàn bộ từ khóa và bài tập đã tạo được lưu cục bộ an toàn, truy cập lại nhanh ở góc phải thanh Header.
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                      <span className="font-bold text-slate-900 block mb-1">
+                        04. Ghép Đề 40 Câu & Xuất Word
+                      </span>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Lưu từng phần vào Giỏ Đề Thi 40 câu hoặc tạo trọn bộ đề hoàn chỉnh xuất ra file Word (.docx).
                       </p>
                     </div>
                   </div>
@@ -736,21 +815,23 @@ function AppInfoModal({
               ) : (
                 <div className="space-y-6">
                   {changelog.map((entry, idx) => (
-                    <div key={entry.version} className={`pb-6 ${idx !== changelog.length - 1 ? 'border-b border-slate-100' : ''}`}>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="px-3 py-1 bg-blue-800 text-white text-[10px] font-bold rounded-full">
+                    <div
+                      key={entry.version}
+                      className={`pb-5 ${
+                        idx !== changelog.length - 1 ? 'border-b border-slate-100' : ''
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2.5 text-xs">
+                        <span className="font-bold text-blue-900">
                           {t.versionLabel} {entry.version}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-medium">
+                        <span className="text-slate-500">
                           {t.dateLabel}: {entry.date}
                         </span>
                       </div>
-                      <ul className="space-y-2">
+                      <ul className="space-y-1.5 list-disc pl-4 text-xs text-slate-600 leading-relaxed">
                         {entry.changes[lang].map((change, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
-                            {change}
-                          </li>
+                          <li key={i}>{change}</li>
                         ))}
                       </ul>
                     </div>
@@ -759,11 +840,11 @@ function AppInfoModal({
               )}
             </div>
 
-            {/* Footer */}
             <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
               <button
+                type="button"
                 onClick={onClose}
-                className="px-5 py-2 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs transition-colors shadow-sm"
+                className="px-5 py-2 bg-[#1E3A8A] hover:bg-blue-950 text-white font-semibold rounded-xl text-xs transition-colors cursor-pointer"
               >
                 Đóng
               </button>
@@ -778,13 +859,15 @@ function AppInfoModal({
 function GeneratingModal({
   show,
   status,
-  keyword,
+  partSpec,
+  unitTitle,
   loadingMsg,
   lang,
 }: {
   show: boolean;
   status: 'loading' | 'reviewing' | 'success';
-  keyword: string;
+  partSpec: ExamPartSpec;
+  unitTitle: string;
   loadingMsg: string;
   lang: 'vi' | 'en';
 }) {
@@ -796,139 +879,116 @@ function GeneratingModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 15 }}
-            transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-7 border border-slate-100 flex flex-col items-center text-center overflow-hidden"
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 border border-slate-200 flex flex-col overflow-hidden"
           >
-            {status === 'loading' || status === 'reviewing' ? (
-              <div className="flex flex-col items-center w-full">
-                {/* Step Indicator Pill */}
-                <div className="flex items-center gap-1.5 mb-4">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                    status === 'loading'
-                      ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                      : 'bg-amber-100 text-amber-800 border border-amber-200'
-                  }`}>
-                    {status === 'loading'
-                      ? (lang === 'vi' ? 'Bước 1/2: Soạn thảo đề' : 'Step 1/2: Drafting')
-                      : (lang === 'vi' ? 'Bước 2/2: Tổ trưởng CM rà soát' : 'Step 2/2: HoD QA Review')}
-                  </span>
-                </div>
-
-                {/* AI Animation Ring */}
-                <div className="relative w-20 h-20 mb-5 flex items-center justify-center">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
-                    className={`absolute inset-0 rounded-full border-4 ${
-                      status === 'loading'
-                        ? 'border-blue-100 border-t-blue-800 border-r-blue-600'
-                        : 'border-amber-100 border-t-amber-600 border-r-emerald-600'
-                    }`}
-                  />
-                  <motion.div
-                    animate={{ scale: [1, 1.12, 1] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${
-                      status === 'loading'
-                        ? 'bg-blue-50 text-blue-800'
-                        : 'bg-amber-50 text-amber-700'
-                    }`}
-                  >
-                    {status === 'loading' ? (
-                      <Sparkles className="w-6 h-6 text-blue-800" />
-                    ) : (
-                      <ShieldCheck className="w-6 h-6 text-amber-700" />
-                    )}
-                  </motion.div>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-bold text-slate-800 mb-1">
-                  {status === 'loading'
-                    ? (lang === 'vi' ? 'Đang soạn bài tập...' : 'Generating Exercise...')
-                    : (lang === 'vi' ? 'Tổ trưởng CM đang thẩm định...' : 'Head of Dept Reviewing...')}
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">
+                  {status === 'success'
+                    ? lang === 'vi'
+                      ? 'Hoàn tất biên soạn & thẩm định!'
+                      : 'Drafting & Verification Complete!'
+                    : lang === 'vi'
+                    ? `Đang soạn ${partSpec.roman}. ${partSpec.nameVi}`
+                    : `Generating ${partSpec.roman}. ${partSpec.nameEn}`}
                 </h3>
-                <div className="px-3 py-1 bg-slate-100 rounded-full text-slate-600 text-xs font-semibold mb-3 truncate max-w-full">
-                  {lang === 'vi' ? 'Từ khóa:' : 'Keyword:'} <span className="text-blue-800 font-bold">"{keyword}"</span>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  SGK Global Success: <span className="font-bold text-blue-900">{unitTitle}</span>
+                </p>
+              </div>
+              {status === 'success' ? (
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
-
-                {/* Step Message */}
-                <div className="min-h-[48px] flex items-center justify-center px-2">
-                  <AnimatePresence mode="wait">
-                    <motion.p
-                      key={status === 'reviewing' ? 'hod-review' : loadingMsg}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      className="text-xs font-medium text-slate-600 leading-relaxed"
-                    >
-                      {status === 'reviewing'
-                        ? (lang === 'vi'
-                            ? 'Đang kiểm tra chéo 5 cụm in đậm với từng chỗ trống để đảm bảo đáp án chính xác tuyệt đối, không gây tranh cãi...'
-                            : 'Cross-checking all 5 bold phrases against each blank to guarantee unambiguous, controversy-free answers...')
-                        : loadingMsg}
-                    </motion.p>
-                  </AnimatePresence>
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-800 shrink-0">
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 </div>
+              )}
+            </div>
 
-                {/* Progress bar */}
-                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-4">
-                  <motion.div
-                    className={`h-full rounded-full ${
-                      status === 'loading'
-                        ? 'bg-gradient-to-r from-blue-700 to-indigo-600'
-                        : 'bg-gradient-to-r from-amber-500 to-emerald-600'
-                    }`}
-                    animate={{ x: ["-100%", "100%"] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  />
+            <div className="space-y-3 mb-5">
+              <div
+                className={`p-3.5 rounded-xl border transition-all flex items-start gap-3 ${
+                  status === 'loading'
+                    ? 'bg-blue-50/60 border-blue-300'
+                    : 'bg-slate-50 border-slate-200'
+                }`}
+              >
+                <div className="mt-0.5 shrink-0">
+                  {status === 'loading' ? (
+                    <Loader2 className="w-4 h-4 text-blue-800 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-slate-900">
+                    01. Biên soạn theo Ma trận Sở GD&ĐT ({partSpec.questionRange})
+                  </div>
+                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                    {status === 'loading'
+                      ? loadingMsg
+                      : 'Đã hoàn thành bản thảo bám sát từ vựng & ngữ pháp sách Global Success.'}
+                  </p>
                 </div>
               </div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center w-full py-2"
+
+              <div
+                className={`p-3.5 rounded-xl border transition-all flex items-start gap-3 ${
+                  status === 'reviewing'
+                    ? 'bg-amber-50/70 border-amber-300'
+                    : status === 'success'
+                    ? 'bg-emerald-50/50 border-emerald-200'
+                    : 'bg-slate-50/60 border-slate-200 opacity-60'
+                }`}
               >
-                {/* Green Checkmark Icon */}
-                <motion.div
-                  initial={{ scale: 0, rotate: -45 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 18 }}
-                  className="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 border-4 border-emerald-100 shadow-lg shadow-emerald-500/20"
-                >
-                  <CheckCircle2 className="w-12 h-12 text-emerald-600" />
-                </motion.div>
+                <div className="mt-0.5 shrink-0">
+                  {status === 'reviewing' ? (
+                    <Loader2 className="w-4 h-4 text-amber-700 animate-spin" />
+                  ) : status === 'success' ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  ) : (
+                    <ShieldCheck className="w-4 h-4 text-slate-400" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-slate-900">
+                    {status === 'success' ? '02. Đã thẩm định' : '02. Thẩm định & chống tranh cãi'}
+                  </div>
+                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                    {status === 'reviewing'
+                      ? 'Đang kiểm tra chéo ma trận từ loại, độ dài văn bản và tính độc bản của từng đáp án...'
+                      : status === 'success'
+                      ? 'Đã thẩm định: Đúng ma trận 100%, không có phương án gây tranh cãi!'
+                      : 'Chờ bản thảo hoàn tất để tiến hành thẩm định chéo...'}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                {/* Success Title */}
-                <motion.h3
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-xl font-black text-emerald-700 tracking-tight mb-1"
-                >
-                  {lang === 'vi' ? 'Đã thẩm định & Tạo xong!' : 'Verified & Complete!'}
-                </motion.h3>
-
-                {/* Subtitle */}
-                <motion.p
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 }}
-                  className="text-xs font-medium text-slate-500 mt-1 leading-relaxed"
-                >
-                  {lang === 'vi'
-                    ? 'Đề và đáp án đã được Tổ trưởng chuyên môn rà soát, đảm bảo không có đáp án gây tranh cãi!'
-                    : 'Questions & answers verified by Head of Department QA with zero ambiguity!'}
-                </motion.p>
-              </motion.div>
-            )}
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <motion.div
+                className={`h-full rounded-full ${
+                  status === 'success'
+                    ? 'bg-emerald-600'
+                    : status === 'reviewing'
+                    ? 'bg-amber-600'
+                    : 'bg-blue-800'
+                }`}
+                initial={{ width: '15%' }}
+                animate={{
+                  width: status === 'loading' ? '48%' : status === 'reviewing' ? '88%' : '100%',
+                }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              />
+            </div>
           </motion.div>
         </div>
       )}
@@ -937,8 +997,28 @@ function GeneratingModal({
 }
 
 export default function App() {
+  const [activePartId, setActivePartId] = useState<
+    'part1' | 'part2' | 'part3' | 'part4' | 'part5' | 'part6' | 'part7' | 'full_exam'
+  >('part6');
+  const [gradeLevel, setGradeLevel] = useState<string>(() => {
+    return localStorage.getItem('dictionary_grade_level') || 'entrance10';
+  });
+  const [selectedUnitId, setSelectedUnitId] = useState<string>('all');
+  const [pronunciationEnding, setPronunciationEnding] = useState<'ed' | 's_es'>('ed');
+
   const [keyword, setKeyword] = useState('');
+  const [targetBoldWords, setTargetBoldWords] = useState<string>(() => {
+    return localStorage.getItem('dictionary_bold_words') || '';
+  });
+  const [showAdvancedBold, setShowAdvancedBold] = useState<boolean>(false);
+
   const [result, setResult] = useState('');
+  const [examCart, setExamCart] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem('gs_exam_cart_v1');
+    return saved ? JSON.parse(saved) : {};
+  });
+  const [cartSaveToast, setCartSaveToast] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [showGeneratingModal, setShowGeneratingModal] = useState(false);
   const [generatingStatus, setGeneratingStatus] = useState<'loading' | 'reviewing' | 'success'>('loading');
@@ -957,26 +1037,93 @@ export default function App() {
 
   const [showSettings, setShowSettings] = useState(() => {
     const mode = localStorage.getItem('gemini_api_mode') || 'default';
-    const hasKey = mode === 'default' 
-      ? true 
-      : !!localStorage.getItem('gemini_api_key');
+    const hasKey = mode === 'default' ? true : !!localStorage.getItem('gemini_api_key');
     return !hasKey;
   });
   const [showAppInfoModal, setShowAppInfoModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [copyQuestionsSuccess, setCopyQuestionsSuccess] = useState(false);
+  const [showAnswers, setShowAnswers] = useState(true);
+  const [isEditingResult, setIsEditingResult] = useState(false);
+
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [selectedModel, setSelectedModel] = useState<'gemini-3.6-flash' | 'gemini-3.5-flash-lite'>('gemini-3.5-flash-lite');
-  const [gradeLevel, setGradeLevel] = useState<string>(() => {
-    return localStorage.getItem('dictionary_grade_level') || 'entrance10';
-  });
-  const [targetBoldWords, setTargetBoldWords] = useState<string>(() => {
-    return localStorage.getItem('dictionary_bold_words') || '';
-  });
+
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('dictionary_history_v2');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const t = translations[lang];
+  const resultRef = React.useRef<HTMLDivElement>(null);
+
+  const unitsForCurrentGrade = React.useMemo(() => getUnitsForGrade(gradeLevel), [gradeLevel]);
+  const selectedUnitObj: GlobalSuccessUnit | undefined = React.useMemo(
+    () => unitsForCurrentGrade.find((u) => u.id === selectedUnitId),
+    [unitsForCurrentGrade, selectedUnitId]
+  );
+  const activePartSpec: ExamPartSpec = React.useMemo(
+    () => EXAM_PARTS.find((p) => p.id === activePartId) || EXAM_PARTS[5],
+    [activePartId]
+  );
+
+  // Reset selectedUnitId to 'all' if grade changes and unit doesn't belong to new grade
+  useEffect(() => {
+    if (selectedUnitId !== 'all' && !unitsForCurrentGrade.some((u) => u.id === selectedUnitId)) {
+      setSelectedUnitId('all');
+    }
+  }, [gradeLevel, unitsForCurrentGrade, selectedUnitId]);
+
+  useEffect(() => {
+    localStorage.setItem('dictionary_history_v2', JSON.stringify(history));
+  }, [history]);
+
+  useEffect(() => {
+    localStorage.setItem('gs_exam_cart_v1', JSON.stringify(examCart));
+  }, [examCart]);
+
+  useEffect(() => {
+    if (result && window.innerWidth < 1024) {
+      resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [result]);
+
+  useEffect(() => {
+    let interval: any;
+    if (isLoading) {
+      setLoadingMsgIndex(0);
+      interval = setInterval(() => {
+        setLoadingMsgIndex((prev) => (prev + 1) % t.loadingMessages.length);
+      }, 2800);
+    }
+    return () => clearInterval(interval);
+  }, [isLoading, t.loadingMessages.length]);
+
+  useEffect(() => {
+    setApiKeyStatus('checking');
+    const delay = apiMode === 'custom' ? 800 : 0;
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/gemini/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey: customApiKey, apiMode }),
+        });
+        const data = await res.json();
+        if (res.ok && data.valid) {
+          setApiKeyStatus('valid');
+        } else {
+          setApiKeyStatus('invalid');
+        }
+      } catch (err) {
+        console.error('API Connection checking failed:', err);
+        setApiKeyStatus('invalid');
+      }
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [apiMode, customApiKey]);
 
   const handleGradeLevelChange = (val: string) => {
     setGradeLevel(val);
@@ -988,73 +1135,6 @@ export default function App() {
     localStorage.setItem('dictionary_bold_words', val);
   };
 
-  const sampleKeywords = [
-    'benefit', 'information', 'aware', 'environment', 'technology', 
-    'education', 'community', 'opportunity', 'challenge', 'success',
-    'experience', 'knowledge', 'resource', 'solution', 'impact',
-    'development', 'innovation', 'creativity', 'communication', 'leadership'
-  ];
-
-  const generateRandomKeyword = () => {
-    const randomIndex = Math.floor(Math.random() * sampleKeywords.length);
-    setKeyword(sampleKeywords[randomIndex]);
-  };
-
-  const t = translations[lang];
-
-  const resultRef = React.useRef<HTMLDivElement>(null);
-
-  // Save history to localStorage
-  useEffect(() => {
-    localStorage.setItem('dictionary_history_v2', JSON.stringify(history));
-  }, [history]);
-
-  // Scroll to result on mobile when it appears
-  useEffect(() => {
-    if (result && window.innerWidth < 1024) {
-      resultRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [result]);
-
-  // Loading messages rotation
-  useEffect(() => {
-    let interval: any;
-    if (isLoading) {
-      setLoadingMsgIndex(0);
-      interval = setInterval(() => {
-        setLoadingMsgIndex((prev) => (prev + 1) % t.loadingMessages.length);
-      }, 3000);
-    }
-    return () => clearInterval(interval);
-  }, [isLoading, t.loadingMessages.length]);
-
-  // key checking effect
-  useEffect(() => {
-    setApiKeyStatus('checking');
-
-    const delay = apiMode === 'custom' ? 800 : 0;
-    const timer = setTimeout(async () => {
-      try {
-        const res = await fetch('/api/gemini/check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ apiKey: customApiKey, apiMode })
-        });
-        const data = await res.json();
-        if (res.ok && data.valid) {
-          setApiKeyStatus('valid');
-        } else {
-          setApiKeyStatus('invalid');
-        }
-      } catch (err) {
-        console.error("API Connection checking failed:", err);
-        setApiKeyStatus('invalid');
-      }
-    }, delay);
-
-    return () => clearTimeout(timer);
-  }, [apiMode, customApiKey]);
-
   const handleApiKeyChange = (value: string) => {
     setCustomApiKey(value);
     localStorage.setItem('gemini_api_key', value);
@@ -1065,43 +1145,114 @@ export default function App() {
     localStorage.setItem('gemini_api_mode', mode);
   };
 
+  // Suggested chips based on activePartId & selected Global Success Unit
+  const currentSuggestions = React.useMemo(() => {
+    const unitPool = selectedUnitObj
+      ? selectedUnitObj
+      : {
+          vocabulary: unitsForCurrentGrade.flatMap((u) => u.vocabulary.slice(0, 2)).slice(0, 14),
+          phrasalVerbsAndCollocations: unitsForCurrentGrade
+            .flatMap((u) => u.phrasalVerbsAndCollocations.slice(0, 2))
+            .slice(0, 12),
+          readingThemes: unitsForCurrentGrade.flatMap((u) => u.readingThemes.slice(0, 1)).slice(0, 8),
+          grammar: unitsForCurrentGrade.flatMap((u) => u.grammar.slice(0, 1)).slice(0, 8),
+        };
+
+    if (activePartId === 'part2') {
+      return SIGN_SCENARIOS;
+    }
+    if (activePartId === 'part3' || activePartId === 'part4') {
+      return unitPool.readingThemes;
+    }
+    if (activePartId === 'part7') {
+      return [...unitPool.phrasalVerbsAndCollocations.slice(0, 5), ...WRITING_STRUCTURES.slice(0, 4)];
+    }
+    return unitPool.vocabulary;
+  }, [activePartId, selectedUnitObj, unitsForCurrentGrade]);
+
+  const invalidBoldPhrases = React.useMemo(() => {
+    if (activePartId !== 'part6' || !targetBoldWords.trim()) return [];
+    return targetBoldWords
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .filter((phrase) => {
+        const wc = phrase.split(/\s+/).length;
+        return wc < 2 || wc > 3;
+      });
+  }, [activePartId, targetBoldWords]);
+
+  const saveCurrentToExamCart = () => {
+    if (!result || activePartId === 'full_exam') return;
+    setExamCart((prev) => ({
+      ...prev,
+      [activePartId]: result,
+    }));
+    setCartSaveToast(true);
+    setTimeout(() => setCartSaveToast(false), 2200);
+  };
+
+  const assembleCartIntoFullExam = () => {
+    const orderedIds = ['part1', 'part2', 'part3', 'part4', 'part5', 'part6', 'part7'];
+    const questionBlocks: string[] = [];
+    const answerBlocks: string[] = [];
+
+    for (const pid of orderedIds) {
+      const content = examCart[pid];
+      if (!content) continue;
+      const spec = EXAM_PARTS.find((p) => p.id === pid);
+      const { questionsPart, answersPart } = splitQuestionsAndAnswers(content);
+      if (questionsPart) {
+        questionBlocks.push(questionsPart);
+      }
+      if (answersPart) {
+        answerBlocks.push(`**[${spec?.roman}. ${spec?.nameVi}]**\n${answersPart}`);
+      }
+    }
+
+    if (questionBlocks.length === 0) return;
+
+    const combined = `${questionBlocks.join('\n\n')}\n\n**ĐÁP ÁN**\n${answerBlocks.join('\n\n')}`;
+    setActivePartId('full_exam');
+    setResult(combined);
+  };
+
   const exportToWord = async () => {
     if (!result) return;
 
     const lines = result.split('\n');
-    const paragraphs = lines.map(line => {
+    const paragraphs = lines.map((line) => {
       const cleanLine = line.trim();
-      
+
       if (cleanLine === '') {
         return new Paragraph({
-          children: [new TextRun("")],
+          children: [new TextRun('')],
           spacing: { after: 120 },
         });
       }
 
-      // Simple Markdown parser for Word export (handles **bold** and *italic*)
       const parts = cleanLine.split(/(\*\*.*?\*\*|\*.*?\*)/g);
-      
-      const children = parts.map(part => {
+
+      const children = parts.map((part) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           return new TextRun({
             text: part.slice(2, -2),
             bold: true,
-            font: "Times New Roman",
-            size: 24, // 12pt
+            font: 'Times New Roman',
+            size: 24,
           });
         }
         if (part.startsWith('*') && part.endsWith('*')) {
           return new TextRun({
             text: part.slice(1, -1),
             italics: true,
-            font: "Times New Roman",
+            font: 'Times New Roman',
             size: 24,
           });
         }
         return new TextRun({
           text: part,
-          font: "Times New Roman",
+          font: 'Times New Roman',
           size: 24,
         });
       });
@@ -1115,114 +1266,124 @@ export default function App() {
     });
 
     const doc = new Document({
-      sections: [{
-        properties: {},
-        children: paragraphs,
-      }],
+      sections: [
+        {
+          properties: {},
+          children: paragraphs,
+        },
+      ],
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, `Dictionary_Exercise_${keyword || 'Result'}.docx`);
+    saveAs(blob, `De_Tieng_Anh_Global_Success_${activePartSpec.roman}_${keyword || 'HCMC'}.docx`);
+  };
+
+  const writeFormattedClipboard = async (rawMarkdown: string) => {
+    const htmlContent = rawMarkdown
+      .split('\n')
+      .map((line) => {
+        const trimmedLine = line.trim();
+        if (trimmedLine === '') {
+          return '<p style="margin: 0; min-height: 1.2em; font-family: \'Times New Roman\'; font-size: 12pt;">&nbsp;</p>';
+        } else {
+          const formattedLine = line
+            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+            .replace(/\*(.*?)\*/g, '<i>$1</i>');
+          return `<p style="margin: 0; font-family: 'Times New Roman'; font-size: 12pt; line-height: 1.25;">${formattedLine}</p>`;
+        }
+      })
+      .join('');
+
+    const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+    const blobText = new Blob([rawMarkdown.replace(/\*\*/g, '').replace(/\*/g, '')], {
+      type: 'text/plain',
+    });
+
+    const data = [
+      new ClipboardItem({
+        'text/html': blobHtml,
+        'text/plain': blobText,
+      }),
+    ];
+
+    await navigator.clipboard.write(data);
   };
 
   const copyToClipboard = async () => {
     if (!result) return;
-
     try {
-      // Convert Markdown to HTML for rich text clipboard
-      // Use <p> tags for each line to ensure Paragraph Marks (Enter) in Word
-      const htmlContent = result
-        .split('\n')
-        .map(line => {
-          const trimmedLine = line.trim();
-          if (trimmedLine === '') {
-            return '<p style="margin: 0; min-height: 1.2em; font-family: \'Times New Roman\'; font-size: 12pt;">&nbsp;</p>';
-          } else {
-            let formattedLine = line
-              .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-              .replace(/\*(.*?)\*/g, '<i>$1</i>');
-            return `<p style="margin: 0; font-family: 'Times New Roman'; font-size: 12pt; line-height: 1.2;">${formattedLine}</p>`;
-          }
-        })
-        .join('');
-      
-      const blobHtml = new Blob([htmlContent], { type: 'text/html' });
-      const blobText = new Blob([result.replace(/\*\*/g, '').replace(/\*/g, '')], { type: 'text/plain' });
-      
-      const data = [new ClipboardItem({
-        'text/html': blobHtml,
-        'text/plain': blobText,
-      })];
-
-      await navigator.clipboard.write(data);
+      await writeFormattedClipboard(result);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
-    } catch (err) {
-      // Fallback to plain text if rich text fails
+    } catch {
       await navigator.clipboard.writeText(result.replace(/\*\*/g, '').replace(/\*/g, ''));
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     }
   };
 
+  const copyQuestionsOnly = async () => {
+    if (!result) return;
+    const questionsOnly = getQuestionsOnlyText(result);
+    try {
+      await writeFormattedClipboard(questionsOnly);
+      setCopyQuestionsSuccess(true);
+      setTimeout(() => setCopyQuestionsSuccess(false), 2000);
+    } catch {
+      await navigator.clipboard.writeText(questionsOnly.replace(/\*\*/g, '').replace(/\*/g, ''));
+      setCopyQuestionsSuccess(true);
+      setTimeout(() => setCopyQuestionsSuccess(false), 2000);
+    }
+  };
+
   const generateExercise = async () => {
     if (apiKeyStatus !== 'valid') {
-      setError(lang === 'vi' ? 'Vui lòng cấu hình API Key hợp lệ và hoạt động để sử dụng!' : 'Please configure a valid active API Key to use!');
+      setError(
+        lang === 'vi'
+          ? 'Vui lòng cấu hình API Key hợp lệ và hoạt động để sử dụng!'
+          : 'Please configure a valid active API Key to use!'
+      );
       setShowSettings(true);
       return;
     }
 
-    if (!keyword.trim()) {
-      setError(t.errorEmpty);
-      return;
+    // For Part 6 (Dictionary), if keyword is empty, pick the first vocabulary word from the selected Global Success unit
+    let effectiveKeyword = keyword.trim();
+    if (activePartId === 'part6' && !effectiveKeyword) {
+      effectiveKeyword = selectedUnitObj ? selectedUnitObj.vocabulary[0] : 'benefit';
+      setKeyword(effectiveKeyword);
     }
 
     setIsLoading(true);
     setShowGeneratingModal(true);
     setGeneratingStatus('loading');
+    setIsEditingResult(false);
     setError('');
     setResult('');
 
+    const unitTitleLabel = selectedUnitObj
+      ? `${selectedUnitObj.title} (${selectedUnitObj.viTitle})`
+      : 'Tổng hợp 12 Unit SGK Global Success';
+
     const tryGenerate = async (modelName: string) => {
-      const activeKey = customApiKey;
-      const levelPrompt = getGradeLevelPrompt(gradeLevel);
-
-      let boldWordsPrompt = '';
-      if (targetBoldWords && targetBoldWords.trim()) {
-        boldWordsPrompt = `\n\nYÊU CẦU BẮT BUỘC VỀ CÁC TỪ IN ĐẬM & PARAPHRASE ĐỀ BÀI:
-Người dùng ĐÃ CHỈ ĐỊNH CỤ THỂ các từ/cụm từ in đậm (sẽ là đáp án điền vào chỗ trống trong các câu ví dụ và câu hỏi) như sau:
-"${targetBoldWords.trim()}"
-
-QUY TẮC BẮT BUỘC:
-1. TẤT CẢ 5 câu ví dụ (Examples 1 đến 5) BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${keyword}".
-2. BẮT BUỘC phải sử dụng lần lượt đúng các từ/cụm từ trên làm các cụm từ được IN ĐẬM (**từ_in_đậm**) trong các câu ví dụ. Mỗi câu ví dụ PHẢI DÙNG một cụm in đậm KHÁC NHAU, TUYỆT ĐỐI KHÔNG TRÙNG NHAU.
-3. QUY TẮC ĐỘ DÀI: CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ (TUYỆT ĐỐI KHÔNG in đậm 1 từ đơn lẻ, TUYỆT ĐỐI KHÔNG in đậm cụm dài từ 4 từ trở lên, và KHÔNG in đậm cụm từ không liên quan đến "${keyword}").
-4. QUY TẮC PARAPHRASE VÀ ĐÁP ÁN DUY NHẤT (KHÔNG TRANH CÃI):
-   - Các câu hỏi bài tập (1, 2, 3, 4) PHẢI ĐƯỢC PARAPHRASE 100%, tuyệt đối không lấy nguyên câu hay sao chép cấu trúc từ phần câu ví dụ.
-   - Ngữ cảnh câu hỏi, vị trí từ loại, giới từ đi kèm phải được thiết kế chặt chẽ để mỗi chỗ trống _______ CHỈ CÓ DUY NHẤT 1 ĐÁP ÁN PHÙ HỢP NHẤT, tuyệt đối KHÔNG ra đề mơ hồ khiến 1 chỗ trống có thể điền được 2-3 đáp án khác nhau.
-5. Các cụm từ in đậm này BẮT BUỘC phải là đáp án chính xác tương ứng cho các câu hỏi 1, 2, 3, 4.`;
-      } else {
-        boldWordsPrompt = `\n\nQUY TẮC BẮT BUỘC VỀ TỪ KHÓA, PARAPHRASE VÀ ĐÁP ÁN KHÔNG GÂY TRANH CÃI:
-- Từ khóa chính: "${keyword}".
-- TẤT CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${keyword}". Tuyệt đối không được bỏ sót từ khóa ở bất kỳ câu nào.
-- TUYỆT ĐỐI KHÔNG ghi chữ "example 1", "example 2", "Example 1:", "Ex 1:" trước mỗi câu ví dụ. Bắt đầu trực tiếp bằng dấu chấm tròn "• " rồi viết câu văn.
-- Cụm từ in đậm ở CẢ 5 CÂU VÍ DỤ BẮT BUỘC phải là cụm từ / collocation CHỨA TRỰC TIẾP TỪ KHÓA "${keyword}". Tuyệt đối KHÔNG ĐƯỢC in đậm cụm từ ngẫu nhiên không chứa từ khóa "${keyword}".
-- QUY TẮC ĐỘ DÀI IN ĐẬM (NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ):
-  + CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ. TUYỆT ĐỐI KHÔNG IN ĐẬM 1 TỪ ĐƠN LẺ VÀ KHÔNG IN ĐẬM CỤM TỪ DÀI TỪ 4 TỪ TRỞ LÊN.
-  + BẮT BUỘC trong 5 câu ví dụ phải có ĐÚNG 2 CÂU in đậm CỤM 3 TỪ (chiếm 40%; ví dụ nếu từ khóa là "benefit": "**reap the benefit**", "**of great benefit**", "**have the benefit**", "**bring great benefit**", "**derive much benefit**"...).
-  + 3 CÂU CÒN LẠI in đậm CỤM 2 TỪ (chiếm 60%; ví dụ: "**health benefit**", "**benefit from**", "**mutual benefit**", "**financial benefit**"...).
-  + TUYỆT ĐỐI KHÔNG để 100% đều là cụm 2 từ.
-- Mỗi câu ví dụ có 1 cụm in đậm KHÁC NHAU hoàn toàn, không lặp lại.
-- NGUYÊN TẮC PARAPHRASE 100%: Các câu hỏi bài tập (1, 2, 3, 4) PHẢI ĐƯỢC PARAPHRASE TOÀN DIỆN, tuyệt đối không được chép lại câu ví dụ.
-- NGUYÊN TẮC ĐÁP ÁN DUY NHẤT (KHÔNG TRANH CÃI): Mỗi câu hỏi phải có ngữ pháp, vị trí từ loại hoặc ngữ cảnh loại trừ chặt chẽ để mỗi chỗ trống _______ chỉ chấp nhận ĐÚNG 1 ĐÁP ÁN DUY NHẤT trong số các cụm in đậm, không thể thay thế bằng cụm in đậm khác.`;
-      }
-
-      const fullPrompt = `${BASE_PROMPT}\n\n${levelPrompt}${boldWordsPrompt}\n\nTừ khóa: ${keyword}`;
+      const fullPrompt = buildExamPrompt({
+        partId: activePartId,
+        gradeLevel,
+        selectedUnitId,
+        keyword: effectiveKeyword,
+        targetBoldWords,
+        pronunciationEnding,
+      });
 
       const res = await fetch('/api/gemini/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: fullPrompt, model: modelName, apiKey: activeKey, apiMode })
+        body: JSON.stringify({
+          prompt: fullPrompt,
+          model: modelName,
+          apiKey: customApiKey,
+          apiMode,
+        }),
       });
 
       const data = await res.json();
@@ -1233,19 +1394,20 @@ QUY TẮC BẮT BUỘC:
     };
 
     const tryReview = async (draftText: string, modelName: string) => {
-      const activeKey = customApiKey;
       const res = await fetch('/api/gemini/review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           draft: draftText,
-          keyword,
+          partId: activePartId,
+          keyword: effectiveKeyword,
           gradeLevel,
+          selectedUnitId,
           targetBoldWords,
           model: modelName,
-          apiKey: activeKey,
-          apiMode
-        })
+          apiKey: customApiKey,
+          apiMode,
+        }),
       });
 
       const data = await res.json();
@@ -1260,7 +1422,7 @@ QUY TẮC BẮT BUỘC:
       try {
         return await tryReview(draftText, modelName);
       } catch (reviewErr: any) {
-        console.warn("Head of Department review fallback:", reviewErr);
+        console.warn('Head of Department review fallback:', reviewErr);
         if (modelName === 'gemini-3.6-flash') {
           try {
             return await tryReview(draftText, 'gemini-3.5-flash-lite');
@@ -1273,26 +1435,39 @@ QUY TẮC BẮT BUỘC:
     };
 
     try {
-      let draftText = await tryGenerate(selectedModel);
-      
+      const draftText = await tryGenerate(selectedModel);
+
       if (draftText) {
         const finalText = await runReviewStep(draftText, selectedModel);
         setResult(finalText);
+        if (activePartId !== 'full_exam') {
+          setExamCart((prev) => ({
+            ...prev,
+            [activePartId]: finalText,
+          }));
+        }
         setGeneratingStatus('success');
-        // Update history with result, level, and boldWords
-        setHistory(prev => {
+        const historyLabel =
+          effectiveKeyword || (selectedUnitObj ? selectedUnitObj.title : activePartSpec.nameVi);
+        setHistory((prev) => {
           const newHistory = [
-            { keyword, result: finalText, level: gradeLevel, boldWords: targetBoldWords }, 
-            ...prev.filter(item => item.keyword !== keyword)
-          ].slice(0, 10);
+            {
+              keyword: historyLabel,
+              result: finalText,
+              level: gradeLevel,
+              boldWords: targetBoldWords,
+              partId: activePartId,
+              unitTitle: unitTitleLabel,
+            },
+            ...prev.slice(0, 19),
+          ];
           return newHistory;
         });
 
-        // Show "Đã thẩm định & Tạo xong" with green checkmark for ~1.3s before smoothly closing
         setTimeout(() => {
           setShowGeneratingModal(false);
           setIsLoading(false);
-        }, 1300);
+        }, 1000);
       } else {
         setShowGeneratingModal(false);
         setIsLoading(false);
@@ -1300,32 +1475,30 @@ QUY TẮC BẮT BUỘC:
       }
     } catch (err: any) {
       console.error(err);
-      const isQuotaError = err?.message?.includes('429') || err?.message?.toLowerCase().includes('quota');
-      
+      const isQuotaError =
+        err?.message?.includes('429') || err?.message?.toLowerCase().includes('quota');
+
       if (isQuotaError && selectedModel === 'gemini-3.6-flash') {
-        // Fallback to Lite model if Flash fails due to quota
         try {
-          console.log("Flash quota exceeded, falling back to Lite...");
-          let draftText = await tryGenerate('gemini-3.5-flash-lite');
+          const draftText = await tryGenerate('gemini-3.5-flash-lite');
           if (draftText) {
             const finalText = await runReviewStep(draftText, 'gemini-3.5-flash-lite');
             setResult(finalText);
+            if (activePartId !== 'full_exam') {
+              setExamCart((prev) => ({
+                ...prev,
+                [activePartId]: finalText,
+              }));
+            }
             setGeneratingStatus('success');
-            setHistory(prev => {
-              const newHistory = [
-                { keyword, result: finalText, level: gradeLevel, boldWords: targetBoldWords }, 
-                ...prev.filter(item => item.keyword !== keyword)
-              ].slice(0, 10);
-              return newHistory;
-            });
             setTimeout(() => {
               setShowGeneratingModal(false);
               setIsLoading(false);
-            }, 1300);
+            }, 1000);
             return;
           }
         } catch (fallbackErr) {
-          console.error("Fallback failed:", fallbackErr);
+          console.error('Fallback failed:', fallbackErr);
         }
       }
 
@@ -1333,7 +1506,11 @@ QUY TẮC BẮT BUỘC:
       setIsLoading(false);
 
       if (isQuotaError) {
-        setError(lang === 'vi' ? "Hạn mức API đã hết (Rate Limit). Vui lòng nhập API Key khác." : "API Rate Limit exceeded. Please enter a different API Key.");
+        setError(
+          lang === 'vi'
+            ? 'Hạn mức API đã hết (Rate Limit). Vui lòng nhập API Key khác.'
+            : 'API Rate Limit exceeded. Please enter a different API Key.'
+        );
         setShowSettings(true);
       } else {
         setError(t.errorConnect);
@@ -1341,20 +1518,13 @@ QUY TẮC BẮT BUỘC:
     }
   };
 
-  const clearHistory = () => {
-    if (window.confirm(lang === 'vi' ? 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử?' : 'Are you sure you want to clear all history?')) {
-      setHistory([]);
-    }
-  };
-
-  const deleteHistoryItem = (e: React.MouseEvent, itemToDelete: HistoryItem) => {
-    e.stopPropagation();
-    setHistory(prev => prev.filter(item => item.keyword !== itemToDelete.keyword));
-  };
-
   const loadHistoryItem = (item: HistoryItem) => {
+    if (item.partId && EXAM_PARTS.some((p) => p.id === item.partId)) {
+      setActivePartId(item.partId as any);
+    }
     setKeyword(item.keyword);
     setResult(item.result);
+    setIsEditingResult(false);
     if (item.level) {
       setGradeLevel(item.level);
       localStorage.setItem('dictionary_grade_level', item.level);
@@ -1365,291 +1535,791 @@ QUY TẮC BẮT BUỘC:
     }
   };
 
+  const parsedDictionaryExam = React.useMemo(() => {
+    if (!result || activePartId !== 'part6') return null;
+    return parseDictionaryOutput(result);
+  }, [result, activePartId]);
+
+  const splitResult = React.useMemo(() => {
+    if (!result) return { questionsPart: '', answersPart: '' };
+    return splitQuestionsAndAnswers(result);
+  }, [result]);
+
+  const cartFilledCount = Object.keys(examCart).length;
+
   return (
-    <div className="min-h-screen lg:h-screen flex flex-col bg-[#f5f5f5] text-slate-900 font-sans selection:bg-blue-100 lg:overflow-hidden">
-      {/* Header */}
-      <Header 
-        title={lang === 'vi' ? "SOẠN TỪ ĐIỂN" : "DICTIONARY GEN"}
-        version="v4.7.0"
-        subtitle="by Nhân Nhân - GV tiếng Anh trường THCS Tùng Thiện Vương, phường Phú Định, TP.HCM"
+    <div
+      id="top"
+      className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100"
+    >
+      {/* Top Bar Contract */}
+      <Header
+        title={t.title}
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
-        showBack={!!result}
-        onBack={() => setResult('')}
         onHistory={() => setShowHistoryModal(true)}
         onInfo={() => setShowAppInfoModal(true)}
         onSettings={() => setShowSettings(!showSettings)}
+        onToggleLang={() => setLang((prev) => (prev === 'vi' ? 'en' : 'vi'))}
+        lang={lang}
         showSettings={true}
         historyCount={history.length}
         hasHistoryData={history.length > 0}
         apiKeyStatus={apiKeyStatus}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 lg:overflow-hidden">
-        <div className="flex flex-col lg:flex-row gap-4 lg:h-full">
-          {/* Left Column: Controls */}
-          <div className="w-full lg:w-[380px] flex flex-col gap-4 lg:overflow-y-auto pr-1 pb-4 lg:pb-0">
-            {/* Input Section */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-black/5"
-            >
-              <div className="flex flex-col gap-5">
-                <div>
-                  <label htmlFor="keyword" className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2.5">
-                    {t.keywordLabel}
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="keyword"
-                      type="text"
-                      value={keyword}
-                      onChange={(e) => setKeyword(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
-                      placeholder={t.keywordPlaceholder}
-                      className="w-full pl-4 pr-20 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-sm"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                      <AnimatePresence>
-                        {keyword && (
-                          <motion.button
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            onClick={() => setKeyword('')}
-                            className="p-1.5 hover:bg-slate-200 rounded-full text-slate-400 transition-colors"
-                          >
-                            <X className="w-4 h-4" />
-                          </motion.button>
-                        )}
-                      </AnimatePresence>
-                      <button
-                        onClick={generateRandomKeyword}
-                        className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-full transition-all active:rotate-180 duration-500"
-                        title="Tạo ngẫu nhiên"
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+      {/* Academic Attribution Subheader */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-slate-800">{t.author}</span>
+            <span aria-hidden="true">·</span>
+            <span className="font-semibold text-blue-900">
+              100% Ngữ liệu SGK Tiếng Anh Global Success (NXB Giáo dục Việt Nam)
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>Cấu trúc Đề thi Tuyển sinh 10 TP.HCM 2025 (40 câu)</span>
+          </div>
+          <div className="text-slate-500">
+            <span>Biên soạn đề</span>
+            <span className="mx-1.5" aria-hidden="true">
+              →
+            </span>
+            <span className="font-semibold text-emerald-700">
+              Đã thẩm định
+            </span>
+          </div>
+        </div>
+      </div>
 
-                {/* Target Bold Words Field */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="boldWords" className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                      {t.targetBoldWordsLabel}
-                    </label>
-                    <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
-                      {t.optionalTag}
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <input
-                      id="boldWords"
-                      type="text"
-                      value={targetBoldWords}
-                      onChange={(e) => handleTargetBoldWordsChange(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
-                      placeholder={t.targetBoldWordsPlaceholder}
-                      className="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-xs font-semibold text-slate-700"
-                    />
-                    <AnimatePresence>
-                      {targetBoldWords && (
-                        <motion.button
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          onClick={() => handleTargetBoldWordsChange('')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-200 rounded-full text-slate-400 transition-colors"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                  <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
-                    {t.targetBoldWordsHint}
-                  </p>
-                </div>
-
-                {/* Grade Level & Vocabulary Filter */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="gradeLevel" className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                      {t.levelLabel}
-                    </label>
-                    <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                      {gradeLevel === 'grade6' && 'Đầu A2'}
-                      {gradeLevel === 'grade7' && 'A2'}
-                      {gradeLevel === 'grade8' && 'A2 / B1'}
-                      {gradeLevel === 'grade9' && 'B1'}
-                      {gradeLevel === 'entrance10' && 'B1+'}
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <select
-                      id="gradeLevel"
-                      value={gradeLevel}
-                      onChange={(e) => handleGradeLevelChange(e.target.value)}
-                      className="w-full pl-9 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-800 focus:border-transparent outline-none transition-all text-xs font-semibold text-slate-700 appearance-none cursor-pointer"
-                    >
-                      <option value="grade6">{t.levelGrade6}</option>
-                      <option value="grade7">{t.levelGrade7}</option>
-                      <option value="grade8">{t.levelGrade8}</option>
-                      <option value="grade9">{t.levelGrade9}</option>
-                      <option value="entrance10">{t.levelEntrance10}</option>
-                    </select>
-                    <GraduationCap className="w-4 h-4 text-blue-800 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
-                </div>
-
+      {/* 7-Part Exam Blueprint Navigation Strip */}
+      <div className="bg-slate-100/80 border-b border-slate-200">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-2.5 overflow-x-auto">
+          <div className="flex items-center gap-1.5 min-w-max">
+            {EXAM_PARTS.map((part) => {
+              const isActive = activePartId === part.id;
+              const isSavedInCart = part.id !== 'full_exam' && !!examCart[part.id];
+              return (
                 <button
-                  onClick={generateExercise}
-                  disabled={isLoading}
-                  className="w-full bg-blue-800 hover:bg-blue-900 disabled:bg-slate-400 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] text-sm cursor-pointer"
+                  key={part.id}
+                  type="button"
+                  onClick={() => {
+                    setActivePartId(part.id);
+                    if (part.id !== 'full_exam' && examCart[part.id]) {
+                      setResult(examCart[part.id]);
+                    }
+                  }}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                    isActive
+                      ? 'bg-[#1E3A8A] text-white shadow-xs'
+                      : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80'
+                  }`}
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      {t.generatingBtn}
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      {t.generateBtn}
-                    </>
+                  <span>
+                    {part.id === 'full_exam'
+                      ? `Đề Thi 40 Câu (${cartFilledCount}/7 phần)`
+                      : `${part.roman}. ${part.nameVi.split(' (')[0]} (${part.questionRange})`}
+                  </span>
+                  {isSavedInCart && (
+                    <CheckCircle2
+                      className={`w-3.5 h-3.5 shrink-0 ${
+                        isActive ? 'text-emerald-300' : 'text-emerald-600'
+                      }`}
+                    />
                   )}
                 </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
-                {isLoading && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-center gap-2 text-blue-800 font-bold">
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={loadingMsgIndex}
-                          initial={{ opacity: 0, y: 3 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -3 }}
-                          className="text-[10px] uppercase tracking-wider text-center"
-                        >
-                          {t.loadingMessages[loadingMsgIndex]}
-                        </motion.span>
-                      </AnimatePresence>
-                    </div>
-                    <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                      <motion.div 
-                        className="h-full bg-blue-800"
-                        animate={{ width: ["0%", "100%"] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      />
-                    </div>
-                  </div>
-                )}
-                {error && (
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-red-500 text-[11px] font-bold text-center mt-2"
-                  >
-                    {error}
-                  </motion.p>
-                )}
+      {/* Main 2-Column Workspace */}
+      <main className="flex-1 mx-auto max-w-[1440px] w-full px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Guided Control Deck (5 cols on lg, 4 on xl) */}
+          <div className="lg:col-span-5 xl:col-span-4 bg-white rounded-2xl border border-slate-200 p-6 space-y-5">
+            {/* Active Section Header Summary */}
+            <div className="pb-4 border-b border-slate-100">
+              <div className="flex items-center justify-between text-xs text-blue-900 font-bold mb-1">
+                <span>
+                  PHẦN {activePartSpec.roman} · {activePartSpec.questionRange}
+                </span>
+                <span>{activePartSpec.points}</span>
               </div>
-            </motion.div>
+              <h2 className="text-lg font-extrabold text-slate-900">{activePartSpec.nameVi}</h2>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                {activePartSpec.shortDesc}
+              </p>
+            </div>
+
+            {/* Step 01: Grade & Global Success Unit Selector */}
+            <div className="space-y-3">
+              <label className="block text-xs font-bold text-slate-900">
+                01. Chọn Khối lớp & Bài học (SGK Global Success)
+              </label>
+
+              {/* 1-Tap Grade Buttons */}
+              <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-3 xl:grid-cols-5 gap-1 p-1 bg-slate-100 rounded-xl">
+                {GRADE_OPTIONS.map((opt) => {
+                  const active = gradeLevel === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => handleGradeLevelChange(opt.id)}
+                      className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center ${
+                        active
+                          ? 'bg-[#1E3A8A] text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                      }`}
+                    >
+                      {opt.short}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Global Success Unit Selector */}
+              <div className="relative">
+                <select
+                  value={selectedUnitId}
+                  onChange={(e) => setSelectedUnitId(e.target.value)}
+                  className="w-full pl-3.5 pr-9 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none text-xs font-bold text-slate-800 appearance-none cursor-pointer"
+                >
+                  <option value="all">
+                    📚 Tất cả 12 Unit SGK Global Success (Tổng hợp kiến thức)
+                  </option>
+                  {unitsForCurrentGrade.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.title} — {u.viTitle}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-4 h-4 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+
+              {/* Selected Unit Grammar & Phrasal Verbs Preview */}
+              {selectedUnitObj && (
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1.5">
+                  <div className="text-slate-700">
+                    <span className="font-bold text-slate-900">Ngữ pháp Unit {selectedUnitObj.unitNumber}:</span>{' '}
+                    {selectedUnitObj.grammar.join(' · ')}
+                  </div>
+                  <div className="text-slate-600">
+                    <span className="font-bold text-slate-800">Cụm từ trọng tâm:</span>{' '}
+                    {selectedUnitObj.phrasalVerbsAndCollocations.slice(0, 6).join(', ')}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* Step 02: Section-Specific Input & Global Success Quick Suggestions */}
+            <div className="space-y-3">
+              <label htmlFor="keyword" className="block text-xs font-bold text-slate-900">
+                {activePartId === 'part6'
+                  ? '02. Từ khóa cần tra từ điển (SGK Global Success)'
+                  : activePartId === 'part3' || activePartId === 'part4'
+                  ? '02. Chủ đề bài đọc / Từ vựng trọng tâm (Tùy chọn)'
+                  : activePartId === 'part5'
+                  ? '02. Các từ gốc Word Form muốn kiểm tra (Tùy chọn)'
+                  : activePartId === 'part7'
+                  ? '02. Cấu trúc / Cụm động từ muốn kiểm tra (Tùy chọn)'
+                  : '02. Từ vựng / Chủ điểm ưu tiên trong phần này (Tùy chọn)'}
+              </label>
+
+              {/* Part 1 Question 2 Ending Selector */}
+              {activePartId === 'part1' && (
+                <div className="flex items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                  <span className="font-semibold text-slate-700">Câu 2 (Phát âm đuôi):</span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setPronunciationEnding('ed')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer ${
+                        pronunciationEnding === 'ed'
+                          ? 'bg-[#1E3A8A] text-white'
+                          : 'bg-white border border-slate-200 text-slate-600'
+                      }`}
+                    >
+                      Đuôi -ed
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPronunciationEnding('s_es')}
+                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer ${
+                        pronunciationEnding === 's_es'
+                          ? 'bg-[#1E3A8A] text-white'
+                          : 'bg-white border border-slate-200 text-slate-600'
+                      }`}
+                    >
+                      Đuôi -s/-es
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="relative">
+                <input
+                  id="keyword"
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
+                  placeholder={
+                    activePartId === 'part6'
+                      ? 'Nhập từ khóa (ví dụ: artisan, congestion, priority, benefit...)'
+                      : 'Để trống cho AI tự chọn theo Unit hoặc bấm gợi ý bên dưới...'
+                  }
+                  className="w-full pl-3.5 pr-16 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none text-sm font-medium text-slate-900 placeholder:text-slate-400"
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  {keyword && (
+                    <button
+                      type="button"
+                      onClick={() => setKeyword('')}
+                      className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors cursor-pointer"
+                      title="Xóa"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (currentSuggestions.length > 0) {
+                        const rand =
+                          currentSuggestions[Math.floor(Math.random() * currentSuggestions.length)];
+                        setKeyword(rand);
+                      }
+                    }}
+                    className="p-1.5 hover:bg-blue-50 text-blue-800 rounded-lg transition-colors cursor-pointer"
+                    title="Chọn ngẫu nhiên từ SGK Global Success"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 1-Tap Global Success Suggestions */}
+              <div>
+                <span className="block text-xs text-slate-500 mb-1.5">
+                  Gợi ý từ SGK Global Success (chọn nhanh 1 chạm):
+                </span>
+                <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto custom-scrollbar pr-1">
+                  {currentSuggestions.map((item) => {
+                    const isSelected = keyword.toLowerCase().includes(item.toLowerCase());
+                    return (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => {
+                          if (activePartId === 'part6' || activePartId === 'part3' || activePartId === 'part4') {
+                            setKeyword(item);
+                          } else {
+                            setKeyword((prev) =>
+                              prev.trim()
+                                ? prev.toLowerCase().includes(item.toLowerCase())
+                                  ? prev
+                                  : `${prev}, ${item}`
+                                : item
+                            );
+                          }
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#1E3A8A] text-white'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Part 6 Specific: Advanced 2-3 Word Bold Collocations */}
+              {activePartId === 'part6' && (
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvancedBold((prev) => !prev)}
+                    className="w-full flex items-center justify-between text-left py-1 cursor-pointer group"
+                  >
+                    <span className="text-xs font-bold text-slate-800 group-hover:text-blue-900">
+                      Chỉ định cụm từ in đậm 2–3 từ (Tùy chọn)
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-slate-500 transition-transform ${
+                        showAdvancedBold ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {showAdvancedBold && (
+                    <div className="pt-2 space-y-2">
+                      <input
+                        type="text"
+                        value={targetBoldWords}
+                        onChange={(e) => handleTargetBoldWordsChange(e.target.value)}
+                        placeholder="Ví dụ: pass down, craft village, preserve tradition..."
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium outline-none focus:bg-white focus:ring-2 focus:ring-blue-800"
+                      />
+                      {invalidBoldPhrases.length > 0 && (
+                        <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
+                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                          <span>
+                            Lưu ý: Cụm{' '}
+                            <strong>{invalidBoldPhrases.map((p) => `“${p}”`).join(', ')}</strong> chưa
+                            đúng chuẩn 2–3 từ của đề thi Tuyển sinh 10.
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* Step 03: Matrix Specification Rules Box */}
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Tiêu chuẩn Ma trận Sở GD&ĐT TP.HCM 2025:</span>
+              </div>
+              <ul className="space-y-1 text-xs text-slate-600 list-disc pl-4 leading-relaxed">
+                {activePartSpec.matrixRules.map((rule, i) => (
+                  <li key={i}>{rule}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Full Exam Cart Assembler Box when in full_exam mode or when cart has items */}
+            {cartFilledCount > 0 && (
+              <div className="p-3.5 bg-blue-50/60 border border-blue-200 rounded-xl space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-blue-950 flex items-center gap-1.5">
+                    <Layers className="w-4 h-4 text-blue-800" />
+                    Giỏ Đề Thi 40 Câu ({cartFilledCount}/7 phần đã lưu)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setExamCart({})}
+                    className="text-slate-500 hover:text-red-600 font-semibold cursor-pointer"
+                  >
+                    Xóa giỏ
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={assembleCartIntoFullExam}
+                  className="w-full py-2 px-3 bg-white hover:bg-blue-50 text-blue-900 border border-blue-300 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Ghép ngay {cartFilledCount} phần đã soạn thành Đề tổng hợp
+                </button>
+              </div>
+            )}
+
+            {/* Primary CTA Button */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={generateExercise}
+                disabled={isLoading}
+                className="w-full bg-[#1E3A8A] hover:bg-blue-950 disabled:bg-slate-400 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-[0.99] text-sm sm:text-base cursor-pointer whitespace-nowrap"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>{t.generatingBtn}</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>
+                      {activePartId === 'full_exam'
+                        ? 'Tạo mới Trọn bộ Đề thi 40 Câu'
+                        : `Soạn & Thẩm định Phần ${activePartSpec.roman} (${activePartSpec.questionRange})`}
+                    </span>
+                  </>
+                )}
+              </button>
+
+              {error && (
+                <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
+                  <span>{error}</span>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Right Column: Result */}
-          <div 
+          {/* Right Column: Live Exam Paper Canvas (7 cols on lg, 8 on xl) */}
+          <div
             ref={resultRef}
-            className="flex-1 bg-white rounded-2xl shadow-md border border-black/5 overflow-hidden flex flex-col min-h-[400px] lg:min-h-0"
+            className="lg:col-span-7 xl:col-span-8 bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col min-h-[580px]"
           >
-            <AnimatePresence mode="wait">
-              {result ? (
-                <motion.div
-                  key="result"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-full flex flex-col"
-                >
-                  <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50 flex-wrap gap-2">
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <div className="w-1.5 h-6 bg-blue-800 rounded-full"></div>
-                      <h2 className="text-lg font-bold tracking-tight">{t.resultTitle}</h2>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                        {lang === 'vi' ? 'Đã rà soát bởi Tổ trưởng chuyên môn' : 'Verified by Head of Dept'}
+            {result ? (
+              <div className="flex flex-col h-full">
+                {/* Sticky Exam Toolbar */}
+                <div className="p-4 sm:px-6 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-base font-bold text-slate-900">
+                        {activePartSpec.roman}. {activePartSpec.nameVi} ({activePartSpec.questionRange})
+                      </h2>
+                      <span className="text-xs text-slate-500">
+                        · {selectedUnitObj ? selectedUnitObj.title : 'SGK Global Success'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={copyToClipboard}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-[10px] font-bold transition-all shadow-sm cursor-pointer"
-                      >
-                        {copySuccess ? <Check className="w-3 h-3 text-blue-800" /> : <Copy className="w-3 h-3" />}
-                        {copySuccess ? t.copiedBtn : t.copyBtn}
-                      </button>
-                      <button
-                        onClick={exportToWord}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-800 hover:bg-blue-900 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm cursor-pointer"
-                      >
-                        <FileDown className="w-3 h-3" />
-                        {t.exportBtn}
-                      </button>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-emerald-700 font-medium mt-0.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>
+                        Đã thẩm định · Chuẩn ma trận Sở GD&ĐT TP.HCM 2025
+                      </span>
                     </div>
                   </div>
-                  
-                  <div className="flex-1 overflow-y-auto p-6 md:p-8">
-                    <div className="prose prose-slate max-w-none prose-headings:m-0 prose-p:m-0 prose-li:m-0 prose-ul:m-0 prose-ol:m-0">
-                      <ReactMarkdown
-                        remarkPlugins={[remarkBreaks]}
-                        components={{
-                          p: ({ children }) => <p className="text-slate-900 leading-snug !m-0 text-base">{children}</p>,
-                          ul: ({ children }) => <ul className="list-disc pl-5 !m-0 text-slate-900">{children}</ul>,
-                          ol: ({ children }) => <ol className="list-decimal pl-5 !m-0 text-slate-900">{children}</ol>,
-                          li: ({ children }) => <li className="text-slate-900 leading-snug !m-0">
-                            {children}
-                          </li>,
-                          strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>,
-                          em: ({ children }) => <em className="italic text-slate-700">{children}</em>
-                        }}
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {activePartId !== 'full_exam' && (
+                      <button
+                        type="button"
+                        onClick={saveCurrentToExamCart}
+                        className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 text-emerald-900 rounded-lg text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                        title="Lưu phần này vào Giỏ Đề Thi 40 câu"
                       >
-                        {result}
-                      </ReactMarkdown>
+                        {cartSaveToast ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-700" />
+                            <span>Đã lưu vào Đề 40 câu</span>
+                          </>
+                        ) : (
+                          <>
+                            <PlusCircle className="w-3.5 h-3.5 text-emerald-700" />
+                            <span>Ghép vào Đề 40 câu</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {/* Toggle Show/Hide Answers */}
+                    <button
+                      type="button"
+                      onClick={() => setShowAnswers((prev) => !prev)}
+                      className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      {showAnswers ? (
+                        <>
+                          <EyeOff className="w-3.5 h-3.5 text-slate-500" />
+                          <span>Ẩn đáp án</span>
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-3.5 h-3.5 text-blue-800" />
+                          <span>Hiện đáp án</span>
+                        </>
+                      )}
+                    </button>
+
+                    {/* Toggle Direct Edit */}
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingResult((prev) => !prev)}
+                      className={`flex items-center gap-1.5 px-3 py-2 border rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                        isEditingResult
+                          ? 'bg-amber-50 border-amber-300 text-amber-900'
+                          : 'bg-white border-slate-300 hover:bg-slate-100 text-slate-700'
+                      }`}
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>{isEditingResult ? 'Xong chỉnh sửa' : 'Sửa trực tiếp'}</span>
+                    </button>
+
+                    {/* Copy Questions Only */}
+                    <button
+                      type="button"
+                      onClick={copyQuestionsOnly}
+                      className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      {copyQuestionsSuccess ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      ) : (
+                        <ClipboardList className="w-3.5 h-3.5 text-slate-500" />
+                      )}
+                      <span>{copyQuestionsSuccess ? t.copiedQuestionsBtn : t.copyQuestionsBtn}</span>
+                    </button>
+
+                    {/* Copy Full Sheet */}
+                    <button
+                      type="button"
+                      onClick={copyToClipboard}
+                      className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      {copySuccess ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5 text-slate-600" />
+                      )}
+                      <span>{copySuccess ? t.copiedBtn : t.copyBtn}</span>
+                    </button>
+
+                    {/* Export Word */}
+                    <button
+                      type="button"
+                      onClick={exportToWord}
+                      className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-blue-950 text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      <FileDown className="w-3.5 h-3.5" />
+                      <span>{t.exportBtn}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Exam Paper Canvas Body */}
+                <div className="flex-1 p-6 sm:p-8 md:p-10 bg-white">
+                  {isEditingResult ? (
+                    <div className="space-y-2">
+                      <label className="block text-xs font-semibold text-slate-600">
+                        Chỉnh sửa trực tiếp nội dung (giữ ký hiệu **in đậm** và *in nghiêng* để xuất file Word chuẩn):
+                      </label>
+                      <textarea
+                        value={result}
+                        onChange={(e) => setResult(e.target.value)}
+                        rows={20}
+                        className="w-full p-4 bg-slate-50 border border-slate-300 rounded-xl font-exam text-base leading-relaxed text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none"
+                      />
                     </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="h-full flex flex-col items-center justify-center p-8 text-center"
-                >
-                  <div className="opacity-20 select-none flex flex-col items-center">
-                    <img 
-                      src="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg" 
-                      alt="School Logo" 
-                      className="w-24 h-24 mb-6 grayscale opacity-50 object-contain rounded-2xl"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                    <p className="text-lg font-bold text-slate-400 uppercase tracking-widest">{t.emptyState}</p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  ) : activePartId === 'part6' &&
+                    parsedDictionaryExam &&
+                    (parsedDictionaryExam.dictionaryLines.length > 0 ||
+                      parsedDictionaryExam.questionLines.length > 0) ? (
+                    /* Specialized Dictionary Entry Box View */
+                    <div className="max-w-3xl mx-auto font-exam text-[17px] leading-relaxed text-slate-900 space-y-6">
+                      {parsedDictionaryExam.instructionLine && (
+                        <div className="text-[17px] leading-snug text-slate-900">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkBreaks]}
+                            components={{
+                              p: ({ children }) => <p className="m-0">{children}</p>,
+                              strong: ({ children }) => (
+                                <strong className="font-bold text-slate-950">{children}</strong>
+                              ),
+                            }}
+                          >
+                            {parsedDictionaryExam.instructionLine}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+
+                      {parsedDictionaryExam.dictionaryLines.length > 0 && (
+                        <div className="p-5 sm:p-6 bg-[#F8FAFC] border border-slate-300 rounded-xl space-y-1.5">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkBreaks]}
+                            components={{
+                              p: ({ children }) => (
+                                <p className="text-slate-900 leading-relaxed m-0">{children}</p>
+                              ),
+                              strong: ({ children }) => (
+                                <strong className="font-bold text-slate-950 bg-amber-100/70 px-1 rounded-xs">
+                                  {children}
+                                </strong>
+                              ),
+                              em: ({ children }) => (
+                                <em className="italic text-slate-800">{children}</em>
+                              ),
+                            }}
+                          >
+                            {parsedDictionaryExam.dictionaryLines.join('\n')}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+
+                      {parsedDictionaryExam.questionLines.length > 0 && (
+                        <div className="space-y-2 pt-1">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkBreaks]}
+                            components={{
+                              p: ({ children }) => (
+                                <p className="text-slate-900 leading-relaxed m-0">{children}</p>
+                              ),
+                              ol: ({ children }) => (
+                                <ol className="list-decimal pl-5 space-y-2 m-0 text-slate-900">
+                                  {children}
+                                </ol>
+                              ),
+                              li: ({ children }) => (
+                                <li className="text-slate-900 leading-relaxed">{children}</li>
+                              ),
+                            }}
+                          >
+                            {parsedDictionaryExam.questionLines.join('\n')}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+
+                      {parsedDictionaryExam.answerLines.length > 0 && (
+                        <div className="pt-4 border-t border-slate-200">
+                          {showAnswers ? (
+                            <div className="p-4 sm:p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl">
+                              <div className="text-xs font-sans font-bold uppercase tracking-wider text-emerald-800 mb-2">
+                                ĐÁP ÁN CHÍNH THỨC
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-base font-bold text-slate-900">
+                                {parsedDictionaryExam.answerLines.map((ans, idx) => (
+                                  <div key={idx} className="py-0.5">
+                                    {ans.replace(/\*\*/g, '')}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-sans text-slate-600">
+                              <span>
+                                Đáp án đang được ẩn để phục vụ chiếu đề cho học sinh làm bài.
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setShowAnswers(true)}
+                                className="font-bold text-blue-800 hover:underline cursor-pointer shrink-0 ml-3"
+                              >
+                                Hiện đáp án ngay
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* General Exam Section View (Parts I, II, III, IV, V, VII & Full Exam) */
+                    <div className="max-w-3xl mx-auto font-exam text-[17px] leading-relaxed text-slate-900 space-y-6">
+                      <div className="space-y-3">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkBreaks]}
+                          components={{
+                            p: ({ children }) => (
+                              <p className="text-slate-900 leading-relaxed mb-3">{children}</p>
+                            ),
+                            strong: ({ children }) => (
+                              <strong className="font-bold text-slate-950">{children}</strong>
+                            ),
+                            em: ({ children }) => (
+                              <em className="italic text-slate-800">{children}</em>
+                            ),
+                          }}
+                        >
+                          {splitResult.questionsPart}
+                        </ReactMarkdown>
+                      </div>
+
+                      {splitResult.answersPart && (
+                        <div className="pt-4 border-t border-slate-200">
+                          {showAnswers ? (
+                            <div className="p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-2">
+                              <div className="text-xs font-sans font-bold uppercase tracking-wider text-emerald-800">
+                                ĐÁP ÁN & GIẢI THÍCH CHI TIẾT (ĐÃ THẨM ĐỊNH)
+                              </div>
+                              <div className="text-base text-slate-900 space-y-1.5">
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkBreaks]}
+                                  components={{
+                                    p: ({ children }) => (
+                                      <p className="text-slate-900 leading-relaxed m-0">
+                                        {children}
+                                      </p>
+                                    ),
+                                    strong: ({ children }) => (
+                                      <strong className="font-bold text-emerald-950">
+                                        {children}
+                                      </strong>
+                                    ),
+                                  }}
+                                >
+                                  {splitResult.answersPart}
+                                </ReactMarkdown>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-sans text-slate-600">
+                              <span>
+                                Đáp án & lời giải đang được ẩn để phục vụ chiếu đề cho học sinh làm bài.
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setShowAnswers(true)}
+                                className="font-bold text-blue-800 hover:underline cursor-pointer shrink-0 ml-3"
+                              >
+                                Hiện đáp án ngay
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* Empty State with Interactive 7-Section Overview */
+              <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10">
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center mb-3 text-blue-900">
+                  <BookOpen className="w-7 h-7" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 text-center">
+                  {t.emptyStateTitle}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 max-w-xl mt-1 text-center leading-relaxed">
+                  {t.emptyStateDesc}
+                </p>
+
+                {/* Interactive Grid of all 7 HCMC Exam Sections */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-3xl mt-6">
+                  {EXAM_PARTS.map((part) => {
+                    const isCurrent = activePartId === part.id;
+                    const inCart = part.id !== 'full_exam' && !!examCart[part.id];
+                    return (
+                      <button
+                        key={part.id}
+                        type="button"
+                        onClick={() => setActivePartId(part.id)}
+                        className={`p-4 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                          isCurrent
+                            ? 'bg-blue-50/70 border-blue-800'
+                            : 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between text-xs font-bold text-blue-900 mb-1">
+                            <span>
+                              PHẦN {part.roman} · {part.questionRange}
+                            </span>
+                            <span className="text-slate-500 font-semibold">{part.points}</span>
+                          </div>
+                          <div className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                            <span>{part.nameVi}</span>
+                            {inCart && (
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                            {part.shortDesc}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
 
-      {/* Settings Modal */}
-      <SettingsModal 
+      {/* Modals */}
+      <SettingsModal
         show={showSettings}
         onClose={() => setShowSettings(false)}
         t={t}
@@ -1659,11 +2329,9 @@ QUY TẮC BẮT BUỘC:
         onModelChange={setSelectedModel}
         apiMode={apiMode}
         onApiModeChange={handleApiModeChange}
-        defaultKeyExists={!!import.meta.env.VITE_GEMINI_API_KEY}
         apiKeyStatus={apiKeyStatus}
       />
 
-      {/* App Info & Changelog Modal */}
       <AppInfoModal
         show={showAppInfoModal}
         onClose={() => setShowAppInfoModal(false)}
@@ -1671,26 +2339,27 @@ QUY TẮC BẮT BUỘC:
         lang={lang}
       />
 
-      {/* History Modal */}
       <HistoryModal
         show={showHistoryModal}
         onClose={() => setShowHistoryModal(false)}
         history={history}
         onSelect={loadHistoryItem}
-        onDelete={deleteHistoryItem}
-        onClear={clearHistory}
+        onDelete={(e, itemToDelete) => {
+          e.stopPropagation();
+          setHistory((prev) => prev.filter((item) => item !== itemToDelete));
+        }}
+        onClear={() => setHistory([])}
         t={t}
       />
 
-      {/* Generating Loading & Success Modal */}
       <GeneratingModal
         show={showGeneratingModal}
         status={generatingStatus}
-        keyword={keyword}
+        partSpec={activePartSpec}
+        unitTitle={selectedUnitObj ? selectedUnitObj.title : 'Tổng hợp 12 Unit'}
         loadingMsg={t.loadingMessages[loadingMsgIndex]}
         lang={lang}
       />
     </div>
   );
 }
-
