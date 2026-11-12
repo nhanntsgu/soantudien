@@ -16,7 +16,14 @@ export function resolveModelName(requestedModel?: string): string {
   if (!requestedModel || requestedModel === 'gemini-3.5-flash-lite') {
     return 'gemini-3.1-flash-lite';
   }
-  if (requestedModel === 'gemini-3.6-flash' || requestedModel === 'gemini-3.5-flash') {
+  if (requestedModel === 'gemini-4-argon') {
+    return 'gemini-4-argon';
+  }
+  if (
+    requestedModel === 'gemini-3.8-flash' ||
+    requestedModel === 'gemini-3.6-flash' ||
+    requestedModel === 'gemini-3.5-flash'
+  ) {
     return 'gemini-3.8-flash';
   }
   return requestedModel;

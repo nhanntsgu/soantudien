@@ -86,8 +86,9 @@ const translations = {
     ],
     settingsTitle: 'Cấu hình hệ thống AI',
     modelLabel: 'Lựa chọn mô hình xử lý',
-    modelFlash: 'Gemini Flash (Tốc độ cao & Phân tích sâu)',
-    modelLite: 'Gemini Flash Lite (Tiết kiệm & Mặc định)',
+    modelArgon: 'Gemini 4 Argon (gemini-4-argon)',
+    modelFlash: 'Gemini 3.8 Flash (gemini-3.8-flash)',
+    modelLite: 'Gemini 3.5 Flash Lite (gemini-3.5-flash-lite · Mặc định)',
     appDescription:
       'Hệ thống biên soạn đề thi Tiếng Anh toàn diện bám sát 100% chương trình sách giáo khoa Global Success (NXB Giáo dục Việt Nam) và Cấu trúc Đề thi Tuyển sinh lớp 10 tại TP.HCM từ năm 2025 (40 câu / 7 phần). Tích hợp bước thẩm định tự động cho từng phần để đảm bảo không có đáp án gây tranh cãi. Mọi đóng góp xin gửi về email nhanntsgu@gmail.com.',
     changelogTitle: 'Nhật ký phiên bản',
@@ -135,8 +136,9 @@ const translations = {
     ],
     settingsTitle: 'AI System Configuration',
     modelLabel: 'Model Selection',
-    modelFlash: 'Gemini Flash (High Reasoning & Speed)',
-    modelLite: 'Gemini Flash Lite (Fast & Default)',
+    modelArgon: 'Gemini 4 Argon (gemini-4-argon)',
+    modelFlash: 'Gemini 3.8 Flash (gemini-3.8-flash)',
+    modelLite: 'Gemini 3.5 Flash Lite (gemini-3.5-flash-lite · Default)',
     appDescription:
       'Comprehensive English Exam Generator aligned 100% with the Global Success curriculum and the 2025 HCMC Grade 10 Entrance Exam Blueprint (40 questions / 7 sections). Includes Head of Department QA verification. Contact: nhanntsgu@gmail.com.',
     changelogTitle: 'Release Notes',
@@ -342,9 +344,9 @@ function SettingsModal({
                   <div className="grid grid-cols-1 gap-2">
                     <button
                       type="button"
-                      onClick={() => onModelChange('gemini-3.6-flash')}
-                      className={`flex items-center justify-between p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                        selectedModel === 'gemini-3.6-flash'
+                      onClick={() => onModelChange('gemini-4-argon')}
+                      className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                        selectedModel === 'gemini-4-argon'
                           ? 'border-blue-800 bg-blue-50/50'
                           : 'border-slate-200 hover:border-slate-300'
                       }`}
@@ -352,23 +354,50 @@ function SettingsModal({
                       <div className="flex flex-col">
                         <span
                           className={`text-sm font-bold ${
-                            selectedModel === 'gemini-3.6-flash' ? 'text-blue-900' : 'text-slate-800'
+                            selectedModel === 'gemini-4-argon' ? 'text-blue-900' : 'text-slate-800'
+                          }`}
+                        >
+                          {t.modelArgon}
+                        </span>
+                        <span className="text-xs text-slate-500 mt-0.5">
+                          Tư duy chuyên sâu & Thẩm định độ chính xác cao nhất
+                        </span>
+                      </div>
+                      {selectedModel === 'gemini-4-argon' && (
+                        <ShieldCheck className="w-5 h-5 text-blue-800 shrink-0" />
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onModelChange('gemini-3.8-flash')}
+                      className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                        selectedModel === 'gemini-3.8-flash'
+                          ? 'border-blue-800 bg-blue-50/50'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex flex-col">
+                        <span
+                          className={`text-sm font-bold ${
+                            selectedModel === 'gemini-3.8-flash' ? 'text-blue-900' : 'text-slate-800'
                           }`}
                         >
                           {t.modelFlash}
                         </span>
                         <span className="text-xs text-slate-500 mt-0.5">
-                          Phân tích ma trận sâu & tối ưu đề 40 câu
+                          Tốc độ cao & Phân tích ma trận sâu
                         </span>
                       </div>
-                      {selectedModel === 'gemini-3.6-flash' && (
+                      {selectedModel === 'gemini-3.8-flash' && (
                         <ShieldCheck className="w-5 h-5 text-blue-800 shrink-0" />
                       )}
                     </button>
+
                     <button
                       type="button"
                       onClick={() => onModelChange('gemini-3.5-flash-lite')}
-                      className={`flex items-center justify-between p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
                         selectedModel === 'gemini-3.5-flash-lite'
                           ? 'border-blue-800 bg-blue-50/50'
                           : 'border-slate-200 hover:border-slate-300'
@@ -485,7 +514,7 @@ function SettingsModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full bg-[#1E3A8A] hover:bg-blue-950 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm cursor-pointer"
+                  className="w-full bg-[#1E40AF] hover:bg-blue-900 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm cursor-pointer"
                 >
                   Đóng & Lưu cài đặt
                 </button>
@@ -698,7 +727,7 @@ function AppInfoModal({
           >
             <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#1E3A8A] rounded-xl flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-[#1E40AF] rounded-xl flex items-center justify-center text-white">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <div>
@@ -844,7 +873,7 @@ function AppInfoModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-5 py-2 bg-[#1E3A8A] hover:bg-blue-950 text-white font-semibold rounded-xl text-xs transition-colors cursor-pointer"
+                className="px-5 py-2 bg-[#1E40AF] hover:bg-blue-900 text-white font-semibold rounded-xl text-xs transition-colors cursor-pointer"
               >
                 Đóng
               </button>
@@ -1048,7 +1077,9 @@ export default function App() {
   const [isEditingResult, setIsEditingResult] = useState(false);
 
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
-  const [selectedModel, setSelectedModel] = useState<'gemini-3.6-flash' | 'gemini-3.5-flash-lite'>('gemini-3.5-flash-lite');
+  const [selectedModel, setSelectedModel] = useState<
+    'gemini-4-argon' | 'gemini-3.8-flash' | 'gemini-3.5-flash-lite'
+  >('gemini-3.5-flash-lite');
 
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('dictionary_history_v2');
@@ -1442,8 +1473,8 @@ export default function App() {
       try {
         return await tryReview(draftText, modelName);
       } catch (reviewErr: any) {
-        console.warn('Head of Department review fallback:', reviewErr);
-        if (modelName === 'gemini-3.6-flash') {
+        console.warn('Review step fallback:', reviewErr);
+        if (modelName !== 'gemini-3.5-flash-lite') {
           try {
             return await tryReview(draftText, 'gemini-3.5-flash-lite');
           } catch {
@@ -1498,7 +1529,7 @@ export default function App() {
       const isQuotaError =
         err?.message?.includes('429') || err?.message?.toLowerCase().includes('quota');
 
-      if (isQuotaError && selectedModel === 'gemini-3.6-flash') {
+      if (isQuotaError && selectedModel !== 'gemini-3.5-flash-lite') {
         try {
           const draftText = await tryGenerate('gemini-3.5-flash-lite');
           if (draftText) {
@@ -1570,16 +1601,15 @@ export default function App() {
   return (
     <div
       id="top"
-      className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100"
+      className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col bg-[#F8FAFC] text-slate-900 font-sans selection:bg-blue-100"
     >
-      {/* Top Bar Contract */}
+      {/* Top Bar Contract (h-12 shrink-0) */}
       <Header
         title={t.title}
         logoSrc="https://i.ibb.co/Nd7jfCGJ/NN-logo.jpg"
         onHistory={() => setShowHistoryModal(true)}
         onInfo={() => setShowAppInfoModal(true)}
         onSettings={() => setShowSettings(!showSettings)}
-        onToggleLang={() => setLang((prev) => (prev === 'vi' ? 'en' : 'vi'))}
         lang={lang}
         showSettings={true}
         historyCount={history.length}
@@ -1587,57 +1617,46 @@ export default function App() {
         apiKeyStatus={apiKeyStatus}
       />
 
-      {/* Academic Attribution Subheader */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-semibold text-slate-800">{t.author}</span>
-            <span aria-hidden="true">·</span>
-            <span className="font-semibold text-blue-900">
-              100% Ngữ liệu SGK Tiếng Anh Global Success (NXB Giáo dục Việt Nam)
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>Cấu trúc Đề thi Tuyển sinh 10 TP.HCM 2025 (40 câu)</span>
-          </div>
-          <div className="text-slate-500">
-            <span>Biên soạn đề</span>
-            <span className="mx-1.5" aria-hidden="true">
-              →
-            </span>
-            <span className="font-semibold text-emerald-700">
-              Đã thẩm định
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 7-Part Exam Blueprint Navigation Strip */}
-      <div className="bg-slate-100/80 border-b border-slate-200">
-        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-2.5 overflow-x-auto">
-          <div className="flex items-center gap-1.5 min-w-max">
+      {/* Compact 7-Part Exam Blueprint Navigation Strip (Zero horizontal scroll) */}
+      <div className="shrink-0 bg-white border-b border-slate-200">
+        <div className="mx-auto max-w-[1440px] px-3 sm:px-5 lg:px-6 py-1.5">
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
             {EXAM_PARTS.map((part) => {
               const isActive = activePartId === part.id;
               const isSavedInCart = part.id !== 'full_exam' && !!examCart[part.id];
+              const shortLabels: Record<string, string> = {
+                part1: 'Trắc nghiệm MCQ',
+                part2: 'Biển báo',
+                part3: 'Cloze text',
+                part4: 'Reading T/F',
+                part5: 'Word form',
+                part6: 'Từ điển',
+                part7: 'Biến đổi câu',
+                full_exam: 'Đề 40 câu',
+              };
+              const shortLabel = shortLabels[part.id] || part.nameVi;
               return (
                 <button
                   key={part.id}
                   type="button"
                   onClick={() => {
-                    setActivePartId(part.id);
-                    if (part.id !== 'full_exam' && examCart[part.id]) {
-                      setResult(examCart[part.id]);
+                    if (activePartId !== part.id) {
+                      setActivePartId(part.id);
+                      setResult('');
+                      setIsEditingResult(false);
+                      setError('');
                     }
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+                  className={`px-2 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 truncate ${
                     isActive
-                      ? 'bg-[#1E3A8A] text-white shadow-xs'
-                      : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80'
+                      ? 'bg-[#1E40AF] text-white shadow-xs'
+                      : 'bg-slate-100/80 hover:bg-slate-200/70 text-slate-700 border border-slate-200/80'
                   }`}
                 >
-                  <span>
-                    {part.id === 'full_exam'
-                      ? `Đề Thi 40 Câu (${cartFilledCount}/7 phần)`
-                      : `${part.roman}. ${part.nameVi.split(' (')[0]} (${part.questionRange})`}
+                  <span className="truncate">
+                    {part.id === 'full_exam' && cartFilledCount > 0
+                      ? `${shortLabel} (${cartFilledCount}/7)`
+                      : shortLabel}
                   </span>
                   {isSavedInCart && (
                     <CheckCircle2
@@ -1653,189 +1672,194 @@ export default function App() {
         </div>
       </div>
 
-      {/* Main 2-Column Workspace */}
-      <main className="flex-1 mx-auto max-w-[1440px] w-full px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Guided Control Deck (5 cols on lg, 4 on xl) */}
-          <div className="lg:col-span-5 xl:col-span-4 bg-white rounded-2xl border border-slate-200 p-6 space-y-5">
-            {/* Active Section Header Summary */}
-            <div className="pb-4 border-b border-slate-100">
-              <div className="flex items-center justify-between text-xs text-blue-900 font-bold mb-1">
-                <span>
-                  PHẦN {activePartSpec.roman} · {activePartSpec.questionRange}
-                </span>
-                <span>{activePartSpec.points}</span>
-              </div>
-              <h2 className="text-lg font-extrabold text-slate-900">{activePartSpec.nameVi}</h2>
-              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                {activePartSpec.shortDesc}
-              </p>
-            </div>
-
-            {/* Step 01: Grade & Global Success Unit Selector */}
-            <div className="space-y-3">
-              <label className="block text-xs font-bold text-slate-900">
-                01. Chọn Khối lớp & Bài học (SGK Global Success)
-              </label>
-
-              {/* 1-Tap Grade Buttons */}
-              <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-3 xl:grid-cols-5 gap-1 p-1 bg-slate-100 rounded-xl">
-                {GRADE_OPTIONS.map((opt) => {
-                  const active = gradeLevel === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => handleGradeLevelChange(opt.id)}
-                      className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center ${
-                        active
-                          ? 'bg-[#1E3A8A] text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-                      }`}
-                    >
-                      {opt.short}
-                    </button>
-                  );
-                })}
+      {/* Main 2-Column Fixed-Viewport Workspace */}
+      <main className="flex-1 min-h-0 mx-auto max-w-[1440px] w-full px-3 sm:px-5 lg:px-6 py-2.5 flex flex-col lg:overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-0 lg:overflow-hidden">
+          {/* Left Column: Compact Guided Control Deck (Fits 100% in viewport height) */}
+          <div className="lg:col-span-5 xl:col-span-4 h-full min-h-0 bg-white rounded-xl border border-slate-200 p-3.5 sm:p-4 flex flex-col justify-between overflow-hidden">
+            <div className="space-y-3 overflow-hidden">
+              {/* Active Section Header Summary */}
+              <div className="pb-2.5 border-b border-slate-100">
+                <div className="flex items-center justify-between text-[11px] text-blue-900 font-bold">
+                  <span>
+                    PHẦN {activePartSpec.roman} · {activePartSpec.questionRange}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-900">
+                    {activePartSpec.points}
+                  </span>
+                </div>
+                <h2 className="text-base font-extrabold text-slate-900 mt-0.5 leading-snug">
+                  {activePartSpec.nameVi}
+                </h2>
+                <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                  {activePartSpec.shortDesc}
+                </p>
               </div>
 
-              {/* Global Success Unit Selector */}
-              <div className="relative">
-                <select
-                  value={selectedUnitId}
-                  onChange={(e) => setSelectedUnitId(e.target.value)}
-                  className="w-full pl-3.5 pr-9 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none text-xs font-bold text-slate-800 appearance-none cursor-pointer"
-                >
-                  <option value="all">
-                    📚 Tất cả 12 Unit SGK Global Success (Tổng hợp kiến thức)
-                  </option>
-                  {unitsForCurrentGrade.map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.title} — {u.viTitle}
+              {/* Step 01: Grade & Global Success Unit Selector */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-900">
+                    01. Khối lớp & Unit (SGK Global Success)
+                  </label>
+                  <span className="text-[11px] font-semibold text-blue-900">NXB Giáo dục VN</span>
+                </div>
+
+                {/* 1-Tap Grade Buttons */}
+                <div className="grid grid-cols-5 gap-1 p-1 bg-slate-100 rounded-lg">
+                  {GRADE_OPTIONS.map((opt) => {
+                    const active = gradeLevel === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => handleGradeLevelChange(opt.id)}
+                        className={`py-1.5 px-1.5 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center ${
+                          active
+                            ? 'bg-[#1E40AF] text-white shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                        }`}
+                      >
+                        {opt.short}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Global Success Unit Selector */}
+                <div className="relative">
+                  <select
+                    value={selectedUnitId}
+                    onChange={(e) => setSelectedUnitId(e.target.value)}
+                    className="w-full pl-3 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none text-xs font-bold text-slate-800 appearance-none cursor-pointer"
+                  >
+                    <option value="all">
+                      📚 Tất cả 12 Unit SGK Global Success (Tổng hợp kiến thức)
                     </option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              </div>
+                    {unitsForCurrentGrade.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.title} — {u.viTitle}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
 
-              {/* Selected Unit Grammar & Phrasal Verbs Preview */}
-              {selectedUnitObj && (
-                <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1.5">
-                  <div className="text-slate-700">
-                    <span className="font-bold text-slate-900">Ngữ pháp Unit {selectedUnitObj.unitNumber}:</span>{' '}
+                {/* Compact 1-Line Selected Unit Grammar Preview */}
+                {selectedUnitObj && (
+                  <div
+                    className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] text-slate-600 truncate"
+                    title={`Ngữ pháp: ${selectedUnitObj.grammar.join(' · ')} | Cụm từ: ${selectedUnitObj.phrasalVerbsAndCollocations.join(', ')}`}
+                  >
+                    <span className="font-bold text-slate-900">Trọng tâm:</span>{' '}
                     {selectedUnitObj.grammar.join(' · ')}
                   </div>
-                  <div className="text-slate-600">
-                    <span className="font-bold text-slate-800">Cụm từ trọng tâm:</span>{' '}
-                    {selectedUnitObj.phrasalVerbsAndCollocations.slice(0, 6).join(', ')}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <hr className="border-slate-100" />
-
-            {/* Step 02: Section-Specific Input & Global Success Quick Suggestions */}
-            <div className="space-y-3">
-              <label htmlFor="keyword" className="block text-xs font-bold text-slate-900">
-                {activePartId === 'part6'
-                  ? '02. Từ khóa cần tra từ điển (SGK Global Success)'
-                  : activePartId === 'part3' || activePartId === 'part4'
-                  ? '02. Chủ đề bài đọc / Từ vựng trọng tâm (Tùy chọn)'
-                  : activePartId === 'part5'
-                  ? '02. Các từ gốc Word Form muốn kiểm tra (Tùy chọn)'
-                  : activePartId === 'part7'
-                  ? '02. Cấu trúc / Cụm động từ muốn kiểm tra (Tùy chọn)'
-                  : '02. Từ vựng / Chủ điểm ưu tiên trong phần này (Tùy chọn)'}
-              </label>
-
-              {/* Part 1 Question 2 Ending Selector */}
-              {activePartId === 'part1' && (
-                <div className="flex items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                  <span className="font-semibold text-slate-700">Câu 2 (Phát âm đuôi):</span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setPronunciationEnding('ed')}
-                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer ${
-                        pronunciationEnding === 'ed'
-                          ? 'bg-[#1E3A8A] text-white'
-                          : 'bg-white border border-slate-200 text-slate-600'
-                      }`}
-                    >
-                      Đuôi -ed
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPronunciationEnding('s_es')}
-                      className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer ${
-                        pronunciationEnding === 's_es'
-                          ? 'bg-[#1E3A8A] text-white'
-                          : 'bg-white border border-slate-200 text-slate-600'
-                      }`}
-                    >
-                      Đuôi -s/-es
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="relative">
-                <input
-                  id="keyword"
-                  type="text"
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
-                  placeholder={
-                    activePartId === 'part6'
-                      ? 'Nhập từ khóa (ví dụ: artisan, congestion, priority, benefit...)'
-                      : 'Để trống cho AI tự chọn theo Unit hoặc bấm gợi ý bên dưới...'
-                  }
-                  className="w-full pl-3.5 pr-16 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none text-sm font-medium text-slate-900 placeholder:text-slate-400"
-                />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  {keyword && (
-                    <button
-                      type="button"
-                      onClick={() => setKeyword('')}
-                      className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors cursor-pointer"
-                      title="Xóa"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (currentSuggestions.length > 0) {
-                        const rand =
-                          currentSuggestions[Math.floor(Math.random() * currentSuggestions.length)];
-                        setKeyword(rand);
-                      }
-                    }}
-                    className="p-1.5 hover:bg-blue-50 text-blue-800 rounded-lg transition-colors cursor-pointer"
-                    title="Chọn ngẫu nhiên từ SGK Global Success"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
-                </div>
+                )}
               </div>
 
-              {/* 1-Tap Global Success Suggestions */}
-              <div>
-                <span className="block text-xs text-slate-500 mb-1.5">
-                  Gợi ý từ SGK Global Success (chọn nhanh 1 chạm):
-                </span>
-                <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto custom-scrollbar pr-1">
-                  {currentSuggestions.map((item) => {
+              {/* Step 02: Section-Specific Input & Global Success Quick Suggestions */}
+              <div className="space-y-2 pt-1 border-t border-slate-100">
+                <div className="flex items-center justify-between gap-2">
+                  <label htmlFor="keyword" className="block text-xs font-bold text-slate-900 truncate">
+                    {activePartId === 'part6'
+                      ? '02. Từ khóa từ điển (Global Success)'
+                      : activePartId === 'part3' || activePartId === 'part4'
+                      ? '02. Chủ đề bài đọc / Từ vựng (Tùy chọn)'
+                      : activePartId === 'part5'
+                      ? '02. Từ gốc Word Form (Tùy chọn)'
+                      : activePartId === 'part7'
+                      ? '02. Cấu trúc / Phrasal Verb (Tùy chọn)'
+                      : '02. Từ vựng / Chủ điểm ưu tiên (Tùy chọn)'}
+                  </label>
+
+                  {/* Inline Part 1 Question 2 Ending Selector */}
+                  {activePartId === 'part1' && (
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className="text-[11px] text-slate-500">Câu 2:</span>
+                      <button
+                        type="button"
+                        onClick={() => setPronunciationEnding('ed')}
+                        className={`px-2 py-0.5 rounded text-[11px] font-bold cursor-pointer ${
+                          pronunciationEnding === 'ed'
+                            ? 'bg-[#1E40AF] text-white'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        -ed
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPronunciationEnding('s_es')}
+                        className={`px-2 py-0.5 rounded text-[11px] font-bold cursor-pointer ${
+                          pronunciationEnding === 's_es'
+                            ? 'bg-[#1E40AF] text-white'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        -s/es
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <input
+                    id="keyword"
+                    type="text"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && generateExercise()}
+                    placeholder={
+                      activePartId === 'part6'
+                        ? 'Nhập từ khóa (artisan, congestion, priority, benefit...)'
+                        : 'Để trống cho AI tự chọn theo Unit hoặc bấm gợi ý bên dưới...'
+                    }
+                    className="w-full pl-3 pr-14 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400"
+                  />
+                  <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+                    {keyword && (
+                      <button
+                        type="button"
+                        onClick={() => setKeyword('')}
+                        className="p-1 hover:bg-slate-200 rounded-md text-slate-500 transition-colors cursor-pointer"
+                        title="Xóa"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (currentSuggestions.length > 0) {
+                          const rand =
+                            currentSuggestions[
+                              Math.floor(Math.random() * currentSuggestions.length)
+                            ];
+                          setKeyword(rand);
+                        }
+                      }}
+                      className="p-1 hover:bg-blue-50 text-blue-800 rounded-md transition-colors cursor-pointer"
+                      title="Chọn ngẫu nhiên từ SGK Global Success"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Compact 1-Tap Global Success Suggestions (Max 2 rows, no scrollbar needed) */}
+                <div className="flex flex-wrap gap-1 max-h-[52px] overflow-hidden">
+                  {currentSuggestions.slice(0, 10).map((item) => {
                     const isSelected = keyword.toLowerCase().includes(item.toLowerCase());
                     return (
                       <button
                         key={item}
                         type="button"
                         onClick={() => {
-                          if (activePartId === 'part6' || activePartId === 'part3' || activePartId === 'part4') {
+                          if (
+                            activePartId === 'part6' ||
+                            activePartId === 'part3' ||
+                            activePartId === 'part4'
+                          ) {
                             setKeyword(item);
                           } else {
                             setKeyword((prev) =>
@@ -1847,9 +1871,9 @@ export default function App() {
                             );
                           }
                         }}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        className={`px-2 py-0.5 rounded-md text-[11px] font-semibold transition-all cursor-pointer truncate max-w-[180px] ${
                           isSelected
-                            ? 'bg-[#1E3A8A] text-white'
+                            ? 'bg-[#1E40AF] text-white'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -1858,102 +1882,97 @@ export default function App() {
                     );
                   })}
                 </div>
+
+                {/* Part 6 Specific: Compact Inline 2-3 Word Bold Collocations */}
+                {activePartId === 'part6' && (
+                  <div className="pt-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setShowAdvancedBold((prev) => !prev)}
+                      className="w-full flex items-center justify-between text-left py-0.5 cursor-pointer group"
+                    >
+                      <span className="text-[11px] font-bold text-slate-700 group-hover:text-blue-900">
+                        + Chỉ định cụm từ in đậm 2–3 từ (Tùy chọn)
+                      </span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 text-slate-500 transition-transform ${
+                          showAdvancedBold ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {showAdvancedBold && (
+                      <div className="pt-1 space-y-1">
+                        <input
+                          type="text"
+                          value={targetBoldWords}
+                          onChange={(e) => handleTargetBoldWordsChange(e.target.value)}
+                          placeholder="Ví dụ: pass down, craft village, preserve tradition..."
+                          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium outline-none focus:bg-white focus:ring-2 focus:ring-blue-800"
+                        />
+                        {invalidBoldPhrases.length > 0 && (
+                          <div className="px-2.5 py-1 rounded-md bg-amber-50 border border-amber-200 text-[11px] text-amber-800 truncate">
+                            Lưu ý: {invalidBoldPhrases.map((p) => `“${p}”`).join(', ')} chưa đúng 2–3 từ.
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* Part 6 Specific: Advanced 2-3 Word Bold Collocations */}
-              {activePartId === 'part6' && (
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowAdvancedBold((prev) => !prev)}
-                    className="w-full flex items-center justify-between text-left py-1 cursor-pointer group"
-                  >
-                    <span className="text-xs font-bold text-slate-800 group-hover:text-blue-900">
-                      Chỉ định cụm từ in đậm 2–3 từ (Tùy chọn)
-                    </span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-slate-500 transition-transform ${
-                        showAdvancedBold ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </button>
-                  {showAdvancedBold && (
-                    <div className="pt-2 space-y-2">
-                      <input
-                        type="text"
-                        value={targetBoldWords}
-                        onChange={(e) => handleTargetBoldWordsChange(e.target.value)}
-                        placeholder="Ví dụ: pass down, craft village, preserve tradition..."
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium outline-none focus:bg-white focus:ring-2 focus:ring-blue-800"
-                      />
-                      {invalidBoldPhrases.length > 0 && (
-                        <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
-                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                          <span>
-                            Lưu ý: Cụm{' '}
-                            <strong>{invalidBoldPhrases.map((p) => `“${p}”`).join(', ')}</strong> chưa
-                            đúng chuẩn 2–3 từ của đề thi Tuyển sinh 10.
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+              {/* Step 03: Compact Matrix Specification Summary */}
+              <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-900">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Chuẩn Ma trận Sở GD&ĐT TP.HCM 2025:</span>
+                </div>
+                <ul className="space-y-0.5 text-[11px] text-slate-600 list-disc pl-4 leading-snug">
+                  {activePartSpec.matrixRules.slice(0, 3).map((rule, i) => (
+                    <li key={i} className="line-clamp-1" title={rule}>
+                      {rule}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom Pinned Section: Cart Bar + Primary CTA Button */}
+            <div className="shrink-0 pt-2.5 space-y-2 border-t border-slate-100">
+              {cartFilledCount > 0 && (
+                <div className="px-3 py-1.5 bg-blue-50/70 border border-blue-200 rounded-lg flex items-center justify-between gap-2 text-xs">
+                  <span className="font-bold text-blue-950 flex items-center gap-1.5 truncate">
+                    <Layers className="w-3.5 h-3.5 text-blue-800 shrink-0" />
+                    <span>Giỏ Đề 40 Câu ({cartFilledCount}/7 phần)</span>
+                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={assembleCartIntoFullExam}
+                      className="px-2.5 py-1 bg-[#1E40AF] hover:bg-blue-900 text-white rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+                    >
+                      Ghép đề
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setExamCart({})}
+                      className="text-slate-400 hover:text-red-600 text-[11px] font-semibold cursor-pointer"
+                      title="Xóa giỏ đề"
+                    >
+                      Xóa
+                    </button>
+                  </div>
                 </div>
               )}
-            </div>
 
-            <hr className="border-slate-100" />
-
-            {/* Step 03: Matrix Specification Rules Box */}
-            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Tiêu chuẩn Ma trận Sở GD&ĐT TP.HCM 2025:</span>
-              </div>
-              <ul className="space-y-1 text-xs text-slate-600 list-disc pl-4 leading-relaxed">
-                {activePartSpec.matrixRules.map((rule, i) => (
-                  <li key={i}>{rule}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Full Exam Cart Assembler Box when in full_exam mode or when cart has items */}
-            {cartFilledCount > 0 && (
-              <div className="p-3.5 bg-blue-50/60 border border-blue-200 rounded-xl space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-blue-950 flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-blue-800" />
-                    Giỏ Đề Thi 40 Câu ({cartFilledCount}/7 phần đã lưu)
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setExamCart({})}
-                    className="text-slate-500 hover:text-red-600 font-semibold cursor-pointer"
-                  >
-                    Xóa giỏ
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={assembleCartIntoFullExam}
-                  className="w-full py-2 px-3 bg-white hover:bg-blue-50 text-blue-900 border border-blue-300 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                >
-                  Ghép ngay {cartFilledCount} phần đã soạn thành Đề tổng hợp
-                </button>
-              </div>
-            )}
-
-            {/* Primary CTA Button */}
-            <div className="pt-1">
               <button
                 type="button"
                 onClick={generateExercise}
                 disabled={isLoading}
-                className="w-full bg-[#1E3A8A] hover:bg-blue-950 disabled:bg-slate-400 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-[0.99] text-sm sm:text-base cursor-pointer whitespace-nowrap"
+                className="w-full bg-[#1E40AF] hover:bg-blue-900 disabled:bg-slate-400 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.99] text-sm cursor-pointer whitespace-nowrap"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     <span>{t.generatingBtn}</span>
                   </>
                 ) : (
@@ -1969,53 +1988,51 @@ export default function App() {
               </button>
 
               {error && (
-                <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
-                  <span>{error}</span>
+                <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-red-600" />
+                  <span className="truncate">{error}</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right Column: Live Exam Paper Canvas (7 cols on lg, 8 on xl) */}
+          {/* Right Column: Live Exam Paper Canvas (ONLY this pane scrolls inside its body) */}
           <div
             ref={resultRef}
-            className="lg:col-span-7 xl:col-span-8 bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col min-h-[580px]"
+            className="lg:col-span-7 xl:col-span-8 h-full min-h-0 bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col"
           >
             {result ? (
-              <div className="flex flex-col h-full">
-                {/* Sticky Exam Toolbar */}
-                <div className="p-4 sm:px-6 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3">
-                  <div>
+              <div className="flex flex-col h-full min-h-0">
+                {/* Fixed Top Toolbar (shrink-0) */}
+                <div className="shrink-0 py-2.5 px-4 sm:px-5 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h2 className="text-base font-bold text-slate-900">
+                      <h2 className="text-sm sm:text-base font-bold text-slate-900 truncate">
                         {activePartSpec.roman}. {activePartSpec.nameVi} ({activePartSpec.questionRange})
                       </h2>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-slate-500 hidden sm:inline">
                         · {selectedUnitObj ? selectedUnitObj.title : 'SGK Global Success'}
                       </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-emerald-700 font-medium mt-0.5">
+                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-semibold">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>
-                        Đã thẩm định · Chuẩn ma trận Sở GD&ĐT TP.HCM 2025
-                      </span>
+                      <span>Đã thẩm định · Chuẩn ma trận Sở GD&ĐT TP.HCM 2025</span>
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     {activePartId !== 'full_exam' && (
                       <button
                         type="button"
                         onClick={saveCurrentToExamCart}
-                        className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 text-emerald-900 rounded-lg text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
+                        className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 text-emerald-900 rounded-lg text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                         title="Lưu phần này vào Giỏ Đề Thi 40 câu"
                       >
                         {cartSaveToast ? (
                           <>
                             <Check className="w-3.5 h-3.5 text-emerald-700" />
-                            <span>Đã lưu vào Đề 40 câu</span>
+                            <span>Đã lưu</span>
                           </>
                         ) : (
                           <>
@@ -2030,7 +2047,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setShowAnswers((prev) => !prev)}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                      className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
                     >
                       {showAnswers ? (
                         <>
@@ -2049,21 +2066,21 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setIsEditingResult((prev) => !prev)}
-                      className={`flex items-center gap-1.5 px-3 py-2 border rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                      className={`flex items-center gap-1 px-2.5 py-1.5 border rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
                         isEditingResult
                           ? 'bg-amber-50 border-amber-300 text-amber-900'
                           : 'bg-white border-slate-300 hover:bg-slate-100 text-slate-700'
                       }`}
                     >
                       <Edit3 className="w-3.5 h-3.5" />
-                      <span>{isEditingResult ? 'Xong chỉnh sửa' : 'Sửa trực tiếp'}</span>
+                      <span>{isEditingResult ? 'Xong' : 'Sửa'}</span>
                     </button>
 
                     {/* Copy Questions Only */}
                     <button
                       type="button"
                       onClick={copyQuestionsOnly}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                      className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
                     >
                       {copyQuestionsSuccess ? (
                         <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -2077,7 +2094,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={copyToClipboard}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                      className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
                     >
                       {copySuccess ? (
                         <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -2091,26 +2108,25 @@ export default function App() {
                     <button
                       type="button"
                       onClick={exportToWord}
-                      className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-blue-950 text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-[#1E40AF] hover:bg-blue-900 text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
                     >
                       <FileDown className="w-3.5 h-3.5" />
-                      <span>{t.exportBtn}</span>
+                      <span>Word (.docx)</span>
                     </button>
                   </div>
                 </div>
 
-                {/* Exam Paper Canvas Body */}
-                <div className="flex-1 p-6 sm:p-8 md:p-10 bg-white">
+                {/* Scrollable Exam Paper Canvas Body (ONLY THIS AREA SCROLLS) */}
+                <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-5 sm:p-7 bg-white">
                   {isEditingResult ? (
-                    <div className="space-y-2">
-                      <label className="block text-xs font-semibold text-slate-600">
+                    <div className="h-full flex flex-col space-y-2">
+                      <label className="block text-xs font-semibold text-slate-600 shrink-0">
                         Chỉnh sửa trực tiếp nội dung (giữ ký hiệu **in đậm** và *in nghiêng* để xuất file Word chuẩn):
                       </label>
                       <textarea
                         value={result}
                         onChange={(e) => setResult(e.target.value)}
-                        rows={20}
-                        className="w-full p-4 bg-slate-50 border border-slate-300 rounded-xl font-exam text-base leading-relaxed text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none"
+                        className="flex-1 w-full p-4 bg-slate-50 border border-slate-300 rounded-xl font-exam text-base leading-relaxed text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-800 outline-none resize-none"
                       />
                     </div>
                   ) : activePartId === 'part6' &&
@@ -2118,7 +2134,7 @@ export default function App() {
                     (parsedDictionaryExam.dictionaryLines.length > 0 ||
                       parsedDictionaryExam.questionLines.length > 0) ? (
                     /* Specialized Dictionary Entry Box View */
-                    <div className="max-w-3xl mx-auto font-exam text-[17px] leading-relaxed text-slate-900 space-y-6">
+                    <div className="max-w-3xl mx-auto font-exam text-[17px] leading-relaxed text-slate-900 space-y-5">
                       {parsedDictionaryExam.instructionLine && (
                         <div className="text-[17px] leading-snug text-slate-900">
                           <ReactMarkdown
@@ -2136,7 +2152,7 @@ export default function App() {
                       )}
 
                       {parsedDictionaryExam.dictionaryLines.length > 0 && (
-                        <div className="p-5 sm:p-6 bg-[#F8FAFC] border border-slate-300 rounded-xl space-y-1.5">
+                        <div className="p-4 sm:p-5 bg-[#F8FAFC] border border-slate-300 rounded-xl space-y-1.5">
                           <ReactMarkdown
                             remarkPlugins={[remarkBreaks]}
                             components={{
@@ -2184,9 +2200,9 @@ export default function App() {
                       {parsedDictionaryExam.answerLines.length > 0 && (
                         <div className="pt-4 border-t border-slate-200">
                           {showAnswers ? (
-                            <div className="p-4 sm:p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl">
+                            <div className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-xl">
                               <div className="text-xs font-sans font-bold uppercase tracking-wider text-emerald-800 mb-2">
-                                ĐÁP ÁN CHÍNH THỨC
+                                ĐÁP ÁN CHÍNH THỨC (ĐÃ THẨM ĐỊNH)
                               </div>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-base font-bold text-slate-900">
                                 {parsedDictionaryExam.answerLines.map((ans, idx) => (
@@ -2197,7 +2213,7 @@ export default function App() {
                               </div>
                             </div>
                           ) : (
-                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-sans text-slate-600">
+                            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-sans text-slate-600">
                               <span>
                                 Đáp án đang được ẩn để phục vụ chiếu đề cho học sinh làm bài.
                               </span>
@@ -2215,7 +2231,7 @@ export default function App() {
                     </div>
                   ) : (
                     /* General Exam Section View (Parts I, II, III, IV, V, VII & Full Exam) */
-                    <div className="max-w-3xl mx-auto font-exam text-[17px] leading-relaxed text-slate-900 space-y-6">
+                    <div className="max-w-3xl mx-auto font-exam text-[17px] leading-relaxed text-slate-900 space-y-5">
                       <div className="space-y-3">
                         <ReactMarkdown
                           remarkPlugins={[remarkBreaks]}
@@ -2238,7 +2254,7 @@ export default function App() {
                       {splitResult.answersPart && (
                         <div className="pt-4 border-t border-slate-200">
                           {showAnswers ? (
-                            <div className="p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-2">
+                            <div className="p-4 sm:p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-2">
                               <div className="text-xs font-sans font-bold uppercase tracking-wider text-emerald-800">
                                 ĐÁP ÁN & GIẢI THÍCH CHI TIẾT (ĐÃ THẨM ĐỊNH)
                               </div>
@@ -2263,7 +2279,7 @@ export default function App() {
                               </div>
                             </div>
                           ) : (
-                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-sans text-slate-600">
+                            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-sans text-slate-600">
                               <span>
                                 Đáp án & lời giải đang được ẩn để phục vụ chiếu đề cho học sinh làm bài.
                               </span>
@@ -2283,20 +2299,22 @@ export default function App() {
                 </div>
               </div>
             ) : (
-              /* Empty State with Interactive 7-Section Overview */
-              <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center mb-3 text-blue-900">
-                  <BookOpen className="w-7 h-7" />
+              /* Compact Empty State with Interactive 7-Section Overview (Fits inside viewport) */
+              <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar flex flex-col items-center justify-center p-4 sm:p-6">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                    {t.emptyStateTitle}
+                  </h3>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 text-center">
-                  {t.emptyStateTitle}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-500 max-w-xl mt-1 text-center leading-relaxed">
+                <p className="text-xs text-slate-500 max-w-xl text-center leading-relaxed mb-4">
                   {t.emptyStateDesc}
                 </p>
 
-                {/* Interactive Grid of all 7 HCMC Exam Sections */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-3xl mt-6">
+                {/* Interactive Grid of all 7 HCMC Exam Sections + Full 40-Q Exam */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-3xl">
                   {EXAM_PARTS.map((part) => {
                     const isCurrent = activePartId === part.id;
                     const inCart = part.id !== 'full_exam' && !!examCart[part.id];
@@ -2304,27 +2322,34 @@ export default function App() {
                       <button
                         key={part.id}
                         type="button"
-                        onClick={() => setActivePartId(part.id)}
-                        className={`p-4 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        onClick={() => {
+                          if (activePartId !== part.id) {
+                            setActivePartId(part.id);
+                            setResult('');
+                            setIsEditingResult(false);
+                            setError('');
+                          }
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                           isCurrent
-                            ? 'bg-blue-50/70 border-blue-800'
+                            ? 'bg-blue-50/70 border-blue-800 shadow-2xs'
                             : 'bg-slate-50/70 hover:bg-slate-100/80 border-slate-200'
                         }`}
                       >
                         <div>
-                          <div className="flex items-center justify-between text-xs font-bold text-blue-900 mb-1">
+                          <div className="flex items-center justify-between text-[11px] font-bold text-blue-900 mb-0.5">
                             <span>
                               PHẦN {part.roman} · {part.questionRange}
                             </span>
                             <span className="text-slate-500 font-semibold">{part.points}</span>
                           </div>
-                          <div className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                            <span>{part.nameVi}</span>
+                          <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                            <span className="truncate">{part.nameVi}</span>
                             {inCart && (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                             )}
                           </div>
-                          <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                          <p className="text-[11px] text-slate-600 mt-0.5 line-clamp-1">
                             {part.shortDesc}
                           </p>
                         </div>
