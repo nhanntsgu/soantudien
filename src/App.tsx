@@ -1110,7 +1110,13 @@ export default function App() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ apiKey: customApiKey, apiMode }),
         });
-        const data = await res.json();
+        const rawText = await res.text();
+        let data: any = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch {
+          data = { valid: false, error: `HTTP ${res.status}` };
+        }
         if (res.ok && data.valid) {
           setApiKeyStatus('valid');
         } else {
@@ -1386,7 +1392,14 @@ export default function App() {
         }),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data: any = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        throw new Error(`Server error (${res.status}): Endpoint /api/gemini/generate unavailable`);
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Generation failed');
       }
@@ -1410,7 +1423,14 @@ export default function App() {
         }),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data: any = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        throw new Error(`Server error (${res.status}): Endpoint /api/gemini/review unavailable`);
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Review failed');
       }
