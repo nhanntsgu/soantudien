@@ -236,7 +236,7 @@ function preserveMarkdownQuestionNumbers(text: string): string {
 function parseDictionaryOutput(raw: string): ParsedExam {
   const normalized = normalizePartQuestionNumbers(raw, 'part6');
   const lines = normalized.split('\n');
-  let instructionLine = '';
+  const headerLines: string[] = [];
   const dictionaryLines: string[] = [];
   const questionLines: string[] = [];
   const answerLines: string[] = [];
@@ -256,10 +256,16 @@ function parseDictionaryOutput(raw: string): ParsedExam {
       continue;
     }
 
-    if (section === 'header' && (line.includes('Look at the entry') || line.startsWith('**VI.'))) {
-      instructionLine = line;
-      section = 'dict';
-      continue;
+    if (section === 'header') {
+      if (/^(\*\*)?BỘ\s+\d+/i.test(line)) {
+        headerLines.push(line);
+        continue;
+      }
+      if (line.includes('Look at the entry') || line.startsWith('**VI.') || line.startsWith('VI.')) {
+        headerLines.push(line);
+        section = 'dict';
+        continue;
+      }
     }
 
     if (section === 'answers') {
@@ -281,7 +287,7 @@ function parseDictionaryOutput(raw: string): ParsedExam {
   }
 
   return {
-    instructionLine,
+    instructionLine: headerLines.join('\n\n'),
     dictionaryLines,
     questionLines,
     answerLines,

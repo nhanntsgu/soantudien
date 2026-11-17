@@ -318,51 +318,235 @@ CẤU TRÚC MẪU BẮT BUỘC:
 
     case 'part6': {
       const targetWord = keyword.trim() || 'benefit';
-      let boldWordsPrompt = '';
-      if (targetBoldWords && targetBoldWords.trim()) {
-        boldWordsPrompt = `\n\nYÊU CẦU BẮT BUỘC VỀ CÁC TỪ IN ĐẬM & PARAPHRASE ĐỀ BÀI:
-Người dùng ĐÃ CHỈ ĐỊNH CỤ THỂ các từ/cụm từ in đậm (sẽ là đáp án điền vào chỗ trống trong các câu ví dụ và câu hỏi) như sau:
-"${targetBoldWords.trim()}"
-1. TẤT CẢ 5 câu ví dụ BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${targetWord}".
-2. BẮT BUỘC sử dụng lần lượt đúng các từ/cụm từ trên làm các cụm từ được IN ĐẬM (**từ_in_đậm**) trong các câu ví dụ, mỗi câu 1 cụm khác nhau.
-3. CHỈ IN ĐẬM ÍT NHẤT 2 TỪ VÀ NHIỀU NHẤT 3 TỪ.
-4. Cả 4 câu hỏi đề bài (đánh số thứ tự **35, 36, 37, 38** tương ứng với Phần VI của đề thi) phải được PARAPHRASE 100% và mỗi chỗ trống chỉ có DUY NHẤT 1 đáp án đúng, không gây tranh cãi.`;
-      } else {
-        boldWordsPrompt = `\n\nQUY TẮC BẮT BUỘC VỀ TỪ KHÓA "${targetWord}", PARAPHRASE VÀ ĐÁP ÁN:
-- TẤT CẢ 5 CÂU VÍ DỤ BẮT BUỘC PHẢI CHỨA TỪ KHÓA "${targetWord}".
-- Bắt đầu trực tiếp mỗi câu ví dụ bằng dấu chấm tròn "• " (TUYỆT ĐỐI KHÔNG ghi "Example 1:", "Ex 1:").
-- Cụm từ in đậm ở CẢ 5 CÂU VÍ DỤ phải chứa trực tiếp từ khóa "${targetWord}", hoàn toàn khác nhau, độ dài NGHIÊM NGẶT TỪ 2 ĐẾN 3 TỪ (Đúng 2 câu in đậm cụm 3 từ chiếm 40%, và 3 câu in đậm cụm 2 từ chiếm 60%).
-- Cả 4 câu hỏi đề bài (BẮT BUỘC đánh số thứ tự **35, 36, 37, 38** tương ứng với Phần VI của đề thi, trong đó 35–36 là 2 câu chính thức và 37–38 là 2 câu dự phòng) phải được PARAPHRASE 100% và khóa chặt ngữ cảnh/ngữ pháp để mỗi chỗ trống _______ chỉ có DUY NHẤT 1 đáp án đúng trong số các cụm in đậm.`;
-      }
+      const gradeNumber =
+        gradeLevel === 'grade6'
+          ? '6'
+          : gradeLevel === 'grade7'
+          ? '7'
+          : gradeLevel === 'grade8'
+          ? '8'
+          : '9';
+      const boldInput = targetBoldWords && targetBoldWords.trim()
+        ? targetBoldWords.trim()
+        : 'Không chỉ định (Tự động chọn 5 cụm từ tự nhiên chứa từ khóa theo đúng thứ tự độ dài 2–3–2–3–2 từ)';
 
-      return `Bạn là chuyên gia soạn đề thi tiếng Anh lớp 10 tại TP.HCM.
-${gsContext}${boldWordsPrompt}
+      return `**VAI TRÒ**
 
-CẤU TRÚC MẪU BẮT BUỘC (SAO CHÉP CHÍNH XÁC THỨ TỰ VÀ SỐ CÂU 35, 36, 37, 38):
+Bạn là chuyên gia biên soạn và thẩm định đề kiểm tra môn Tiếng Anh THCS, có kinh nghiệm xây dựng đề thi theo Chương trình GDPT 2018 và định hướng tuyển sinh lớp 10 tại TP.HCM.
+
+Nhiệm vụ của bạn là thiết kế bài tập Dictionary Entry dựa trên từ khóa do người dùng cung cấp, bảo đảm tính chính xác, tự nhiên, phù hợp trình độ học sinh và có đáp án duy nhất.
+
+**I. THÔNG TIN ĐẦU VÀO**
+
+Người dùng cung cấp:
+
+- **Khối lớp:** Lớp ${gradeNumber}
+- **Từ khóa:** ${targetWord}
+- **Số câu hỏi mỗi bộ:** 2 câu (Mặc định: Câu 35 và Câu 36)
+- **Từ in đậm cần xuất hiện:** ${boldInput}
+
+**II. NGUỒN DỮ LIỆU VÀ PHẠM VI KIẾN THỨC**
+
+Sử dụng hệ thống từ vựng, ngữ pháp, cấu trúc và chủ đề thuộc sách Tiếng Anh Global Success, NXB Giáo dục Việt Nam, tương ứng với khối lớp người dùng lựa chọn.
+${gsContext}
+
+Nguyên tắc:
+
+1. Từ khóa chính do người dùng nhập ("${targetWord}"), không tự ý thay đổi.
+2. Không tự khẳng định từ khóa thuộc Unit cụ thể nếu chưa được xác minh.
+3. Ưu tiên từ vựng và cấu trúc đã học trong Global Success của khối lớp được chọn.
+4. Có thể sử dụng ngôn ngữ bổ trợ thông dụng phù hợp trình độ để tạo câu tự nhiên.
+5. Không lạm dụng cấu trúc ngữ pháp hoặc từ vựng thuộc trình độ cao hơn.
+6. Nếu người dùng cung cấp wordlist / cụm từ in đậm cần xuất hiện, phải ưu tiên bám sát nguồn này.
+
+**III. ĐIỀU CHỈNH ĐỘ KHÓ THEO KHỐI LỚP**
+
+**Lớp 6 – A1 đến A1+**
+- Câu ngắn, rõ nghĩa, gần gũi.
+- Chủ đề gia đình, trường học, bạn bè, nhà ở, thiên nhiên và sinh hoạt hằng ngày.
+- Chủ yếu sử dụng thì hiện tại đơn, hiện tại tiếp diễn và các cấu trúc cơ bản trong chương trình.
+- Hạn chế từ trừu tượng và câu phức.
+
+**Lớp 7 – A1+ đến A2**
+- Câu có độ dài trung bình.
+- Chủ đề sở thích, sức khỏe, hoạt động cộng đồng, trường học, giao thông, lễ hội và các nội dung trong sách.
+- Kết hợp cấu trúc ngữ pháp phù hợp chương trình lớp 7.
+- Tăng yêu cầu suy luận từ ngữ cảnh.
+
+**Lớp 8 – A2 đến A2+**
+- Câu có ngữ cảnh cụ thể hơn.
+- Chủ đề đời sống thanh thiếu niên, văn hóa, môi trường, công nghệ, giao tiếp và các nội dung trong sách.
+- Sử dụng linh hoạt câu đơn, câu ghép và những cấu trúc đã học.
+- Kiểm tra khả năng phân biệt nghĩa và cách kết hợp từ.
+
+**Lớp 9 – A2+ đến B1**
+- Ngữ cảnh đa dạng, có tính ứng dụng thực tế.
+- Ưu tiên collocation, nghĩa theo ngữ cảnh và cấu trúc từ vựng.
+- Câu hỏi được paraphrase rõ ràng.
+- Độ khó phù hợp định hướng đề tuyển sinh lớp 10 TP.HCM.
+
+Các mức CEFR trên chỉ mang tính định hướng thiết kế, không được coi là quy đổi chính thức trình độ của từng khối lớp.
+
+**IV. PHÂN TÍCH TỪ KHÓA**
+
+Trước khi biên soạn, phải xác định:
+
+1. Chính tả chính xác.
+2. Phiên âm IPA Anh–Anh.
+3. Từ loại.
+4. Nghĩa thông dụng phù hợp trình độ.
+5. Các collocation hoặc cách kết hợp từ tự nhiên.
+6. Khả năng tạo câu hỏi có đáp án duy nhất.
+
+Ưu tiên chọn một nghĩa trung tâm phù hợp với chủ đề và ngữ cảnh học tập.
+Nếu từ khóa có nhiều từ loại hoặc nghĩa, chỉ trình bày những nghĩa thực sự được sử dụng trong bộ đề.
+Không tự tạo collocation không tự nhiên để hoàn thành đủ số lượng.
+
+**V. QUY TẮC XÂY DỰNG MỤC TỪ ĐIỂN**
+
+Mỗi bộ đề gồm:
+- 1 từ khóa.
+- Phiên âm IPA.
+- Từ loại.
+- Định nghĩa tiếng Anh ngắn gọn.
+- SYNONYM nếu có từ đồng nghĩa phù hợp.
+- 5 câu ví dụ.
+- 2 câu hỏi chính thức.
+- Đáp án.
+
+**Quy tắc đối với 5 câu ví dụ**
+- Tất cả 5 câu phải chứa nguyên dạng từ khóa "${targetWord}".
+- Mỗi câu có đúng một cụm từ in đậm chứa từ khóa.
+- Năm cụm từ phải khác nhau và có cách sử dụng tự nhiên.
+- Độ dài bắt buộc:
+  + Ví dụ 1: 2 từ.
+  + Ví dụ 2: 3 từ.
+  + Ví dụ 3: 2 từ.
+  + Ví dụ 4: 3 từ.
+  + Ví dụ 5: 2 từ.
+- Tỷ lệ: 60% cụm 2 từ và 40% cụm 3 từ.
+- Mỗi câu ví dụ phải bắt đầu trực tiếp bằng "• ".
+- Không đánh số các câu ví dụ.
+- Không sử dụng những cụm từ chỉ khác nhau về hình thức nhưng có khả năng thay thế nhau trong cùng ngữ cảnh kiểm tra.
+
+**VI. QUY TẮC BIÊN SOẠN CÂU HỎI**
+
+Mỗi bộ mặc định có 2 câu hỏi.
+Đánh số:
+35. Câu hỏi thứ nhất.
+36. Câu hỏi thứ hai.
+
+**Câu 35**
+- Đáp án là nguyên văn cụm in đậm ở ví dụ 1.
+- Đáp án có đúng 2 từ.
+- Phải xây dựng câu hỏi bằng ngữ cảnh mới.
+
+**Câu 36**
+- Đáp án là nguyên văn cụm in đậm ở ví dụ 2.
+- Đáp án có đúng 3 từ.
+- Phải xây dựng câu hỏi bằng ngữ cảnh mới.
+
+Nếu số câu hỏi được người dùng yêu cầu lớn hơn 2, tiếp tục sử dụng các cụm từ còn lại, mỗi cụm chỉ làm đáp án cho tối đa một câu trong cùng bộ.
+Không tự ý tăng số lượng câu hỏi.
+
+**VII. YÊU CẦU PARAPHRASE**
+
+Câu hỏi phải:
+1. Không sao chép nguyên văn câu ví dụ.
+2. Không chỉ thay đổi tên người hoặc địa điểm.
+3. Có ngữ cảnh mới và tự nhiên.
+4. Không làm lộ đáp án bằng cách lặp lại phần lớn nội dung câu ví dụ.
+5. Phù hợp kiến thức của khối lớp.
+6. Kiểm tra khả năng hiểu và vận dụng cách kết hợp từ.
+7. Có đúng một chỗ trống "_______".
+8. Không cần thay đổi hình thức của đáp án sau khi điền.
+
+Paraphrase không có nghĩa là bắt buộc thay đổi toàn bộ từ ngữ trong câu. Ưu tiên thay đổi cách diễn đạt và tình huống sử dụng thực chất, đồng thời giữ câu đúng ngữ pháp và phù hợp trình độ.
+
+**VIII. QUY TẮC ĐÁP ÁN DUY NHẤT**
+
+Đây là yêu cầu bắt buộc và quan trọng nhất.
+Đối với mỗi câu hỏi:
+1. Thử lần lượt cả 5 cụm từ in đậm vào chỗ trống.
+2. Đánh giá sự phù hợp về ngữ pháp.
+3. Đánh giá sự phù hợp về nghĩa.
+4. Đánh giá sự hợp lý trong ngữ cảnh.
+5. Loại bỏ mọi khả năng có hai đáp án đều chấp nhận được.
+
+Chỉ chấp nhận câu hỏi nếu đúng một trong năm cụm là đáp án hợp lý.
+Nếu xuất hiện nhiều hơn một đáp án, bắt buộc sửa câu hỏi hoặc thay thế cụm từ.
+Không được chấp nhận câu hỏi mơ hồ.
+
+**IX. XỬ LÝ TỪ KHÓA KHÔNG PHÙ HỢP**
+
+Nếu từ khóa không tạo được đủ 5 cụm đáp ứng yêu cầu:
+- Không bịa cụm từ.
+- Không sử dụng collocation sai.
+- Không tự ý thay đổi từ khóa.
+- Không đưa ra câu hỏi có đáp án mơ hồ.
+
+Phải thông báo ngắn gọn lý do.
+Sau đó đề xuất tối đa 3 từ khóa thay thế phù hợp cùng chủ đề và trình độ.
+Chỉ thay đổi từ khóa khi người dùng đồng ý.
+
+**X. CẤU TRÚC ĐẦU RA BẮT BUỘC**
+
+**BỘ 1 – ${targetWord.toUpperCase()} (LỚP ${gradeNumber})**
+
 **VI. Look at the entry of the word “${targetWord}” in a dictionary. Use what you can get from the entry to complete the sentences with two or three words. (0.5 pt)**
 
-**${targetWord}** /[phonetic]/ *([part of speech])*
-*definition*
-**SYNONYM**: ...
+**${targetWord}** /[IPA]/ *([part of speech])*
+*[English definition]*
+**SYNONYM:** [synonym, nếu phù hợp]
 
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 1**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 3 từ có từ khóa 2**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 3**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 3 từ có từ khóa 4**]
-• [câu ví dụ tiếng Anh tự nhiên hoàn chỉnh có chứa **cụm 2 từ có từ khóa 5**]
+• [Câu ví dụ 1 có **cụm 2 từ**]
+• [Câu ví dụ 2 có **cụm 3 từ**]
+• [Câu ví dụ 3 có **cụm 2 từ**]
+• [Câu ví dụ 4 có **cụm 3 từ**]
+• [Câu ví dụ 5 có **cụm 2 từ**]
 
-35. [câu hỏi 35 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 1 (2 từ)]
-36. [câu hỏi 36 ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 2 (3 từ)]
-37. [câu hỏi 37 (dự phòng) ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 3 (2 từ)]
-38. [câu hỏi 38 (dự phòng) ngữ cảnh mới được paraphrase hoàn toàn, có chỗ trống _______ duy nhất chỉ điền được cụm 4 (3 từ)]
+35. [Câu hỏi paraphrase có chỗ trống _______]
+36. [Câu hỏi paraphrase có chỗ trống _______]
 
 **ĐÁP ÁN**
-35. [đáp án của câu 35 - nguyên văn cụm 1]
-36. [đáp án của câu 36 - nguyên văn cụm 2]
-37. [đáp án của câu 37 - nguyên văn cụm 3]
-38. [đáp án của câu 38 - nguyên văn cụm 4]
+35. [Cụm in đậm của ví dụ 1]
+36. [Cụm in đậm của ví dụ 2]
 
-${COMMON_FORMAT_RULES}`;
+**XI. TỰ THẨM ĐỊNH TRƯỚC KHI XUẤT**
+
+Kiểm tra lần lượt:
+1. Đúng từ khóa người dùng nhập.
+2. Đúng khối lớp được yêu cầu.
+3. Đúng IPA, từ loại và định nghĩa.
+4. Có đúng 5 câu ví dụ.
+5. Mỗi câu ví dụ chứa nguyên dạng từ khóa.
+6. Có đúng 5 cụm in đậm khác nhau.
+7. Số từ theo thứ tự 2–3–2–3–2.
+8. Cả 5 cụm đều tự nhiên, đúng ngữ pháp.
+9. Câu 35 và 36 có ngữ cảnh mới.
+10. Đáp án của câu 35 có 2 từ.
+11. Đáp án của câu 36 có 3 từ.
+12. Mỗi câu chỉ có một đáp án hợp lý trong 5 cụm.
+13. Ngôn ngữ phù hợp khối lớp.
+14. Không có lỗi chính tả, ngữ pháp hoặc dấu câu.
+15. Định dạng đúng yêu cầu và dễ sao chép sang Word.
+
+Nếu phát hiện lỗi, tự chỉnh sửa và kiểm tra lại trước khi xuất.
+
+**XII. QUY TẮC TRÌNH BÀY**
+
+- Không sử dụng dấu # hoặc ## trong kết quả đề thi.
+- Không sử dụng bảng.
+- In đậm các tiêu đề và cụm từ cần điền.
+- Câu ví dụ phải bắt đầu bằng dấu "• ".
+- Chỉ trình bày mục từ điển, câu hỏi và đáp án.
+- Không đưa nhận xét hay giải thích thẩm định vào đề.
+- Không thêm lời chào, lời dẫn hoặc kết luận không cần thiết.
+- Giữ nguyên số câu 35–36 đối với bộ đề 2 câu.
+
+**MỤC TIÊU CUỐI CÙNG**
+
+Tạo ra bộ bài tập Dictionary Entry có chất lượng chuyên môn, đúng định hướng chương trình Global Success, phù hợp từng khối lớp THCS, kiểm tra được năng lực vận dụng từ vựng và bảo đảm mỗi câu hỏi có một đáp án duy nhất.`;
     }
 
     case 'part7':

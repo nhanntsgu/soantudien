@@ -44,9 +44,14 @@ QUY TRÌNH THẨM ĐỊNH BẮT BUỘC THEO TỪNG PHẦN:
    - Đếm kỹ từ loại của 6 đáp án (29–34): BẮT BUỘC phải có đúng **2 Nouns, 2 Adjectives, 1 Verb và 1 Adverb** (tối đa 01 câu vận dụng cao). Nếu lệch tỷ lệ này, phải sửa lại câu hỏi tương ứng để đạt chuẩn 2N - 2Adj - 1V - 1Adv.
    - Kiểm tra dấu hiệu ngữ pháp trước và sau chỗ trống (số ít/số nhiều, khẳng định/phủ định) để chỉ có duy nhất 1 đáp án đúng.
 
-6. NẾU LÀ PHẦN VI (DICTIONARY ENTRY - CÂU 35–38):
-   - Thực hiện phép thử lắp chéo cả 5 cụm từ in đậm (bắt buộc dài 2–3 từ, chứa từ khóa) vào từng chỗ trống _______. Nếu bất kỳ câu hỏi nào có thể điền được từ 2 cụm in đậm trở lên, PHẢI VIẾT LẠI CÂU HỎI ĐÓ NGAY để chỉ có duy nhất 1 đáp án đúng.
-   - BẮT BUỘC đánh số thứ tự 4 câu hỏi và đáp án là **35., 36., 37., 38.** (nếu bản thảo đang đánh số 1, 2, 3, 4 thì phải đổi thành 35, 36, 37, 38). Giữ đúng bố cục: sau 5 câu ví dụ (• ...) là các câu hỏi đề bài, tiếp theo là phần **ĐÁP ÁN**.
+6. NẾU LÀ PHẦN VI (DICTIONARY ENTRY - CÂU 35–36):
+   - Trường hợp từ khóa không phù hợp (bản thảo đang thông báo lý do và đề xuất tối đa 3 từ khóa thay thế): Giữ nguyên nội dung thông báo và đề xuất thay thế đó, không tự ý bịa cụm từ.
+   - Trường hợp từ khóa hợp lệ, kiểm tra đủ 15 tiêu chí bắt buộc:
+     + Đúng từ khóa người dùng nhập, đúng khối lớp, đúng IPA Anh–Anh, từ loại và định nghĩa.
+     + Có đúng 5 câu ví dụ bắt đầu bằng "• " (không đánh số), mỗi câu chứa nguyên dạng từ khóa và 1 cụm in đậm khác nhau theo đúng thứ tự số từ **2 – 3 – 2 – 3 – 2** (60% cụm 2 từ, 40% cụm 3 từ).
+     + Mặc định có 2 câu hỏi chính thức đánh số **35.** (đáp án là nguyên văn cụm in đậm của ví dụ 1 – 2 từ) và **36.** (đáp án là nguyên văn cụm in đậm của ví dụ 2 – 3 từ), ngữ cảnh mới được paraphrase thực chất.
+     + Thử lắp lần lượt cả 5 cụm từ in đậm vào từng chỗ trống _______. Nếu bất kỳ câu hỏi nào có nhiều hơn 1 đáp án hợp lý về ngữ pháp/nghĩa/ngữ cảnh, BẮT BUỘC sửa lại câu hỏi hoặc thay cụm từ để chỉ có DUY NHẤT 1 đáp án đúng.
+     + Giữ đúng cấu trúc đầu ra bắt buộc (gồm dòng tiêu đề **BỘ 1 – [TỪ KHÓA] (LỚP [KHỐI])**, dòng dẫn **VI. Look at the entry...**, mục từ điển, Câu 35–36 và **ĐÁP ÁN** 35–36).
 
 7. NẾU LÀ PHẦN VII (WRITING - CÂU 37–40):
    - Đảm bảo có ít nhất 01 câu biến đổi câu sử dụng **Phrasal Verb** trong chương trình Global Success.
@@ -59,7 +64,7 @@ QUY TẮC ĐÁNH SỐ THỨ TỰ CÂU BẮT BUỘC THEO TỪNG PHẦN:
 - Phần III (Cloze Text): Đánh số chỗ trống **(17)** đến **(22)** và câu hỏi từ **17.** đến **22.**
 - Phần IV (Reading True/False): Đánh số từ **23.** đến **28.**
 - Phần V (Word Form): Đánh số từ **29.** đến **34.**
-- Phần VI (Dictionary): Đánh số từ **35.** đến **38.** (hoặc **35., 36.** trong đề 40 câu)
+- Phần VI (Dictionary): Đánh số **35., 36.** (hoặc thêm 37., 38. nếu người dùng yêu cầu trên 2 câu)
 - Phần VII (Writing): Đánh số từ **37.** đến **40.**
 
 QUY TẮC XUẤT KẾT QUẢ CUỐI CÙNG:
